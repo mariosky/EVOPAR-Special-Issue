@@ -101,21 +101,21 @@
 \section{Introduction}
 \label{sec:intro}
 Over the last decade, the landscape in computing technology has undergone a noticeable shift, moving away from isolated, serial and synchronous systems,
-towards distributed, ubiquitous and shared computing resources, exploiting network infrastructure and what is known as the Cloud computing model\cite{}.
+towards distributed, ubiquitous and shared computing resources, exploiting network infrastructure and what is known as the Cloud computing model\cite{cloud, varia2008cloud}.
 This shift is not easy to make, it requires a dedicated and coordinated effort to port systems from one paradigm to another.
 This paper is part of an ever-growing effort in the field of evolutionary algorithms (EAs) to develop new software tools that exploit the nuances
 of distributed and asynchronous computational systems.
 In particular, this works centers around EvoSpace, a pool-based EA (PEA) that presents unique features and allows for non-traditional dynamics during
-an evolutionary search \cite{}.
+an evolutionary search \cite{Evospace}.
 
-EvoSpace is built around a central repository or population store, where the population of an EA is kept following a tuple-space model \cite{}.
+EvoSpace is built around a central repository or population store, where the population of an EA is kept following a tuple-space model \cite{linda}.
 Distributed clients, or workers, connect with the central store and take a subset of individuals over the network, on which they perform a partial evolutionary
 process, and then return the newly evolved subpopulation to the central store where the new individuals are reinserted, at which point they can be taken by other clients.
 Workers, besides being distributed across a network or over the Cloud, perform their tasks in an asynchronous manner, contrasting with the traditional
 sequential and synchronous evolutionary model followed by most EAs.
-Indeed, new evolutionary models, such as the one presented with EvoSpace, allow the design of EAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{}.
+Indeed, new evolutionary models, such as the one presented with EvoSpace, allow the design of EAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{eiben}.
 
-This paper presents a detailed description of EvoSpace, building upon previous contributions made by the authors \cite{},
+This paper presents a detailed description of EvoSpace, building upon previous contributions made by the authors \cite{Evospace,FreeLunch},
 thus providing a comprehensive analysis of the system at both the conceptual and implementation levels, discussing how the system can be
 employed for standard search and optimization.
 Furthermore, several design issues are addressed, that make EvoSpace, as well as other PEAs, unique among the current EA landscape.
@@ -123,7 +123,7 @@ Firstly, distributed systems have to account for unreliable clients, and how los
 an issue that is experimentally evaluated in this paper.
 Secondly, by performing the evolutionary process over a number of distributed workers, the system's parameter space grows exponentially,
 thus greatly enhancing the undesirable feature of most EAs, that of tuning and parameterizing the algorithm for a new problem.
-This issue is addressed by using a simple, but efficient, parametrization method originally developed for Island model EAs \cite{}.
+This issue is addressed by using a simple, but efficient, parametrization method originally developed for Island model EAs \cite{fuku2}.
 
 The remainder of the paper proceeds as follows.
 First, a comprehensive discussion pertaining to related work is presented in Section \ref{sec:related}.
@@ -138,45 +138,45 @@ Finally, a summary of this work, conclusions and future work is given in Section
 \section{Related Work}
 \label{sec:related}
 Exploiting computing resources available on the Internet in the development of  new EAs has received substantial attention. Probably the most direct way to accomplish this is to run an EA over a web browser.
-For instance, Klein and Spector \cite{} and Merelo et al. \cite{} developed EAs, distributing fitness function evaluations over the web using Javascript on the client, such an approach comes with the benefit that connected clients do not need to install any special software on their systems, since the code is directly executed on the browser.
-Another recent example is given in the work of Cotillon et al. \cite{}, where they extend the concept of browser-based EAs on to the Android OS that can be
+For instance, Klein and Spector \cite{spector:2007} and Merelo et al. \cite{merelo:2008} developed EAs, distributing fitness function evaluations over the web using Javascript on the client, such an approach comes with the benefit that connected clients do not need to install any special software on their systems, since the code is directly executed on the browser.
+Another recent example is given in the work of Cotillon et al. \cite{cotillon:2012}, where they extend the concept of browser-based EAs on to the Android OS that can be
 executed on a large number of mobile devices.
 However, using the browser to run an EA comes at a cost, given that code runs far less efficiently.
 Therefore, probably the most successful examples of web-based EAs come from the area of interactive evolution,
 where users can visit a web page, browse candidate individuals and participate in the evolutionary process by evaluating individuals.
-An early example is presented by Langdon \cite{}, were users evaluate evolving agents expressed as fractal structures.
-Such a strategy can also be found in the more recent works of Secretan et al. \cite{} and Clune and Lipson \cite{}, who respectively developed web applications for the interactive
+An early example is presented by Langdon \cite{langdon:2004}, were users evaluate evolving agents expressed as fractal structures.
+Such a strategy can also be found in the more recent works of Secretan et al. \cite{picbreeder} and Clune and Lipson \cite{forms}, who respectively developed web applications for the interactive
 evolution of 2D images and 3D sculptures using a neuro-evolution algorithm.
-Indeed, a variant of EvoSpace, called EvoSpace-i, has also been developed explicitly for these type of interactive evolution of artistic artifacts \cite{}.
+Indeed, a variant of EvoSpace, called EvoSpace-i, has also been developed explicitly for these type of interactive evolution of artistic artifacts \cite{Musart,Fire}.
 
 
 Other researchers have exploited other network based technologies to distribute an EA.
-For instance, Cole et al. \cite{} uses the popular Berkeley Open Infrastructure for Network Computing (BOINC) to distribute an evolutionary algorithm,
+For instance, Cole et al. \cite{MilkyWay} uses the popular Berkeley Open Infrastructure for Network Computing (BOINC) to distribute an evolutionary algorithm,
 using the volunteer computing model, where connected clients share idle CPU cycles with a research project.
-Another example is the work of Fern\'andez-de-Vega et al. \cite{}, who also distributes multiple EA runs using a volunteer computing network through BOINC.
-Garcia-Arenas et al. \cite{} used the popular file sharing service Dropbox as a storage server for an EA.
-Jim\'enez-Laredo et al. \cite{} uses a peer-to-peer architecture to distribute a genetic programming (GP) algorithm over a network.
-Similarly, the DREAM framework presented in \cite{} also distributes an EA using a peer-to-peer network based on mobile multi-agent systems.
+Another example is the work of Fern\'andez-de-Vega et al. \cite{nc}, who also distributes multiple EA runs using a volunteer computing network through BOINC.
+Garcia-Arenas et al. \cite{garcia2011} used the popular file sharing service Dropbox as a storage server for an EA.
+Jim\'enez-Laredo et al. \cite{garcia2011} uses a peer-to-peer architecture to distribute a genetic programming (GP) algorithm over a network.
+Similarly, the DREAM framework presented in \cite{DREAM} also distributes an EA using a peer-to-peer network based on mobile multi-agent systems.
 Another example is the ParadisEO object-oriented framework for the reusable design of parallel and distributed metaheuristics, including EAs, developed
-by Cahon et al. \cite{} using distributed model based on the Farmer/Worker paradigm.
+by Cahon et al. \cite{ParadisEO} using distributed model based on the Farmer/Worker paradigm.
 Recently, researchers have also begun to integrate EAs fully into the Cloud computing model.
-For instance, the Eureqa \footnote{http://www.nutonian.com/} GP-based modeling tool originally developed by Schmidt and Lipson \cite{}, marketed by nutonian,
+For instance, the Eureqa \footnote{http://www.nutonian.com/} GP-based modeling tool originally developed by Schmidt and Lipson \cite{free-form}, marketed by nutonian,
 integrates easily with Amazons EC2 Cloud service for faster computation.
-Integrating EAs more fully into the Cloud model, two noteworthy examples are Offspring framework by Vecchiola et al. \cite{}
-and the FlexGP system developed by Sherry et al. \cite{}.
+Integrating EAs more fully into the Cloud model, two noteworthy examples are Offspring framework by Vecchiola et al. \cite{VecchiolaCORR}
+and the FlexGP system developed by Sherry et al. \cite{FlexGP}.
 Offspring runs a multiobjective EA that is executed on Aneka Enterprise Clouds using a simple distribution logic that makes the use of the cloud
 transparent for the user, developed on top of the task model with a plug-in architecture.
 FlexGP is probably the first large scale GP system that runs on the cloud, using an Island model approach and implemented over
 Amazon EC2 with a socket-based client-server architecture.
 Other recent contributions include several tools and libraries designed to distribute an EA over the Cloud using a global queue of tasks and a Map-Reduce
-implementation \cite{}.
+implementation \cite{FlexGP}.
 
 
 All of these works show great promise in extending EAs towards modern computing models.
 However, the current work is more closely related to what can be referred to as pool-based EAs or PEAs.
-Such approaches are related to more general systems such as A-Teams \cite{}, a problem-solving multi-agent architecture based on a strongly cyclic network.
-G. Roy et al. \cite{} also developed a multi-threaded system with a shared memory architecture that is executed within a distributed environment,
-where the evolving population of a GA is stored in a centralized pool or database. Bollini and Piastra \cite{} developed a system that decouples population storage from the evolutionary operations.
+Such approaches are related to more general systems such as A-Teams \cite{ateam}, a problem-solving multi-agent architecture based on a strongly cyclic network.
+G. Roy et al. \cite{roy:2009} also developed a multi-threaded system with a shared memory architecture that is executed within a distributed environment,
+where the evolving population of a GA is stored in a centralized pool or database. Bollini and Piastra \cite{bollini:1999} developed a system that decouples population storage from the evolutionary operations.
 
 The most recent work that is comparable with EvoSpace is the SofEA algorithm proposed by Merelo et al. \cite{sofea1,sofea2}.
 SofEA is an evolutionary algorithm mapped to a central CouchDB object store. It provides an asynchronous and distributed search process,
@@ -207,7 +207,7 @@ EvoSpace is designed to be versatile, since the system that manages the populati
 Client processes, called EvoWorkers, dynamically and asynchronously interact with the EvoSpace store and perform the desired evolutionary processes.
 EvoWorkers can reside on remote clients or on the platform server if is needed.
 Software as a Service (SaaS) applications could also be developed using EvoSpace, where users could run entire experiments on the
-Cloud or implement interactive applications that are completely hosted by the service \cite{}.
+Cloud or implement interactive applications that are completely hosted by the service \cite{cloud}.
 EvoSpace is well suited for this kind of environment, since it can be accessed by any web enabled device and is designed to be robust to lost connections.
 Figure \ref{fig:cloud} presents a conceptual diagram of how EvoSpace fits within the Cloud computing model.
 
@@ -491,7 +491,7 @@ from a github repository \url{https://github.com/mariosky/evoPar2014}.
 
 \subsection{Experiments and Results}
 This section presents an experimental evaluation of EvoSpace using two well-known benchmarks for GAs;
-the K-trap problem \cite{} and the P-Peaks function \cite{}.
+the K-trap problem \cite{trap} and the P-Peaks function \cite{Jong:PS97}.
 
 \subsubsection{Experiment A: K-trap Function}
 This problem presents a multi-modal and deceptive fitness landscape.
@@ -641,7 +641,7 @@ The figures show that run time is reduced significantly as the number of EvoWork
 
 \subsubsection{Experiment B: P-Peaks}
 The P-Peaks problem was chosen because the problem and the computing resources needed for the search can be appropriately scaled.
-Proposed by De Jong et al. in \cite{Jong:PS97}, a gneralization of the version in \cite{Jong:1990}, a
+Proposed by De Jong et al. in \cite{Jong:PS97}, a generalization of the version in \cite{Jong:1990}, a
 P-Peaks instance is created by generating a set of P random N-bit
 strings, which represent the location of the P peaks in the space. To
 evaluate an arbitrary bit string \begin{math} \mathbf{x} \end{math}
@@ -784,7 +784,7 @@ and algorithm parametrization, a common issue with almost all EAs that is severe
 \subsection{Unreliable Workers}
 In this section, the effect of node unavailability in an EvoSpace EA is assessed.
 The EvoSpace model contrasts with the use of a global queue of tasks and implementations
-of map-reduce algorithms, such as in \cite{}, with several benefits relevant to
+of map-reduce algorithms, such as in \cite{fazenda2012}, with several benefits relevant to
 concurrency control and workload distribution. 
 For instance, leaving a copy of the individual in the population server
 free to be pulled by other EvoWorkers will result in redundant work and this
@@ -1006,7 +1006,8 @@ Nevertheless, it is obvious that using a random heterogeneous parametrization ca
 %\end{acknowledgements}
 
 % BibTeX users please use one of
-\bibliographystyle{spbasic}      % basic style, author-year citations
+%\bibliographystyle{spbasic}      % basic style, author-year citations
+\bibliographystyle{spphys}
 \bibliography{biblio}   % name your BibTeX data base
 
 
