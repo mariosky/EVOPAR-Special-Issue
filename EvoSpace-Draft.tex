@@ -155,7 +155,7 @@ For instance, Cole et al. \cite{MilkyWay} uses the popular Berkeley Open Infrast
 using the volunteer computing model, where connected clients share idle CPU cycles with a research project.
 Another example is the work of Fern\'andez-de-Vega et al. \cite{nc}, who also distributes multiple EA runs using a volunteer computing network through BOINC.
 Garcia-Arenas et al. \cite{garcia2011} used the popular file sharing service Dropbox as a storage server for an EA.
-Jim\'enez-Laredo et al. \cite{garcia2011} uses a peer-to-peer architecture to distribute a genetic programming (GP) algorithm over a network.
+Jim\'enez-Laredo et al. \cite{garcia2011} uses a peer-to-peer architecture to distribute a Genetic Programming (GP) algorithm over a network.
 Similarly, the DREAM framework presented in \cite{DREAM} also distributes an EA using a peer-to-peer network based on mobile multi-agent systems.
 Another example is the ParadisEO object-oriented framework for the reusable design of parallel and distributed metaheuristics, including EAs, developed
 by Cahon et al. \cite{ParadisEO} using distributed model based on the Farmer/Worker paradigm.
@@ -201,7 +201,7 @@ For example, infrastructure as a service (IaaS) such as Amazon's EC2, or Platfor
 However, within Evolutionary Computation (EC), most algorithms have not been ported to the Cloud computing model.
 
 EvoSpace works as a population store for the development of EAs that are intended to run on the Cloud.
-Within the Cloud computing model, EvoSpace is conceived as a Platform as a Service (PaaS) component, where users can create populations of individuals on demand
+Within the Cloud computing model, EvoSpace is conceived as a PaaS component, where users can create populations of individuals on demand
 without the need to install software or invest in additional hardware.
 EvoSpace is designed to be versatile, since the system that manages the population is decoupled from any particular EA.
 Client processes, called EvoWorkers, dynamically and asynchronously interact with the EvoSpace store and perform the desired evolutionary processes.
@@ -228,7 +228,7 @@ In summary, EvoWorkers extract a small subset of the population, and use it as t
 locally on the client machine. Afterwards, the evolved population from each EvoWorker is returned and reinserted into the EvoSpace container.
 The server-side Respawn process is used to alleviate possible problems that might occur during the search, such when the EvoSpace container
 is emptied or when connections are lost with connected EvoWorker clients.
-Figure \ref{fig:evo} presents a graphical illustration of the main components and dataflow within EvoSpace.
+Figure \ref{fig:evo} presents a graphical illustration of the main components and data-flow within EvoSpace.
 
 \begin{figure*}[t]
     \centering
@@ -294,7 +294,7 @@ Finally, a \textbf{GeneticOperator}  string that specifies the operator that pro
 The EvoSpace architecture employs a client-server architecture with a shared memory container.
 On the server side, a process called \textbf{EvoSpaceServer} is executed, which creates and activates a new EvoSpace
 container object and waits for requests to execute interface methods; see Algorithm \ref{alg:evoserver}.
-Additionally, on the server three more processes are executed, these are: \textbf{InitializePopulation}, \textbf{ReInsertionManager} and \textbf{EvolutionManager};
+Additionally, on the server two more processes are executed, these are: \textbf{InitializePopulation} and \textbf{ReInsertionManager} ;
 see algorithms \ref{alg:population}, \ref{alg:remanager}, and \ref{alg:evomanager}.
 \textbf{InitializePopulation} is executed once, its goal is obvious, initialize the population by adding $popsize$ random
 individuals. The function that creates new individuals depends on the problem and representation used.
@@ -303,10 +303,9 @@ falls below a certain threshold or if the time after the last $ReInsert()$ is gr
 If any of these conditions are satisfied, then $rn$ subsets $S_i \in \mathcal{S}$ are reinserted into ES using the $ReInsert()$ method.
 Moreover, the \textbf{ReInsertionManager} makes a $ReInsert(i)$ call when $EvoWorker_i$ (see below) looses a connection with the server,
 thus recovering the population sample.
-Finally, \textbf{EvolutionManager} periodically checks if a termination condition is satisfied, which is checked by the $isOver()$ method.
-This method can be implemented according to the needs of the evolutionary search.
-For instance, $isOver()$ can check if an optimal solution is found or if a maximum number of
-function evaluations have been performed.
+%Finally, \textbf{EvolutionManager} periodically checks if a termination condition is satisfied, which is checked by the $isOver()$ method.
+%This method can be implemented according to the needs of the evolutionary search.
+%For instance, $isOver()$ can check if an optimal solution is found or if a maximum number of function evaluations have been performed.
 %No hay EvolutionManager cada worker consulta al EvoSpace
 \begin{algorithm}[t]
 \label{alg:evoserver}
@@ -358,21 +357,6 @@ function evaluations have been performed.
 \end{algorithm}
 
 
-\begin{algorithm}[t]
-\label{alg:evomanager}
-\caption{The server-side \textbf{EvolutionManager} process.}
-\begin{algorithmic}
-\REQUIRE $EvoSpace \leftarrow$ Reference to an Evospace Server
-\REQUIRE $t \leftarrow$ time interval
-\STATE $terminate \leftarrow$ false
-\WHILE{\textbf{NOT} terminate}
-\STATE $wait(t)$
-\STATE $terminate \leftarrow isOver(EvoSpace)$
-\ENDWHILE
-\end{algorithmic}
-\end{algorithm}
-
-
 
 \subsubsection{The EvoSpace Clients: EvoWorkers}
 The second component of the proposed model are the processes executed on client machines, referred to as \textbf{EvoWorkers}, see Algorithm \ref{alg:worker}.
@@ -383,7 +367,7 @@ In this scenario, $A_i$ can be seen as a local population on which evolution is 
 The result of this evolution is then returned and reinserted into $ES$, then the EvoWorker can request a new set from $ES$ and repeat the process.
 Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation;
 an approach not taken in the present work.
-%We could add a comment indicating that even person could do part of the job, for instance assigning fitness in an interactive EA. (Mario)
+%We could add a comment indicating that even a person could do part of the job, for instance assigning fitness in an interactive EA. (Mario)
 
 \begin{algorithm}[t]
 \label{alg:worker}
@@ -410,9 +394,8 @@ an approach not taken in the present work.
 Figure~\ref{fig:evospace} shows a schematic diagram of the proposed architecture and the corresponding information flow with implementation details.
 Individuals are stored in-memory, using the Redis key-value database.
 Redis was chosen over a SQL-based management system, or other non-SQL alternatives, because it provides a hash based implementation of sets and queues which are natural data structures for the EvoSpace model. For example, selecting a random key from a set has a complexity of O(1). The logic of EvoSpace is implemented as a Python module exposed as a 
-Web Service using Cherrypy and django http frameworks.
-The EvoSpace web service can interact with any language supporting json-rpc or ajax requests.
-The EvoSpace modules and workers in JavaScript, JQuery and python are available with a Simplified BSD License from \url{http://github.com/mariosky/EvoSpace}.
+JSON-RPC Service using Cherrypy and Django HTTP frameworks.
+The EvoSpace service can interact with any language supporting json-rpc or ajax requests. The EvoSpace module and EvoWorker implementations in JavaScript and Python are available with a Simplified BSD License from \url{http://github.com/mariosky/EvoSpace}.
 
 \begin{figure*}[t]
     \centering
@@ -423,15 +406,13 @@ The EvoSpace modules and workers in JavaScript, JQuery and python are available 
 
 As EvoSpace is only the population store, EvoWorkers must implement the genetic operators of a particular EA.
 As stated earlier, our objective is to let researchers use common tools as in their local setting.
-Given that EvoSpace is implemented as a Python module, a simple way to implement the EvoWorkers is with the DEAP
-(Distributed Evolutionary Algorithms in Python) library \cite{DEAP_JMLR2012}, using the basic non-distributed GA version.
-Three methods were added to the local algorithm: getSample() and  putBack(); and  another for the  initialization of the population using DEAP´s own methods.
-For instance, to generate the initial population, a local initialize() is called and the population sent to EvoSpace.
+Given that EvoSpace is implemented as a Python module, a simple way to implement EvoWorkers is using a basic non-distributed GA found in the DEAP (Distributed Evolutionary Algorithms in Python) library \cite{DEAP_JMLR2012}.  Three methods were added to the local DEAP algorithm: $getSample()$ and  $putSample()$; and  another for the  initialization of the population using DEAP´s own methods.
+For instance, to generate the initial population DEAP's initialize() method  is called and the generated population is sent to EvoSpace, then for each generation $getSample()$ is called, the received sample is used to create a DEAP population which is then evolved for a number of generations. Finally the DEAP population is converted to a JSON object and is returned to EvoSpace calling the $putSample()$ method.   
+
 %% TO DO: Write a more detailed explanation than above (Mario). 
 
 \subsection{EvoSpace on the Cloud}
-This section describes how EvoSpace can be configured to run on the Cloud using Heroku and PiCloud;
-a schematic view of the cloud architecture is shown in figure~\ref{herokuPiCloud}.
+This section describes how EvoSpace can be configured to run on the Cloud using Heroku and PiCloud; a schematic view of the cloud architecture is shown in figure~\ref{herokuPiCloud}.
 
 \begin{figure}[t]
 \centering
@@ -443,33 +424,24 @@ a schematic view of the cloud architecture is shown in figure~\ref{herokuPiCloud
 
 \subsection{Evospace as a Heroku Application}
 
-Heroku (\url{http://heroku.com}) is a multi-language PaaS, supporting among others
-Ruby, Python and Java applications. The basic unit of composition on
+Heroku (\url{http://heroku.com}) is a multi-language PaaS, supporting among others Ruby, Python and Java applications. The basic unit of composition on
 Heroku is a lightweight container running a single user-specified
 process. These containers, which they call {\em dynos}, can include web
 (only these can receive {\tt http} requests) and worker processes
-(for instance processes used for database systems and task queues).
+(for instance processes used for database backups or task queues).
 These  process types are the prototypes from which one or more dynos 
 can be instantiated; if the number of requests to the server increases then 
 more instances can be assigned on-the-fly. In our case, our CherryPy 
 web application server runs in one web process, when the number 
 of workers was increased we added more dynos (instances) of the 
-CherryPy process.
-
-This model is very different from a VPS where users pay for the
-whole server; in a process based model, users pay only for the
-processes they need; being a {\em freemium} model means also that, if
-a minimum level of resources is not exceeded, it can be used for
+CherryPy process. This model is very different from a Virtual Private Server (VPS) where users pay for the whole server; in a process based model, users pay only for the processes they need; being a {\em freemium} model means also that, if a minimum level of resources is not exceeded, it can be used for
 free. 
-
 Once deployed the web process can be scaled up by assigning more dynos;
-in our case and in the more demanding configurations of our experiments, 
-the web process was scaled to 20 dynos. Instructions and code for deployment 
-is available at \url{http://www.evospace.org/software.html} 
+in our case and in the more demanding experiments, the web process was scaled to 20 dynos. Instructions and code for deployment is available at \url{http://www.evospace.org/software.html} 
 
 
 \subsection{Evoworkers as PiCloud Jobs}
-PiCloud is a Platform as a Service (PaaS), with deep Python integration; 
+PiCloud is a PaaS, with deep Python integration; 
 using a library, Python functions are transparently uploaded to PiCLoud's 
 servers as units of computational work they call \emph{jobs}. 
 Each job is added to a queue, and when there is a core available, 
@@ -479,15 +451,10 @@ infrastructure in the US-EAST Region. This ensures minimal
 latency and a high bandwidth communication between the services, 
 and there is no charge for data transfer costs between both services.
 For the experiments type c1 and c2 Real Time workers where used.  
-The code for the EvoWorkers implementation and experiment data is publicly available 
-from a github repository \url{https://github.com/mariosky/evoPar2014}. 
+The code for the EvoWorkers implementation and experiment data is publicly available from a Github repository \url{https://github.com/mariosky/evoPar2014}. 
 % \url{http://goo.gl/92tMFw}. % Github tiene su
                                 % propio acortador, pero también
                                 % tienes que anonimizarlo - JJ 
-
-
-
-
 
 \subsection{Experiments and Results}
 This section presents an experimental evaluation of EvoSpace using two well-known benchmarks for GAs;
@@ -495,9 +462,7 @@ the K-trap problem \cite{trap} and the P-Peaks function \cite{Jong:PS97}.
 
 \subsubsection{Experiment A: K-trap Function}
 This problem presents a multi-modal and deceptive fitness landscape.
-Table \ref{tab:exp} summarizes the different experimental configurations tested in this work,
-based on the $K$ value, number of EvoWorkers, the sample size taken by each worker and the chromosome length used in each K-trap problem.
-The number of individuals in the EvoSpace repository is set to 1024 for 4-trap experiments and to 4096 for 5-trap.
+Table \ref{tab:exp} summarizes the different experimental configurations tested in this work, based on the $K$ value, number of EvoWorkers, the sample size taken by each worker and the chromosome length used in each K-trap problem. The number of individuals in the EvoSpace repository is set to 1024 for 4-trap experiments and to 4096 for 5-trap.
 Moreover, Table \ref{tab:exp2} summarizes the shared parameters and algorithmic configuration.
 The maximum number of samples that each EvoWorker can take from EvoSpace is 1000.
 For comparison, a standard GA is applied to each benchmark problem.
@@ -619,29 +584,28 @@ GA-K are the baseline GA results for the 4-trap and 5-trap functions respectivel
     \label{fig:effort}
 \end{figure*}
 
-Since every EvoWorker takes a random sample of individuals, one concern might be that some individuals in the initial population might
-not be chosen and evaluated, and valuable genetic material wasted.
-However, Figure \ref{fig:others}b shows that the percentage of individuals within EvoSpace that have not been evaluated quickly decreases as the initial
-samples are taken.
-Another interesting question is how the EvoSpace search impacts diversity, given by the sum of the pairwise Hamming distances
+Since every EvoWorker takes a random sample of individuals, one concern might be that some individuals of the initial population might
+not be chosen and evaluated wasting valuable genetic material.
+However, Figure \ref{fig:others}b shows that the percentage of not evaluated individuals within EvoSpace quickly decreases as more samples are taken.
+Another interesting question is how the EvoSpace search impacts diversity, here given by the sum of the pairwise Hamming distances
 of all individuals within the population \cite{diversity}.
 Figure \ref{fig:others}c shows how diversity evolves for experiment K, and
 Figure \ref{fig:others}d shows the same for the basic GA\footnote{The time scale is given by
-the number of evaluated individuals, in increments that correspond to the number of individuals evaluated in 10 samples from experiment I.}
+the number of individuals evaluated, increments correspond to the number of individuals evaluated in 10 samples.}
 These plots show how the standard GA has a problem maintaining diversity, which leads to its poor performance shown in Table \ref{tab:found}.
 On the other hand, EvoSpace maintains a more diverse population which leads to a better exploration of the search space and more successful runs.
 
-Finally, a comparison of the amount of computational effort required in each experiment is given in
+Finally, a comparison of the computational effort required in each experiment is given in
 Figure \ref{fig:effort}, which shows boxplots of all runs in each experiment.
 Figure \ref{fig:effort}a plots the total number of individuals evaluated in each run, which is similar in all experiments;
 while Figure \ref{fig:effort}b compares the total run time in seconds.
-The figures show that run time is reduced significantly as the number of EvoWorkers increases, as expected.
+Figures show that run time is significantly reduced as the number of EvoWorkers increases.
 
 
 
 \subsubsection{Experiment B: P-Peaks}
-The P-Peaks problem was chosen because the problem and the computing resources needed for the search can be appropriately scaled.
-Proposed by De Jong et al. in \cite{Jong:PS97}, a generalization of the version in \cite{Jong:1990}, a
+The P-Peaks problem was chosen because the problem and consequently the computing resources needed for the search can be appropriately scaled.
+Proposed by De Jong et al. in \cite{Jong:PS97}, as a generalization of the version in \cite{Jong:1990}, a
 P-Peaks instance is created by generating a set of P random N-bit
 strings, which represent the location of the P peaks in the space. To
 evaluate an arbitrary bit string \begin{math} \mathbf{x} \end{math}
@@ -692,19 +656,13 @@ Number of Executions & 30 \\
 \end{tabular}
 \end{table}
 
-As a baseline execution, the experiment was repeated in a local computer.
-The specifications for the local computer are as follows, a
+As a baseline execution, the experiment was also conducted in a local computer. The specifications for the local computer are as follows, a
 2.2 Ghz Intel Core i7 processor, 16 GB of 1333 DDR3 memory, and Mac OS
-X 10.7.5 operating system. All the software was executed with a Python
-interpreter version 2.7.2 for 64-bit architectures. 
+X 10.7.5 operating system. All the experiments were executed in a Python
+interpreter (version 2.7.2) for 64-bit architectures. 
 
-The problem required considerable computational time: on the local
-computer each run took an average of 1567.36 seconds to find the
-optimal solution (see table~\ref{local}).
-The execution used a single
-core in the computer and CPU activity remained low for the whole
-length of the experiment. On the other hand, the parallel execution
-time was significantly lower even when only two workers were used,
+In this setting, the problem required considerable computational time: each run took an average of 1567.36 seconds to find the optimal solution (see table~\ref{local}).
+The execution used a single core in the computer and CPU activity remained low for the whole length of the experiment. On the other hand, the parallel execution time was significantly lower even when only two workers were used,
 clocking at less than 180s even in the worst cases.
 
 \begin{table}[t]
@@ -721,10 +679,9 @@ Average time in seconds & Average number of evaluations \\
 \end{tabular}
 \end{table}
 
-Average times for the configuration, using Realtime cores in PiCloud,
+Average times for the configuration using Realtime cores in PiCloud,
 are presented in Figure~\ref{fig:plot_time_real}. It can be seen that
-incrementing the number of workers reduced the time to solution, but only up to
-16 workers. With 28 workers time to solution did not improve. This is
+incrementing the number of workers reduced the time to solution, but only up to 16 workers. With 28 workers time to solution did not improve. This is
 related to the increase in the number of evaluations needed to find
 the optima, which is shown in Figure~\ref{fig:plot_evals_real}.
 This figure shows that the number of evaluations needed to find the
@@ -737,7 +694,7 @@ the number of workers increases, the number of individuals that remain
 in the population waiting to be replaced decreases. As there are fewer
 individuals in the population the probability of taking the same individuals
 when replacing a sample is increased. This problem is also reported
-by Merelo et al. in  \cite{sofea:naco}, where they present a PEA architecture with dissimilar workers.
+by Merelo et al. in  \cite{sofea:naco}, where they present a PEA architecture with heterogeneous workers.
 
 For other problems where the evaluation of individuals is not very
 demanding, the added cost of communication between EvoSpace and EvoWorkers can become a concern.
@@ -769,16 +726,13 @@ three main methods on the EvoWorkers from 30 runs of the 28 Realtime workers exp
 \end{figure*}
 
 
-\subsection{Discussion}
-
-
+%\subsection{Discussion}
 
 
 \section{Overcoming Problems and Limitations}
 \label{sec:overcome}
 The previous section showed how EvoSpace can be used to implement a distributed and asynchronous EA, with strong results on two benchmark tests.
-However, there are possible downsides to using a PEA such as EvoSpace, such as a low bandwith, abandoned work, system security and privacy, all of which are important issues.
-However, in what follows we focus on two critical issues, lost connections due to the unreliability of connected workers,
+However, there are possible downsides to using a PEA such as EvoSpace, these include low bandwidth, abandoned work, system security and privacy, all of which are important issues. However, in what follows we focus on two critical issues, lost work due to the unreliable EvoWorkers,
 and algorithm parametrization, a common issue with almost all EAs that is severely amplified in a PEA approach.
 
 \subsection{Unreliable Workers}
