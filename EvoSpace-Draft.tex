@@ -226,7 +226,7 @@ The second component consists of remote EvoWorkers, which are distributed proces
 EvoWorkers execute the actual evolutionary process, while EvoSpace only serves as a population repository.
 In summary, EvoWorkers extract a small subset of the population, and use it as the initial population for for a short evolutionary algorithm that is executed
 locally on the client machine. Afterwards, the evolved population from each EvoWorker is returned and reinserted into the EvoSpace container.
-The server-side Respawn process is used to alleviate possible problems that might occur during the search, such when the EvoSpace container
+The server-side ReInsert process is used to alleviate possible problems that might occur during the search, such when the EvoSpace container
 is emptied or when connections are lost with connected EvoWorker clients.
 Figure \ref{fig:evo} presents a graphical illustration of the main components and data-flow within EvoSpace.
 
@@ -338,11 +338,11 @@ thus recovering the population sample.
 
 \begin{algorithm}[t]
 \label{alg:remanager}
-\caption{The server-side \textbf{RespawnManager} process.}
+\caption{The server-side \textbf{ReInsertionManager} process.}
 \begin{algorithmic}
-\REQUIRE $ri \leftarrow$ respawn interval
+\REQUIRE $ri \leftarrow$ re-insertion interval
 \REQUIRE $min \leftarrow$ population size threshold
-\REQUIRE $rn \leftarrow$ number of samples to respawn
+\REQUIRE $rn \leftarrow$ number of samples to re-insert
 \REQUIRE $EvoSpace \leftarrow$ Reference to an Evospace Server
 \REQUIRE $wt \leftarrow$ wait interval
 \STATE $next_r \leftarrow +ri$
@@ -400,7 +400,7 @@ The EvoSpace service can interact with any language supporting json-rpc or ajax 
 \begin{figure*}[t]
     \centering
         \includegraphics[width=8cm]{evospace.eps}
-    \caption{Evospace Implementation architechture }
+    \caption{Evospace Implementation architecture }
     \label{fig:evospace}
 \end{figure*}
 
@@ -427,7 +427,7 @@ This section describes how EvoSpace can be configured to run on the Cloud using 
 Heroku (\url{http://heroku.com}) is a multi-language PaaS, supporting among others Ruby, Python and Java applications. The basic unit of composition on
 Heroku is a lightweight container running a single user-specified
 process. These containers, which they call {\em dynos}, can include web
-(only these can receive {\tt http} requests) and worker processes
+(only these can receive {\tt HTTP} requests) and worker processes
 (for instance processes used for database backups or task queues).
 These  process types are the prototypes from which one or more dynos 
 can be instantiated; if the number of requests to the server increases then 
@@ -812,10 +812,10 @@ return sample probability. In the experiments the lower probability was a 30\%
 chance of an EvoWorker returning a sample or an EvoWorker failing 70\% of the
 time; other return sample probabilities where 50\%, 70\% and 90\%. Experiments
 where carried out for 4, 8 and 16 EvoWorkers.
-Although supported by EvoSpace, time outs were not chosen as triggers
-to feed the population with new individuals, the population size was used instead.
+Although supported by EvoSpace, time intervals were not chosen as triggers
+to feed the population with new individuals, population size was used instead.
 The population size is a better threshold as it is more critical
-to GA performance, since when the population remaining in the pool was near starvation, the time to completion increased.
+to a GA performance, for instance in experiments where the population remaining in the pool was near starvation, the time to completion increased.
 For these experiments, the insertion of individuals was triggered when less than
 128 individuals remain in the population; the number of individuals fed to the
 population was 128, or 8 samples when the reinsertion algorithm was used.
@@ -866,7 +866,7 @@ characteristic convergence curves without substantial fitness drops.
 
 
 \subsection{Parametrization}
-In general, EAs are sometimes criticized by the large number of parameters they posses,
+In general, EAs are sometimes criticized by the large number of parameters they require,
 that for real world problems need to be tuned empirically or require additional heuristic processes to be included into the search to
 adjust the parameters automatically \cite{parameters,ss}.
 In the case of a PEAs, this issue is magnified since the underlying system architecture adds several degrees of freedom to the search process,
