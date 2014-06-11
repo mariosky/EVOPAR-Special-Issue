@@ -38,8 +38,8 @@
 %
 %\documentclass{svjour3}                     % onecolumn (standard format)
 %\documentclass[smallextended]{svjour3}     % onecolumn (second format)
-\documentclass{svjour3}        % twocolumn
-%
+%\documentclass{svjour3}        % twocolumn
+\documentclass[smallcondensed]{svjour3} %requested in Journal 
 \smartqed  % flush right qed marks, e.g. at end of proof
 %
 
@@ -58,7 +58,7 @@
 \renewcommand{\textfraction}{.01}
 \renewcommand{\bottomfraction}{.99}
 \renewcommand{\topfraction}{.99}
-
+\setcitestyle{square}
 \sloppy
 %
 \begin{document}
@@ -295,7 +295,7 @@ The EvoSpace architecture employs a client-server architecture with a shared mem
 On the server side, a process called \textbf{EvoSpaceServer} is executed, which creates and activates a new EvoSpace
 container object and waits for requests to execute interface methods; see Algorithm \ref{alg:evoserver}.
 Additionally, on the server two more processes are executed, these are: \textbf{InitializePopulation} and \textbf{ReInsertionManager} ;
-see algorithms \ref{alg:population}, \ref{alg:remanager}, and \ref{alg:evomanager}.
+see algorithms \ref{alg:population} and \ref{alg:remanager}.
 \textbf{InitializePopulation} is executed once, its goal is obvious, initialize the population by adding $popsize$ random
 individuals. The function that creates new individuals depends on the problem and representation used.
 \textbf{ReInsertionManager} is used as a failsafe process that periodically checks (every $wt$ seconds) if the size of the population in $ES$
@@ -992,14 +992,15 @@ Nevertheless, it is obvious that using a random heterogeneous parametrization ca
 %\end{acknowledgements}
 
 % BibTeX users please use one of
-\bibliographystyle{spbasic}      % basic style, author-year citations
-\bibliography{biblio}   % name your BibTeX data base
+%\bibliographystyle{spbasic}      % basic style, author-year citations
+\bibliographystyle{spphys} 
+
 
 
 %\bibliographystyle{spmpsci}      % mathematics and physical sciences
 %\bibliographystyle{spphys}       % APS-like style for physics
 
-
+\bibliography{biblio}   % name your BibTeX data base
 \end{document}
 % end of file template.tex
 
