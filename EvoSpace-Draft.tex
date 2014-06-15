@@ -63,7 +63,10 @@
 %
 \begin{document}
 
-\title{EvoSpace: A framework for Pool-Based Evolutionary Algorithms }
+\title{EvoSpace: A framework for Pool-Based Evolutionary Algorithms}
+% a framework that does what? That is the best for what? Is this a
+% publicity paper or something more? What are you going to say about
+% this framework? Introducing? Assessing? - JJ
 
 
 %\titlerunning{Short form of title}        % if too long for running head
@@ -108,7 +111,7 @@
 \maketitle
 
 \begin{abstract}
-Abstract goes here, 100 to 150 Words, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Maecenas non tortor orci. Nullam varius sollicitudin aliquam. Aenean at sapien tincidunt, bibendum massa a, gravida tortor. Quisque ut urna quis ante euismod scelerisque. Maecenas ornare nisi sed orci rutrum egestas. Donec facilisis consequat velit in molestie. Integer malesuada erat vitae risus volutpat hendrerit. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Nulla at nunc nibh. Donec sit amet porta magna, id posuere magna. In ultrices, risus a scelerisque facilisis, nulla dui iaculis enim, sit amet accumsan eros magna sed metus. Aenean quis justo id enim vehicula porttitor ac ullamcorper sem. 
+
 
 \keywords{Distributed Evolutionary Algorithms\and Heterogeneous Computing Platforms for Bioinspired Algorithms  \and Parameter Setting}
 % \PACS{PACS code1 \and PACS code2 \and more}
@@ -117,16 +120,38 @@ Abstract goes here, 100 to 150 Words, Lorem ipsum dolor sit amet, consectetur ad
 
 \section{Introduction}
 \label{sec:intro}
-Over the last decade, the landscape in computing technology has undergone a noticeable shift, moving away from isolated,
-serial and synchronous systems, towards distributed, ubiquitous and shared computing resources,
-exploiting network infrastructure and what is known as the Cloud computing model\cite{cloud, varia2008cloud}.
-This shift is not easy to make, it requires a dedicated and coordinated effort to port systems from one paradigm to another.
+Over the last decade,  %I'd change that to concrete dates. Nobody
+                       %knows $n$ years from now which decade was that
+                       %- JJ
+the landscape in computing technology has undergone a noticeable shift, moving away from isolated,
+serial, single-tenant and synchronous systems, towards distributed,
+ubiquitous, multi-tenant and shared computing resources,
+exploiting network infrastructure and what is known as the Cloud Computing model\cite{cloud, varia2008cloud}.
+This shift is not easy to make, %for whom? which shift? - JJ
+% several examples should be mentioned here, including one that refers
+% to the exploitation of computing resources available on the Internet
+% which is mentiones in Related work - JJ 
+ it requires a dedicated and coordinated effort to migrate systems
+ from one paradigm to another. % why do you have to migrate? You can
+                               % use both. I'd rather focus on the
+                               % need to adapt algorithms and
+                               % implementation methodologies - JJ
 This paper is part of an ever-growing effort in the field of evolutionary algorithms (EAs) to develop new software tools that exploit the nuances
-of distributed and asynchronous computational systems.
+of distributed, heterogeneous and asynchronous computational systems.
 In particular, this works centers around EvoSpace, a pool-based EA (PEA) that presents unique features and allows for non-traditional dynamics during
-an evolutionary search \cite{Evospace}.
+an evolutionary search \cite{Evospace}. % EvoSpace is a model? Is it
+                                % an implementation of a well-known model? You should make
+                                % clear which one you're talking about
+                                % here. 
 
-EvoSpace is built around a central repository or population store, where the population of an EA is kept following a tuple-space model \cite{linda}.
+EvoSpace is built around a central repository or population store,
+where the population of an EA is kept following a tuple-space model
+\cite{linda}.
+% don't tell, show first why this kind of things are needed. Then
+% explain what is a tuple-space model and then say that EvoSpace (once
+% again, the model or the implementation? Is EvoSpace  simply an
+% implementation of a tuple-space model adapted to evolutionary
+% algorithms? - JJ 
 Distributed clients, or workers, connect with the central store and take a subset of individuals over the network, on which they perform a partial evolutionary
 process, and then return the newly evolved subpopulation to the central store where the new individuals are reinserted, at which point they can be taken by other clients.
 Workers, besides being distributed across a network or over the Cloud, perform their tasks in an asynchronous manner, contrasting with the traditional
@@ -134,14 +159,23 @@ sequential and synchronous evolutionary model followed by most EAs.
 Indeed, new evolutionary models, such as the one presented with EvoSpace, allow the design of EAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{eiben}.
 
 This paper presents a detailed description of EvoSpace, building upon previous contributions made by the authors \cite{Evospace,FreeLunch},
-providing a comprehensive analysis of the system at both the conceptual and implementation levels, discussing how the system can be
+providing a comprehensive analysis of the system at both the
+conceptual and implementation levels, %these levels should very
+                                %clearly made apart - JJ
+ discussing how the system can be
 employed for standard search and optimization.
-Furthermore, several design issues are addressed in this paper, that make EvoSpace, as well as other PEAs, unique among the current EA landscape.
+Furthermore, several design issues are addressed in this paper, that
+make EvoSpace, as well as other PEAs,  % which ones? - JJ
+unique among the current EA landscape.
 Firstly, distributed systems have to account for unreliable clients, and how lost connections can compromise system performance,
 an issue that is experimentally evaluated in this paper.
 Secondly, by performing the evolutionary process over a number of distributed workers, the system's parameter space grows exponentially,
 thus greatly enhancing the undesirable feature of most EAs, that of tuning and parameterizing the algorithm for a new problem.
-This issue is addressed by using a simple, but efficient, parametrization method originally developed for Island model EAs \cite{fuku2}.
+This issue is addressed by using a simple, but efficient,
+parametrization method originally developed for Island model EAs
+\cite{fuku2}.
+% A small panorama of PEAs should be introduce here, showing the
+% different options and how pool-based models fit within them - - JJ
 
 The remainder of the paper proceeds as follows.
 First, a comprehensive discussion pertaining to related work is presented in Section \ref{sec:related}.
@@ -155,12 +189,28 @@ Finally, a summary of this work, conclusions and future work is given in Section
 
 \section{Related Work}
 \label{sec:related}
-Exploiting computing resources available on the Internet in the development of  new EAs has received substantial attention. Probably the most direct way to accomplish this is to run an EA over a web browser.
+Exploiting computing resources available on the Internet in the
+development of  new EAs %that's not mentioned in the motivation of the
+                        %paper. If that's the focus of EvoSpace, it
+                        %should be clarified - JJ 
+ has received substantial attention. Probably the most direct way to accomplish this is to run an EA over a web browser.
 For instance, Klein and Spector \cite{spector:2007} and Merelo et al. \cite{merelo:2008} developed EAs, distributing fitness function evaluations over the web using Javascript on the client, such an approach comes with the benefit that connected clients do not need to install any special software on their systems, since the code is directly executed on the browser.
 Another recent example is given in the work of Cotillon et al. \cite{cotillon:2012}, where they extend the concept of browser-based EAs on to the Android OS that can be
 executed on a large number of mobile devices.
-However, using the browser to run an EA comes at a cost, given that code runs far less efficiently.
-Therefore, probably the most successful examples of web-based EAs come from the area of interactive evolution,
+However, using the browser to run an EA comes at a cost, given that
+code runs far less efficiently. %That's not exactly true. Less
+                                %efficiently than what? JavaScript
+                                %interpreters are much faster today
+                                %than they were some time ago.  See
+                                %this
+                                %http://benchmarksgame.alioth.debian.org/u64/javascript.php
+                                %- jj
+Therefore, probably the most successful examples of web-based EAs come
+from the area of interactive evolution, % I don't think this is a good
+                                % introduction to the topic. The
+                                % browser is used in interactive
+                                % evolution just because most people
+                                % use it - JJ
 where users can visit a web page, browse candidate individuals and participate in the evolutionary process by evaluating individuals.
 An early example is presented by Langdon \cite{langdon:2004}, were users evaluate evolving agents expressed as fractal structures.
 Such a strategy can also be found in the more recent works of Secretan et al. \cite{picbreeder} and Clune and Lipson \cite{forms}, who respectively developed web applications for the interactive
@@ -188,10 +238,12 @@ FlexGP is probably the first large scale GP system that runs on the cloud, using
 Amazon EC2 with a socket-based client-server architecture.
 Other recent contributions include several tools and libraries designed to distribute an EA over the Cloud using a global queue of tasks and a Map-Reduce
 implementation \cite{FlexGP}.
+%  some systems mention my paper and could be relevant too http://scholar.google.es/scholar?cites=1489479980150345835&as_sdt=2005&sciodt=0,5&hl=es
 
 
 All of these works show great promise in extending EAs towards modern computing models.
-However, the current work is more closely related to what can be referred to as pool-based EAs or PEAs.
+However, the current work is more closely related to what can be
+referred to as pool-based EAs or PEAs. % And that is good because... - JJ
 Such approaches are related to more general systems such as A-Teams \cite{ateam}, a problem-solving multi-agent architecture based on a strongly cyclic network.
 G. Roy et al. \cite{roy:2009} also developed a multi-threaded system with a shared memory architecture that is executed within a distributed environment,
 where the evolving population of a GA is stored in a centralized pool or database. Bollini and Piastra \cite{bollini:1999} developed a system that decouples population storage from the evolutionary operations.
@@ -212,18 +264,34 @@ at a later stage of the search.
 Finally, by using the individual chromosome as ID, it appears problematic to extend SofEAs implementation to representations such as that of
 tree based GP, an extension that is easily accomplished with EvoSpace.
 
-\section{The EvoSpace System}
+\section{The EvoSpace System} %System or framework? Is EvoSpace a
+                              %framework implementing a model or
+                              %system? You should be more precise
+                              %about this - JJ
 \label{sec:evospace}
 Computational resources are offered as different types of services within the Cloud computing model \cite{cloud}.
 For example, infrastructure as a service (IaaS) such as Amazon's EC2, or Platform as a Service (PaaS) such as Google's App Engine.
-However, within Evolutionary Computation (EC), most algorithms have not been ported to the Cloud computing model.
+However, within Evolutionary Computation (EC), most algorithms have
+not been ported to the Cloud computing model. %These generic
+                                %statements should go to introduction
+                                %- JJ
 
 EvoSpace works as a population store for the development of EAs that are intended to run on the Cloud.
 Within the Cloud computing model, EvoSpace is conceived as a PaaS component, where users can create populations of individuals on demand
-without the need to install software or invest in additional hardware.
-EvoSpace is designed to be versatile, since the system that manages the population is decoupled from any particular EA.
+without the need to install software or invest in additional
+hardware. % So EvoSpace is an implementation of the tuple model + a
+          % controller that uses an evolutionary algorithm? - JJ
+EvoSpace is designed to be versatile, since the system that manages
+the population is decoupled from any particular EA. % So it's the
+                                % tuple model basically? Think about
+                                % the layers and API that EvoSpace
+                                % provides. What part of it is tuple
+                                % space? What is abstract? What is
+                                % specific? - JJ 
 Client processes, called EvoWorkers, dynamically and asynchronously interact with the EvoSpace store and perform the desired evolutionary processes.
-EvoWorkers can reside on remote clients or on the platform server if it is needed.
+EvoWorkers can reside on remote clients or on the platform server if
+it is needed. %EvoWorkers are part of EvoSpace? Part of the framework?
+              %- JJ 
 Software as a Service (SaaS) applications could also be developed using EvoSpace, where users could run entire experiments on the
 Cloud or implement interactive applications that are completely hosted by the service \cite{cloud}.
 EvoSpace is well suited for this kind of environment, since it can be accessed by any web enabled device and is designed to be robust to lost connections.
@@ -233,12 +301,20 @@ Figure \ref{fig:cloud} presents a conceptual diagram of how EvoSpace fits within
     \centering
         \includegraphics[width=12cm]{cloud2.eps}
     \caption{Conceptual diagram of the Cloud Computing Model and of how EvoSpace can fit within, using it as a PaaS or possible using it to develop a SaaS.}
-    \label{fig:cloud}
+    \label{fig:cloud} %this says that EvoSpace is basically a
+                      %population store, is that correct? Then, what
+                      %we are describing in this paper is something
+                      %completely different and more wide-ranging - JJ 
 \end{figure*}
 
 
 \subsection{System Design}
-Basically, EvoSpace consists of two main components.
+Basically, EvoSpace consists of two main components. % You can't keep
+                                % re-defining EvoSpace. Later on you
+                                % say it's based on the tuple space
+                                % model. And the graph above includes
+                                % only one EvoSpace box: population
+                                % store. 
 First, the EvoSpace container object, which resides on a central server and stores the evolving population.
 The second component consists of remote EvoWorkers, which are distributed processes that are executed on client machines connected to the server.
 EvoWorkers execute the actual evolutionary process, while EvoSpace only serves as a population repository.
@@ -256,11 +332,26 @@ Figure \ref{fig:evo} presents a graphical illustration of the main components an
     \label{fig:evo}
 \end{figure*}
 
+% In all these sections there's a lot of description but very little
+% fo the rationale behind them. Why did you do it this way? That
+% applies to sections above and below - JJ
 \subsubsection{The EvoSpace container}
-EvoSpace is based on the tuple space model, an associatively addressed memory space shared by several processes.
+\label{sss:container}
+%This should be included in the Fig 1. Is it the same as the
+%Population Store? In Fig. 2 EvoSpace is only the population store. 
+EvoSpace is based on %based on? an implementation of? If it¡'s based
+                     %on, what is the difference? 
+ the tuple space model, an associatively addressed
+%Wouldn't that be the "EvoSpace population store"? Isn't evospace the
+%whole enchilada? - JJ
+memory space shared by several processes. 
 A tuple space can be described as a distributed shared memory (DSM) abstraction, organized as a \emph{bag} of tuples.
 A tuple $t$ is the basic tuple space element, composed by one or more fields and corresponding values.
-In this model, the basic operations that a process can perform is to insert or withdraw tuples from the tuple space.
+In this model, the basic operations that a process can perform is to
+insert or withdraw tuples from the tuple space. % You could say here
+                                % that's it's different from SofEA,
+                                % since SofEA is an _array_ of tuples
+                                % that can't be accessed randomly - JJ 
 
 EvoSpace is composed by a set of objects $ES$ and a set of interface methods provided by a central server.
 For an EA system, objects correspond to individuals.
@@ -306,10 +397,16 @@ An \textbf{id} string that represents a unique identifier for each object.
 A \textbf{chromosome} string, which depends on the EA and the representation used.
 The \textbf{fitness} dictionary for each individual; allowing the system to store multiple fitness values for multi-objective or dynamic scenarios.
 A \textbf{parents} dictionary with identifiers of the individual(s) from which it was produced.
-Finally, a \textbf{GeneticOperator}  string that specifies the operator that produced it.
+Finally, a \textbf{GeneticOperator}  string that specifies the
+operator that produced it. %Are you using this for something? Why do
+                           %you need it - JJ ?
 
 
 \subsubsection{The EvoSpace Server Processes}
+
+%This is the key part of the system. Thoughts that went into it should
+%be explicit. In CouchDB we didn't use reinsertion, for instance. Why
+%do you do it here? Are you going to validate it in this paper? - JJ 
 The EvoSpace architecture employs a client-server architecture with a shared memory container.
 On the server side, a process called \textbf{EvoSpaceServer} is executed, which creates and activates a new EvoSpace
 container object and waits for requests to execute interface methods; see Algorithm \ref{alg:evoserver}.
@@ -411,15 +508,28 @@ an approach not taken in the present work.
 
 \subsubsection{Implementation}
 Figure~\ref{fig:evospace} shows a schematic diagram of the proposed architecture and the corresponding information flow with implementation details.
-Individuals are stored in-memory, using the Redis key-value database.
-Redis was chosen over a SQL-based management system, or other non-SQL alternatives, because it provides a hash based implementation of sets and queues which are natural data structures for the EvoSpace model. For example, selecting a random key from a set has a complexity of O(1). The logic of EvoSpace is implemented as a Python module exposed as a 
+Individuals are stored in-memory, using the Redis key-value
+database. 
+Redis was chosen over a SQL-based management system, or other non-SQL
+alternatives, because it provides a hash based implementation of sets
+and queues which are natural data structures for the EvoSpace
+bag-of-tuples models mentioned in Sec \ref{sss:container}. 
+model. For example, selecting a random key from a set has a complexity
+of O(1). The logic of EvoSpace is implemented as a Python module
+exposed as a  
 JSON-RPC Service using Cherrypy and Django HTTP frameworks.
-The EvoSpace service can interact with any language supporting json-rpc or ajax requests. The EvoSpace module and EvoWorker implementations in JavaScript and Python are available with a Simplified BSD License from \url{http://github.com/mariosky/EvoSpace}.
+The EvoSpace service % service? System? Implementation? You should
+                     % _really_ provide a conceptual model of
+                     % everything - JJ 
+can interact with any language supporting {\tt json-rpc} or Ajax requests. The EvoSpace module and EvoWorker implementations in JavaScript and Python are available with a Simplified BSD License from \url{http://github.com/mariosky/EvoSpace}.
 
 \begin{figure*}[t]
     \centering
         \includegraphics[width=8cm]{evospace.eps}
-    \caption{Evospace Implementation architecture }
+    \caption{Evospace Implementation architecture } %EvoSpace the
+                                %whole enchilada? EvoSpace the
+                                %population store? Why implementation
+                                %in Capitals? - JJ
     \label{fig:evospace}
 \end{figure*}
 
@@ -477,7 +587,9 @@ The code for the EvoWorkers implementation and experiment data is publicly avail
 
 \subsection{Experiments and Results}
 This section presents an experimental evaluation of EvoSpace using two well-known benchmarks for GAs;
-the K-trap problem \cite{trap} and the P-Peaks function \cite{Jong:PS97}.
+the K-trap problem \cite{trap} and the P-Peaks function
+\cite{Jong:PS97}. %To prove what? Validate the approach? Check
+                  %performance? Scalability? Both? - JJ
 
 \subsubsection{Experiment A: K-trap Function}
 This problem presents a multi-modal and deceptive fitness landscape.
@@ -535,7 +647,9 @@ that found the global optima.
 EvoSpace outperforms the standard GA on both functions, with a substantial increase in the number of optima found.
 
 \begin{table}[t]
-\caption{Different experimental configurations used to test the performance of EvoSpace.}
+\caption{Different experimental configurations used to test the
+  performance of EvoSpace.} %Why these? What do you want to evaluate?
+                            %Is it complete? 
 \centering
 \tiny
 \begin{tabular}{|l||c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
@@ -623,6 +737,8 @@ Figures show that run time is significantly reduced as the number of EvoWorkers 
 
 
 \subsubsection{Experiment B: P-Peaks}
+% Why this second experiment? Do you want to prove something you
+% haven't before?  - JJ 
 The P-Peaks problem was chosen because the problem and consequently the computing resources needed for the search can be appropriately scaled.
 Proposed by De Jong et al. in \cite{Jong:PS97}, as a generalization of the version in \cite{Jong:1990}, a
 P-Peaks instance is created by generating a set of P random N-bit
