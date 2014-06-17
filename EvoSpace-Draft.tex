@@ -45,7 +45,7 @@
 
 
 \usepackage{graphicx}
-\usepackage{palatino,epsfig,latexsym,natbib}
+\usepackage{palatino,epsfig,latexsym}
 \usepackage{amsmath,amsfonts,amssymb,color}
 \usepackage{graphicx}
 \usepackage{algorithm}
@@ -58,7 +58,7 @@
 \renewcommand{\textfraction}{.01}
 \renewcommand{\bottomfraction}{.99}
 \renewcommand{\topfraction}{.99}
-\setcitestyle{square}
+%\setcitestyle{square}
 \sloppy
 %
 \begin{document}
@@ -113,7 +113,7 @@
 \begin{abstract}
 
 
-\keywords{Distributed Evolutionary Algorithms\and Heterogeneous Computing Platforms for Bioinspired Algorithms  \and Parameter Setting}
+\keywords{Pool-based Evolutionary Algorithms \and Distributed Evolutionary Algorithms\and Heterogeneous Computing Platforms for Bioinspired Algorithms  \and Parameter Setting}
 % \PACS{PACS code1 \and PACS code2 \and more}
 % \subclass{MSC code1 \and MSC code2 \and more}
 \end{abstract}
@@ -179,8 +179,8 @@ parametrization method originally developed for Island model EAs
 
 The remainder of the paper proceeds as follows.
 First, a comprehensive discussion pertaining to related work is presented in Section \ref{sec:related}.
-Afterwards, the EvoSpace system is detailed in Section \ref{sec:evospace}, discussing system performance on some standard genetic algorithm (GA) benchmarks,
-and summarizing how EvoSpace can be leveraged for interactive applications.
+Afterwards, the EvoSpace system is detailed in Section \ref{sec:evospace}, and Section 
+\ref{sec:exp1} discusses system performance on some standard genetic algorithm (GA) benchmarks.
 Section \ref{sec:overcome} then deals with what might be considered as possible shortcomings of the EvoSpace approach,
 and proposes useful solutions to these issues which are validated experimentally.
 Finally, a summary of this work, conclusions and future work is given in Section \ref{sec:conclusions}.
@@ -584,14 +584,21 @@ The code for the EvoWorkers implementation and experiment data is publicly avail
 % \url{http://goo.gl/92tMFw}. % Github tiene su
                                 % propio acortador, pero también
                                 % tienes que anonimizarlo - JJ 
+The following sections present an experimental evaluation of EvoSpace using standard benchmark problems for GAs.
+In particular, EvoSpace is first evaluated based on performance and efficiency, compared to a canonical GA, this is done
+in Section \ref{sec:exp1}.
+Afterwards, specific issues with PEA algorithms are discussed and experimentally evaluated in Section \ref{sec:overcome},
+that illustrate how potential shortcomings are avoided with the EvoSpace framework.
 
-\subsection{Experiments and Results}
+
+\section{Experiments and Results}
+\label{sec:exp1}
 This section presents an experimental evaluation of EvoSpace using two well-known benchmarks for GAs;
 the K-trap problem \cite{trap} and the P-Peaks function
 \cite{Jong:PS97}. %To prove what? Validate the approach? Check
                   %performance? Scalability? Both? - JJ
 
-\subsubsection{Experiment A: K-trap Function}
+\subsection{Experiment A: K-trap Function}
 This problem presents a multi-modal and deceptive fitness landscape.
 Table \ref{tab:exp} summarizes the different experimental configurations tested in this work, based on the $K$ value, number of EvoWorkers, the sample size taken by each worker and the chromosome length used in each K-trap problem. The number of individuals in the EvoSpace repository is set to 1024 for 4-trap experiments and to 4096 for 5-trap.
 Moreover, Table \ref{tab:exp2} summarizes the shared parameters and algorithmic configuration.
@@ -626,9 +633,9 @@ In total, $50$ runs were performed of each experimental configuration.
     \caption{
     (a) Evolution of fitness for a run of experiment K; the plot shows how fitness evolves for each sample taken by the EvoWorkers.
     (b) Scatter plot, considering all runs, of the percentage of non-evaluated individuals from experiment K.
-    (c) Evolution of diversity for the basic GA on the 5-trap problem.
-    (d) Evolution of diversity in EvoSpace for experiment K.
-    Plots c-d are double y-axis plots, showing the mean diversity over all runs (dark line) and the number of runs $N$ used to compute the mean.}
+    (c) Evolution of diversity in EvoSpace for experiment K.
+    Plots c-d are double y-axis plots, showing the mean diversity over all runs (dark line) and the number of runs $N$ used to compute the mean.
+    (d) Evolution of diversity for the basic GA on the 5-trap problem.}
     \label{fig:others}
 \end{figure*}
 
@@ -739,6 +746,7 @@ Figures show that run time is significantly reduced as the number of EvoWorkers 
 \subsubsection{Experiment B: P-Peaks}
 % Why this second experiment? Do you want to prove something you
 % haven't before?  - JJ 
+
 The P-Peaks problem was chosen because the problem and consequently the computing resources needed for the search can be appropriately scaled.
 Proposed by De Jong et al. in \cite{Jong:PS97}, as a generalization of the version in \cite{Jong:1990}, a
 P-Peaks instance is created by generating a set of P random N-bit
@@ -1128,11 +1136,11 @@ Nevertheless, it is obvious that using a random heterogeneous parametrization ca
 
 % BibTeX users please use one of
 %\bibliographystyle{spbasic}      % basic style, author-year citations
-\bibliographystyle{spphys} 
+%\bibliographystyle{spphys} 
 
 
 
-%\bibliographystyle{spmpsci}      % mathematics and physical sciences
+\bibliographystyle{spmpsci}      % mathematics and physical sciences
 %\bibliographystyle{spphys}       % APS-like style for physics
 
 \bibliography{biblio}   % name your BibTeX data base
