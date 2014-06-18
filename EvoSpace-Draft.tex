@@ -114,30 +114,32 @@
 
 
 \keywords{Pool-based Evolutionary Algorithms \and Distributed Evolutionary Algorithms\and Heterogeneous Computing Platforms for Bioinspired Algorithms  \and Parameter Setting}
-% \PACS{PACS code1 \and PACS code2 \and more}
-% \subclass{MSC code1 \and MSC code2 \and more}
+
 \end{abstract}
 
 \section{Introduction}
 \label{sec:intro}
-Over the last decade,  %I'd change that to concrete dates. Nobody
+%Over the last decade,  %I'd change that to concrete dates. Nobody
                        %knows $n$ years from now which decade was that
                        %- JJ
-the landscape in computing technology has undergone a noticeable shift, moving away from isolated,
-serial, single-tenant and synchronous systems, towards distributed,
-ubiquitous, multi-tenant and shared computing resources,
-exploiting network infrastructure and what is known as the Cloud Computing model\cite{cloud, varia2008cloud}.
-This shift is not easy to make, %for whom? which shift? - JJ
+%the landscape in computing technology has undergone a noticeable shift, moving away from isolated,
+%serial, single-tenant and synchronous systems, towards distributed,
+%ubiquitous, multi-tenant and shared computing resources,
+%exploiting network infrastructure and what is known as the Cloud Computing model\cite{cloud, varia2008cloud}.
+%This shift is not easy to make, %for whom? which shift? - JJ
 % several examples should be mentioned here, including one that refers
 % to the exploitation of computing resources available on the Internet
 % which is mentiones in Related work - JJ 
- it requires a dedicated and coordinated effort to migrate systems
- from one paradigm to another. % why do you have to migrate? You can
+% it requires a dedicated and coordinated effort to migrate systems
+% from one paradigm to another. % why do you have to migrate? You can
                                % use both. I'd rather focus on the
                                % need to adapt algorithms and
                                % implementation methodologies - JJ
+
+In the early 1990s Foster and Kesselman defined the term Grid Computing \cite{Foster:1998} referring to an infrastructure designed to enable resource sharing from multiple locations, coordinated to reach a common goal. Early Grid applications were initially motivated by the particular demands of advanced science and engineering applications \cite{Baxevanidis:2002} sometimes seeking a low cost alternative to dedicated data centers. With the ubiquity of the Internet, nowadays researchers have access to vast computational resources, using diverse technologies, including cloud computing \cite{cloud, varia2008cloud}, peer-to-peer (P2P) \cite{Oram:2001}, and web service \cite{Curbera:2002} environments. This trend can favor Evolutionary Computation (EC) algorithms as these can be designed as parallel, distributed and asynchronous systems. Several Evolutionary Algorithms (EA) have been proposed that distribute the evolutionary process among heterogeneous devices, not only among controlled nodes in a in-house cluster but also in those out side the data center, in users' web browsers and smart phones or external cloud based virtual machines. This reach out approach allows researchers the use of low cost computational power that would not be available otherwise, but on the other hand, have the challenge to manage heterogeneous unreliable computing resources. Lost connections, low bandwidth communications, abandoned work, security and privacy issues are all common in these settings. 
 This paper is part of an ever-growing effort in the field of evolutionary algorithms (EAs) to develop new software tools that exploit the nuances
-of distributed, heterogeneous and asynchronous computational systems.
+of distributed, heterogeneous and asynchronous computational systems, also addressing some of their intrinsic problems.
+
 In particular, this works centers around EvoSpace, a pool-based EA (PEA) that presents unique features and allows for non-traditional dynamics during
 an evolutionary search \cite{Evospace}. % EvoSpace is a model? Is it
                                 % an implementation of a well-known model? You should make
