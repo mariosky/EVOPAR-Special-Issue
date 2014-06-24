@@ -202,36 +202,25 @@ Finally, a summary of this work, conclusions and future work is given in Section
 
 \section{Related Work}
 \label{sec:related}
-Exploiting computing resources available on the Internet in the
-development of  new EAs %that's not mentioned in the motivation of the
-                        %paper. If that's the focus of EvoSpace, it
-                        %should be clarified - JJ 
- has received substantial attention. Probably the most direct way to accomplish this is to run an EA over a web browser.
-For instance, Klein and Spector \cite{spector:2007} and Merelo et al. \cite{merelo:2008} developed EAs, distributing fitness function evaluations over the web using Javascript on the client, such an approach comes with the benefit that connected clients do not need to install any special software on their systems, since the code is directly executed on the browser.
-Another recent example is given in the work of Cotillon et al. \cite{cotillon:2012}, where they extend the concept of browser-based EAs on to the Android OS that can be
+In terms of parallelizing EAs, a large body of work has developed a variety of parallel models, with
+important practical and theoretical results \cite{parallelEA}.
+However, this work focuses on the goal of distributing an EA over a grid, cluster or computer network, a much less explored topic by the EA community.
+In particular, this section will contextualize the recently developed PEA class of algorithms, within the more general research area of distributed EAs,
+in order to correctly frame the contributions made in the proposed ESM.
+
+Probably the most direct way to distribute an EA over an heterogeneous collection of computing resources is to run an EA over the Internet using web browsers.
+For instance, Klein and Spector \cite{spector:2007} and Merelo et al. \cite{merelo:2008} developed EAs that distribute fitness function evaluations over the web
+using Javascript on the client, such an approach comes with the benefit that connected clients do not need to install any special software on their systems,
+since the code is directly executed on the browser.
+Another recent example is given by Cotillon et al. \cite{cotillon:2012}, they take the idea of browser-based EAs to the Android OS, which can be
 executed on a large number of mobile devices.
-However, using the browser to run an EA comes at a cost, given that
-code runs far less efficiently. %That's not exactly true. Less
-                                %efficiently than what? JavaScript
-                                %interpreters are much faster today
-                                %than they were some time ago.  See
-                                %this
-                                %http://benchmarksgame.alioth.debian.org/u64/javascript.php
-                                %- jj
-Therefore, probably the most successful examples of web-based EAs come
-from the area of interactive evolution, % I don't think this is a good
-                                % introduction to the topic. The
-                                % browser is used in interactive
-                                % evolution just because most people
-                                % use it - JJ
-where users can visit a web page, browse candidate individuals and participate in the evolutionary process by evaluating individuals.
-An early example is presented by Langdon \cite{langdon:2004}, were users evaluate evolving agents expressed as fractal structures.
-Such a strategy can also be found in the more recent works of Secretan et al. \cite{picbreeder} and Clune and Lipson \cite{forms}, who respectively developed web applications for the interactive
-evolution of 2D images and 3D sculptures using a neuro-evolution algorithm.
-Indeed, a variant of EvoSpace, called EvoSpace-i, has also been developed explicitly for these type of interactive evolution of artistic artifacts \cite{Musart,Fire}.
+Other common examples of web-based EAs come from the area of interactive evolution, where users visit a web page, browse candidate individuals
+and participate in the evolutionary process by evaluating individuals in artistic design problems\cite{langdon:2004,picbreeder,Musart,Fire}.
+However, in these works the EA process is not necessarily executed on the browsers themselves, they are mostly used as practical interfaces to obtain
+user input, while the actual search process is performed and managed on a central server.
 
 
-Other researchers have exploited other network based technologies to distribute an EA.
+Other researchers have exploited other network-based technologies to distribute an EA over a set of computing nodes.
 For instance, Cole et al. \cite{MilkyWay} uses the popular Berkeley Open Infrastructure for Network Computing (BOINC) to distribute an evolutionary algorithm,
 using the volunteer computing model, where connected clients share idle CPU cycles with a research project.
 Another example is the work of Fern\'andez-de-Vega et al. \cite{nc}, who also distributes multiple EA runs using a volunteer computing network through BOINC.
@@ -251,17 +240,30 @@ FlexGP is probably the first large scale GP system that runs on the cloud, using
 Amazon EC2 with a socket-based client-server architecture.
 Other recent contributions include several tools and libraries designed to distribute an EA over the Cloud using a global queue of tasks and a Map-Reduce
 implementation \cite{FlexGP}.
-%  some systems mention my paper and could be relevant too http://scholar.google.es/scholar?cites=1489479980150345835&as_sdt=2005&sciodt=0,5&hl=es
 
 
 All of these works show great promise in extending EAs towards modern computing models.
-However, the current work is more closely related to what can be
-referred to as pool-based EAs or PEAs. % And that is good because... - JJ
-Such approaches are related to more general systems such as A-Teams \cite{ateam}, a problem-solving multi-agent architecture based on a strongly cyclic network.
-G. Roy et al. \cite{roy:2009} also developed a multi-threaded system with a shared memory architecture that is executed within a distributed environment,
-where the evolving population of a GA is stored in a centralized pool or database. Bollini and Piastra \cite{bollini:1999} developed a system that decouples population storage from the evolutionary operations.
+However, distributing an EA over a network does not necessarily imply that the underlying search process is modified in any substantial way.
+In other words, in terms of the search the EA might perform the exact same process, even if it is done more efficiently through distributed computing technologies.
+On the other hand, the current work deals with a novel EA model called pool-based EAs or PEAs.
+What is particularly interesting in a PEA, is that they are explicitly designed to exploit a distributed computing framework, while also employing
+an EA model that incorporates non-traditional search dynamics.
+In a PEA, the evolving population is stored in a centralized repository or store, while distributed clients asynchronously extract a subset
+of individuals and return a new subset of individuals after performing the actual search operators.
+PEAs are closely related with Island-Model EAs (IMEA) \cite{cantu} with several noteworthy differences \cite{merelo:island}.
+For instance, an IMEA presents a fixed topological structure, with a predefined interaction protocol among each evolving population,
+this leads to a coordinated, or even synchronized, interaction between the islands.
+On the other hand, a PEA does not consider such a structure, the interactions between workers is much less structured or controlled.
+Second, in an IMEA each island represents an individual evolutionary process, sharing some of the same dynamics as standard EAs.
+In a PEA, however, only a single centralized population exists, samples of which are distributed across workers, but ultimately combined once again
+in the centralized pool.
 
-The most recent work that is comparable with EvoSpace is the SofEA algorithm proposed by Merelo et al. \cite{sofea1,sofea2}.
+PEAs are related to more general systems, such as the A-Teams system proposed in \cite{ateam}, a problem-solving multi-agent architecture based on a strongly cyclic network.
+G. Roy et al. \cite{roy:2009} also developed a multi-threaded system with a shared memory architecture that is executed within a distributed environment,
+where the evolving population of a GA is stored in a centralized pool or database.
+Another example is developed by Bollini and Piastra \cite{bollini:1999}, who proposed a system that decouples population storage from the actual evolutionary operations.
+
+However, the most complete PEA model proposed thus far is the SofEA algorithm by Merelo et al. \cite{sofea1,sofea2}.
 SofEA is an evolutionary algorithm mapped to a central CouchDB object store. It provides an asynchronous and distributed search process,
 where the four main evolutionary operators are completely decoupled from the evolving population; these are: Initialization, Evaluation, Reproduction and Elimination.
 The last three processes can be executed in any order and in any given time step, and more than a single Evaluator and Reproducer have been executed concurrently
@@ -1034,13 +1036,13 @@ a comprehensive survey on this topic is given in \cite{parameters}.
 A noteworthy contribution is made by Cant\'u Paz, who addresses the problem of deriving theoretical models of the effects
 of parameters related to population size and migration in Island-Model EAs (IMEA) \cite{cantu}.
 However, it does not cover the effects of all possible parameters, or the intricacies of a PEA algorithm.
-Here, we would stress some important differences between PEAs and IMEAs.
-First, an IMEA presents a fixed topological structure, with a predefined interaction protocol among each evolving population,
-this leads to a coordinated, or even synchronized, interaction between the islands.
-On the other hand, a PEA does not consider such a structure, the interactions between workers is much less structured or controlled.
-Second, in an IMEA each island represents an individual evolutionary process, sharing some of the same dynamics as standard EAs.
-In a PEA, however, only a single centralized population exists, samples of which are distributed across workers, but ultimately combined once again
-in the centralized pool.
+%Here, we would stress some important differences between PEAs and IMEAs.
+%First, an IMEA presents a fixed topological structure, with a predefined interaction protocol among each evolving population,
+%this leads to a coordinated, or even synchronized, interaction between the islands.
+%On the other hand, a PEA does not consider such a structure, the interactions between workers is much less structured or controlled.
+%Second, in an IMEA each island represents an individual evolutionary process, sharing some of the same dynamics as standard EAs.
+%In a PEA, however, only a single centralized population exists, samples of which are distributed across workers, but ultimately combined once again
+%in the centralized pool.
 Therefore, some of the well-known insights derived from IMEA research (regarding, for example, migration policies) are not necessarily relevant in the PEA framework.
 
 Therefore, the recent approach called Randomized Parameter Setting Strategy (RPSS) \cite{fuku1,fuku2} is tested with EvoSpace in this section.
