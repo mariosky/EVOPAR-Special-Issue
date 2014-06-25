@@ -162,29 +162,26 @@ This work centers around the EvoSpace Model (ESM), a conceptual framework for th
 
 % Aqui se explica brevemente el ESM
 A brief description of the ESM is presented next.
-The EvoSpace Model has two main components: A set of EvoWorkers and a single instance of an EvoStore. An EvoStore manages a set of objects representing individuals in a EA population. As it happens in the basic PEA described earlier, EvoWorkers pull a subset of individuals from the EvoStore, following the tuple space model, pulled individuals are removed from the EvoStore and are not available for other workers. There are two differences with the pull operation found in a  tuple-space. The first is that individuals are removed from the EvoSpace as a random subset or sample of the population, this differs from the tuple-space paradigm which removes only those tuples matching a pattern-based query. Another difference found in EvoStore is the inclusion of a re-insert operation; which allows a sample once removed from the population to be reinserted on-demand. Intuitively this can be seen as if individuals once removed from the EvoStore changed to a phantom state, and if needed they could be brought back to life. Once an EvoWorker has a sample to work on, it can perform a partial evolutionary process, and then return the newly evolved subpopulation to the EvoStore where the new individuals are inserted, at which point they can be taken by other clients. They can be replaced or not 
-%resaltar diferencias
-Workers, besides being distributed across a network or over the Cloud, perform their tasks in an asynchronous manner, contrasting with the traditional
-sequential and synchronous evolutionary model followed by most EAs.
+The EvoSpace Model has two main components: A set of EvoWorkers and a single instance of an EvoStore. An EvoStore manages a set of objects representing individuals in a EA population. As it happens in the basic PEA described earlier, EvoWorkers pull a subset of individuals from the EvoStore, following the tuple space model, pulled individuals are removed from the EvoStore and are not available for other workers. There are two differences with the pull operation found in a  tuple-space. The first is that individuals are removed from the EvoSpace as a random subset or sample of the population, this differs from the tuple-space paradigm which removes only those tuples matching a pattern-based query. Another difference found in EvoStore is the inclusion of a re-insert operation; which allows a sample once removed from the population to be reinserted on-demand. Intuitively this can be seen as if individuals once removed from the EvoStore changed to a phantom state, and if needed they could be brought back to life. Once an EvoWorker has a sample to work on, it can perform a partial evolutionary process, and then return the newly evolved subpopulation to the EvoStore where the new individuals are inserted, at which point they can be taken by other clients. EvoWorkers could also just change the state of individuals and then return the sample. 
 
-Indeed, new evolutionary models, such as the one presented with EvoSpace, allows the design of PEAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{eiben}.
+EvoWorkers, perform their tasks in an asynchronous manner, contrasting with the traditional sequential and synchronous evolutionary model followed by most EAs. Indeed, new evolutionary models, such as the one presented with EvoSpace, allow the design of PEAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{eiben}.
 
-This paper presents a detailed description of EvoSpace, building upon previous contributions made by the authors \cite{Evospace,FreeLunch},
+This paper presents a detailed description of the EvoSpace Model, building upon previous contributions made by the authors \cite{Evospace,FreeLunch},
 providing a comprehensive analysis of the system at both the
 conceptual and implementation levels, %these levels should very
                                 %clearly made apart - JJ
-%Menionar el modelo 
-%Se describe una implemantación real
-
- discussing how the system can be
-employed for standard search and optimization.
+discussing how the model can be
+employed for implementing a standard search and optimization.
 Furthermore, several design issues are addressed in this paper, that
 make EvoSpace, as well as other PEAs,  % which ones? - JJ
 unique among the current EA landscape.
+
 Firstly, distributed systems have to account for unreliable clients, and how lost connections can compromise system performance,
 an issue that is experimentally evaluated in this paper.
+
 Secondly, by performing the evolutionary process over a number of distributed workers, the system's parameter space grows exponentially,
 thus greatly enhancing the undesirable feature of most EAs, that of tuning and parameterizing the algorithm for a new problem.
+
 This issue is addressed by using a simple, but efficient,
 parametrization method originally developed for Island model EAs
 \cite{fuku2}.
@@ -193,10 +190,14 @@ parametrization method originally developed for Island model EAs
 
 The remainder of the paper proceeds as follows.
 First, a comprehensive discussion pertaining to related work is presented in Section \ref{sec:related}.
-Afterwards, the EvoSpace system is detailed in Section \ref{sec:evospace}, and Section 
-\ref{sec:exp1} discusses system performance on some standard genetic algorithm (GA) benchmarks.
+Afterwards, the EvoSpace model is detailed in Section \ref{sec:evospace}, and Section \ref{sec:exp1} discusses two EvoSpace model implementations, first a multi-process implementation where diversity and scalability is tested and a second implementation using a cloud based architecture where the system's performance and communication costs are evaluated on some standard genetic algorithm (GA) benchmarks.
+
 Section \ref{sec:overcome} then deals with what might be considered as possible shortcomings of the EvoSpace approach,
 and proposes useful solutions to these issues which are validated experimentally.
+%%%
+%%%  Overcome.. no son shortcomings !!  
+%%% 
+ 
 Finally, a summary of this work, conclusions and future work is given in Section \ref{sec:conclusions}.
  
 
