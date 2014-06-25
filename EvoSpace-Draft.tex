@@ -137,48 +137,47 @@
                                % implementation methodologies - JJ
 
 In the early 1990s Foster and Kesselman defined the term Grid Computing \cite{Foster:1998} referring to an infrastructure designed to enable resource sharing from multiple locations, coordinated to reach a common goal. Early Grid applications were initially motivated by the particular demands of advanced science and engineering applications \cite{Baxevanidis:2002} seeking a low cost alternative to dedicated data centers or clusters. What distinguished grid computing from conventional high performance computing systems such as cluster computing was that grids tend to be more loosely coupled, heterogeneous, and geographically dispersed \cite{Foster:1998}. With the ubiquity of the Internet, nowadays researchers have access to vast  computational resources which are disperse and available using a diversity of technologies, including cloud computing \cite{cloud, varia2008cloud}, peer-to-peer (P2P) networks  \cite{Oram:2001}, and web services \cite{Curbera:2002}. On the other hand, Evolutionary Computation (EC) researchers demand powerful computational resources as EC algorithms are applied to domains with computationally intensive requirements. EC algorithms can benefit from grid computing infrastructures as these can be designed as parallel, distributed and asynchronous systems. Several Evolutionary Algorithms (EAs) have been proposed that distribute the evolutionary process among heterogeneous devices, not only among controlled nodes in a in-house cluster but also in those out side the data center, in users' web browsers and smart phones or external cloud based virtual machines. This reach out approach allows researchers the use of low cost computational power that would not be available otherwise, but on the other hand, have the challenge to manage heterogeneous and unreliable computing resources. Lost connections, low bandwidth communications, abandoned work, security and privacy issues are all common in these settings. 
-This paper is part of an ever-growing effort in the field of EAs to develop new software tools use an opportunistic approach, exploiting freely available or volunteer computing resources. To enable this arbitrary plug-in and plug-out of computational resources for distributed EAs, several pool-based architectures have been proposed \cite{PoolvsIsland}. The basic idea behind Pool-based EAs (PEAs) is that all the participants of the distributed algorithm share a common population stored in a central server, participants pull a set of tasks or data from the server, perform some work and then return the results back to the server. Some of the problems found in PEAs are 
-(i) Redundancy of Work, two or more participants often take the same tasks or data to work on, thus wasting resources. (ii) Lost Work, a participant does not return the result back to the server. (iii) Empty Population Pool, there are no more tasks or data in the server, participants must wait for tasks or data to be available. (iv) Asynchronous Behavior, (v) Parametrization, (vi) Single Point of Failure, (vii) Scalability of Server,         
+This paper is part of an ever-growing effort in the field of EAs to develop algorithms suited for taking an opportunistic approach to computing, allowing the exploitation of services freely available on the Internet as well as volunteer computing resources. To enable this arbitrary plug-in and plug-out of computational resources for distributed EAs, several pool-based architectures have been proposed \cite{PoolvsIsland}. The basic idea behind Pool-based EAs (PEAs) is that all the participants of the distributed algorithm share a common population stored in a central server, participants pull a set of tasks or data from the server, perform some work and then return the results back to the server. A PEAs differs from an island-based system mainly on the responsibilities assigned to the server. The server in an island-based system is usually responsible of keeping track of the migration of individuals from one island to another. The server must know in advance the available participants in order to send the immigrant individuals. In PEAs on the other hand, the server only receives stateless requests from participants in a pull based interaction. Although PEAs are capable for ad-hoc collaboration of computing resources, there still some issues to have in consideration:
+\begin{itemize}
+	\item Redundancy of Work. Two or more participants often take the same tasks or data to work on, thus wasting resources.  
+	\item Lost Work. A participant does not return the result back to the server.
+	\item Empty Population Pool. This happens when there are no more tasks or data in the server, participants must wait for tasks or data to be available. 
+	\item Parametrization. The number of parameters is incremented, for instance the number of tasks pulled by each participant, the size of the pool,   the amount of time the server waits for a result or if it waits at all. Participants could also have internal parameters and then there is the decision if they are set homogeneously or heterogeneously.
+	\item Single Point of Failure. Conceptually there is a single central server managing the pool.  If implemented as-is, the system will have a single point of failure; additional architectural components could be needed when implementing systems with high availability requirements.  	
+	\item Asynchronous Behavior. Asynchronous systems could be hard to implement.
+\end{itemize}
+        
+Some of the issues mentioned above have been addressed previously by early research in distributed systems, a particular implementation based on shared objects was proposed by Gelertner and Carriero \cite{linda}, the model brought the concept of a tuple space, a repository of tuples that can be accessed concurrently. This tuple space also functions as the communication and coordination mechanism  between processes, as they interact with each other using these shared tuples. A distinctive characteristic of this model is that in order to change the state of a tuple, processes need to atomically remove the tuple from the space and place it back only after it has been released; this inherently provides mutual exclusion as no other process can access a tuple while it is been used. A benefit this characteristic could bring to pool-based algorithms is that forbids two clients from pulling the same work. 
 
-An early paradigm for the development of distributed applications based on shared objects was proposed by Gelertner and Carriero \cite{linda}, the model brought the concept of a tuple space a repository of tuples that can be accessed concurrently. This tuple space also functions as the communication and coordination mechanism  between processes, as they interact with each other using these shared tuples. A distinctive characteristic of this model is that in order to change the state of tuples, processes need to atomically remove the tuple from the space and place it back only after it has been released; this inherently provides mutual exclusion as no other process can access a tuple while it is been used. The tuple space model has been used to commercially in financial services and telco industries in low-latency, high-performance applications []. 
-
-
-
-% Another benefit this characteristic can bring to pool-based algorithms is that forbids two clients from pulling the same work. 
-
-
-This work centers around the EvoSpace Model (ESM), a pool-based EA (PEA)  
- 
-
-This work centers around the EvoSpace Model (ESM), a Pool-based EA (PEA)  \cite{Evospace} built around a central repository or population store,
-where the population of an EA is kept following a tuple-space model \cite{linda}.  The ESM is not simply an implementation of a tuple-space model adapted to evolutionary algorithm, 
-
- % EvoSpace is a model? Is it
+This work centers around the EvoSpace Model (ESM), a conceptual framework for the development of Pool-based EAs \cite{Evospace}. The model is built conceptually around a central repository or population store, incorporating some of the principles of the tuple-space model and adding additional features suited for PEAs development. The ESM is not simply an implementation of a tuple-space model adapted to evolutionary algorithm, as additional concepts are proposed that tackle some of the issues listed above.
+% EvoSpace is a model? Is it
                                 % an implementation of a well-known model? You should make
                                 % clear which one you're talking about
                                 % here. 
-
-
-
-The EvoSpace model is built around a central repository or population store,
-where the population of an EA is kept following a tuple-space model
-\cite{linda}. 
-
 % don't tell, show first why this kind of things are needed. Then
 % explain what is a tuple-space model and then say that EvoSpace (once
 % again, the model or the implementation? Is EvoSpace  simply an
 % implementation of a tuple-space model adapted to evolutionary
 % algorithms? - JJ 
-Distributed clients, or workers, connect with the central store and take a subset of individuals over the network, on which they perform a partial evolutionary
-process, and then return the newly evolved subpopulation to the central store where the new individuals are reinserted, at which point they can be taken by other clients.
+
+% Aqui se explica brevemente el ESM
+A brief description of the ESM is presented next.
+The EvoSpace Model has two main components: A set of EvoWorkers and a single instance of an EvoStore. An EvoStore manages a set of objects representing individuals in a EA population. As it happens in the basic PEA described earlier, EvoWorkers pull a subset of individuals from the EvoStore, as in a tuple space, pulled individuals are removed from the EvoStore and are not available for other workers. There are two differences with the pull operation in a tuple-space. The first is that individuals removed from the EvoSpace are a random subset or sample from the population, this differs from the tuple-space paradigm which removes only those tuples matching a pattern (query).   
+
+on which they perform a partial evolutionary process, and then return the newly evolved subpopulation to the central store where the new individuals are reinserted, at which point they can be taken by other clients. 
+%resaltar diferencias
 Workers, besides being distributed across a network or over the Cloud, perform their tasks in an asynchronous manner, contrasting with the traditional
 sequential and synchronous evolutionary model followed by most EAs.
-Indeed, new evolutionary models, such as the one presented with EvoSpace, allow the design of EAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{eiben}.
+
+Indeed, new evolutionary models, such as the one presented with EvoSpace, allows the design of PEAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{eiben}.
 
 This paper presents a detailed description of EvoSpace, building upon previous contributions made by the authors \cite{Evospace,FreeLunch},
 providing a comprehensive analysis of the system at both the
 conceptual and implementation levels, %these levels should very
                                 %clearly made apart - JJ
+%Menionar el modelo 
+%Se describe una implemantación real
+
  discussing how the system can be
 employed for standard search and optimization.
 Furthermore, several design issues are addressed in this paper, that
