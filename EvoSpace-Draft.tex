@@ -197,12 +197,8 @@ First, a comprehensive discussion pertaining to related work is presented in Sec
 Afterwards, the ESM is detailed in Section \ref{sec:evospace}, and Section \ref{sec:exp1} discusses two example implementations, first a multi-process implementation where diversity and scalability are tested, and a second implementation using a cloud based architecture where the system's performance and communication costs are evaluated on standard genetic algorithm (GA) benchmarks.
 Section \ref{sec:overcome} deals with two general issues associated with PEAs in general and ESM in particular,
 and proposes useful solutions which are validated experimentally.
-%%%
-%%%  Overcome.. no son shortcomings !!  
-%%% 
 Finally, a summary of this work, conclusions and future work is given in Section \ref{sec:conclusions}.
  
-
 
 \section{Related Work}
 \label{sec:related}
@@ -212,7 +208,7 @@ However, this work focuses on the goal of distributing an EA over a grid, a much
 In particular, this section will contextualize the recently developed PEA class of algorithms, within the more general research area of distributed EAs,
 in order to correctly frame the contributions made in the proposed ESM.
 
-Probably the most unintrusive way to distribute an EA over an heterogeneous collection of computing resources is to run an EA over the Internet using web browsers.
+Probably the most unobtrusive way to distribute an EA over an heterogeneous collection of computing resources is to run an EA over the Internet using web browsers.
 For instance, Klein and Spector \cite{spector:2007} and Merelo et al. \cite{merelo:2008} developed EAs that distribute fitness function evaluations over the web
 using Javascript on the client, such an approach comes with the benefit that connected clients do not need to install any special software on their systems,
 since the code is directly executed on the browser.
@@ -288,105 +284,95 @@ tree based GP, an extension that is easily accomplished with EvoSpace.
                               %system? You should be more precise
                               %about this - JJ
 \label{sec:evospace}
-Computational resources are offered as different types of services within the Cloud computing model \cite{cloud}.
-For example, infrastructure as a service (IaaS) such as Amazon's EC2, or Platform as a Service (PaaS) such as Google's App Engine.
-However, within Evolutionary Computation (EC), most algorithms have
-not been ported to the Cloud computing model. %These generic
+%Computational resources are offered as different types of services within the Cloud computing model \cite{cloud}.
+%For example, infrastructure as a service (IaaS) such as Amazon's EC2, or Platform as a Service (PaaS) such as Google's App Engine.
+%However, within Evolutionary Computation (EC), most algorithms have
+%not been ported to the Cloud computing model. %These generic
                                 %statements should go to introduction
                                 %- JJ
 
-EvoSpace works as a population store for the development of EAs that are intended to run on the Cloud.
-Within the Cloud computing model, EvoSpace is conceived as a PaaS component, where users can create populations of individuals on demand
-without the need to install software or invest in additional
-hardware. % So EvoSpace is an implementation of the tuple model + a
+%EvoSpace works as a population store for the development of EAs that are %intended to run on the Cloud.
+%Within the Cloud computing model, EvoSpace is conceived as a PaaS component, where users can create populations of individuals on demand
+%without the need to install software or invest in additional
+%hardware. % So EvoSpace is an implementation of the tuple model + a
           % controller that uses an evolutionary algorithm? - JJ
-EvoSpace is designed to be versatile, since the system that manages
-the population is decoupled from any particular EA. % So it's the
+%EvoSpace is designed to be versatile, since the system that manages
+%the population is decoupled from any particular EA. % So it's the
                                 % tuple model basically? Think about
                                 % the layers and API that EvoSpace
                                 % provides. What part of it is tuple
                                 % space? What is abstract? What is
                                 % specific? - JJ 
-Client processes, called EvoWorkers, dynamically and asynchronously interact with the EvoSpace store and perform the desired evolutionary processes.
-EvoWorkers can reside on remote clients or on the platform server if
-it is needed. %EvoWorkers are part of EvoSpace? Part of the framework?
+%Client processes, called EvoWorkers, dynamically and asynchronously interact with the EvoSpace store and perform the desired evolutionary processes.
+%EvoWorkers can reside on remote clients or on the platform server if
+%it is needed. %EvoWorkers are part of EvoSpace? Part of the framework?
               %- JJ 
-Software as a Service (SaaS) applications could also be developed using EvoSpace, where users could run entire experiments on the
-Cloud or implement interactive applications that are completely hosted by the service \cite{cloud}.
-EvoSpace is well suited for this kind of environment, since it can be accessed by any web enabled device and is designed to be robust to lost connections.
-Figure \ref{fig:cloud} presents a conceptual diagram of how EvoSpace fits within the Cloud computing model.
+%Software as a Service (SaaS) applications could also be developed using EvoSpace, where users could run entire experiments on the
+%Cloud or implement interactive applications that are completely hosted by the service \cite{cloud}.
+%EvoSpace is well suited for this kind of environment, since it can be accessed by any web enabled device and is designed to be robust to lost connections.
+%Figure \ref{fig:cloud} presents a conceptual diagram of how EvoSpace fits within the Cloud computing model.
 
-\begin{figure*}[t]
-    \centering
-        \includegraphics[width=12cm]{cloud2.eps}
-    \caption{Conceptual diagram of the Cloud Computing Model and of how EvoSpace can fit within, using it as a PaaS or possible using it to develop a SaaS.}
-    \label{fig:cloud} %this says that EvoSpace is basically a
+%\begin{figure*}[t]
+%    \centering
+%        \includegraphics[width=12cm]{cloud2.eps}
+%    \caption{Conceptual diagram of the Cloud Computing Model and of how EvoSpace can fit within, using it as a PaaS or possible using it to develop a SaaS.}
+%    \label{fig:cloud} %this says that EvoSpace is basically a
                       %population store, is that correct? Then, what
                       %we are describing in this paper is something
                       %completely different and more wide-ranging - JJ 
-\end{figure*}
+%\end{figure*}
 
 
-\subsection{System Design}
-Basically, EvoSpace consists of two main components. % You can't keep
+%\subsection{System Design}
+In this section the ESM is presented in detail. The EvoSpace model is a conceptual framework for the development of pool-based EAs. Figure \ref{fig:evo} shows a graphical illustration of the main components and data-flow within the EvoSpace model. The main components are: Individuals, the EvoStore population container and EvoWorkers. An optional Re-Insertion  Manager component is also presented. Each of this components is defined next subsections.
+
+%Basically, EvoSpace consists of two main components. % You can't keep
                                 % re-defining EvoSpace. Later on you
                                 % say it's based on the tuple space
                                 % model. And the graph above includes
                                 % only one EvoSpace box: population
                                 % store. 
-First, the EvoSpace container object, which resides on a central server and stores the evolving population.
-The second component consists of remote EvoWorkers, which are distributed processes that are executed on client machines connected to the server.
-EvoWorkers execute the actual evolutionary process, while EvoSpace only serves as a population repository.
-In summary, EvoWorkers extract a small subset of the population, and use it as
-the initial population for a short evolutionary algorithm that is executed
-locally on the client machine. Afterwards, the evolved population from each EvoWorker is returned and reinserted into the EvoSpace container.
-The server-side ReInsert process is used to alleviate possible problems that might occur during the search, such when the EvoSpace container
-is emptied or when connections are lost with connected EvoWorker clients.
-Figure \ref{fig:evo} presents a graphical illustration of the main components and data-flow within EvoSpace.
+
+
+%First, the EvoSpace container object, which resides on a central server and stores the evolving population.
+%The second component consists of remote EvoWorkers, which are distributed processes that are executed on client machines connected to the server.
+%EvoWorkers execute the actual evolutionary process, while EvoSpace only serves as a population repository.
+%In summary, EvoWorkers extract a small subset of the population, and use it as the initial population for a short evolutionary algorithm that is executed locally on the client machine. Afterwards, the evolved population from each EvoWorker is returned and reinserted into the EvoSpace container.
+%The server-side ReInsert process is used to alleviate possible problems that might occur during the search, such when the EvoSpace container
+%is emptied or when connections are lost with connected EvoWorker clients.
+%Figure \ref{fig:evo} presents a graphical illustration of the main components and data-flow within EvoSpace.
 
 \begin{figure*}[t]
     \centering
         \includegraphics[width=12cm]{evospaceExample.eps}
-    \caption{Main components and dataflow within EvoSpace.}
+    \caption{Main components and dataflow within the EvoSpace model.}
     \label{fig:evo}
 \end{figure*}
 
 % In all these sections there's a lot of description but very little
 % fo the rationale behind them. Why did you do it this way? That
 % applies to sections above and below - JJ
-\subsubsection{The EvoSpace container}
+\subsubsection{The EvoStore container}
 \label{sss:container}
 %This should be included in the Fig 1. Is it the same as the
 %Population Store? In Fig. 2 EvoSpace is only the population store. 
-EvoSpace is based on %based on? an implementation of? If it¡'s based
-                     %on, what is the difference? 
- the tuple space model, an associatively addressed
-%Wouldn't that be the "EvoSpace population store"? Isn't evospace the
-%whole enchilada? - JJ
-memory space shared by several processes. 
-A tuple space can be described as a distributed shared memory (DSM) abstraction, organized as a \emph{bag} of tuples.
-A tuple $t$ is the basic tuple space element, composed by one or more fields and corresponding values.
-In this model, the basic operations that a process can perform is to
-insert or withdraw tuples from the tuple space. % You could say here
+As stated earlier the EvoStore container incorporates some of the principles of the tuple-space model, an associatively addressed memory space shared by several processes. A tuple space can be described as a distributed shared memory (DSM) abstraction, organized as a \emph{bag} of tuples.
+A tuple $t$ is the basic tuple space element, composed by one or more fields and corresponding values. In this model, the basic operations that a process can perform is to insert or withdraw tuples from the tuple space. % You could say here
                                 % that's it's different from SofEA,
                                 % since SofEA is an _array_ of tuples
                                 % that can't be accessed randomly - JJ 
-
-EvoSpace is composed by a set of objects $ES$ and a set of interface methods provided by a central server.
-For an EA system, objects correspond to individuals.
-Objects can be withdrawn, processed and replaced into $ES$ using a specified set of methods.
-However, EvoSpace is different from other tuple space implementations in the sense that retrieving and reading objects from ES are random operations.
-Individual objects are not of high interest when accessing $ES$.
-Therefore, EvoSpace offers the following interface methods:
-%El parrafo anterior se me hace confuso
+An EvoStore provides a set of interface methods that operate over a set of objects $ES$. For an EA system, objects represent individuals, these are defined in a later subsection. Objects can be removed and replaced again into $ES$ using a specified set of methods. However, EvoSpace is different from other tuple space implementations in the sense that retrieving and reading objects from ES are random operations. Individual objects are not of high interest when accessing $ES$. Therefore, an EvoStore offers the following interface methods:
 
 \begin{itemize}
- \item \textbf{Read(n):} This method returns a random set $A$ of objects from $ES$, with $|A|=n$ and $A\subset ES$, if $n< |ES|$, the method returns $ES$ otherwise.
+ \item \textbf{Read(n):} This method returns a random set $A$ of objects from $ES$, with $|A|=n$ and $A\subset ES$, if $n< |ES|$, the method returns $ES$ otherwise. When using this method objects are not removed from $ES$ meaning that they are intended for Read-Only operations, callers cannot change the state of objects pulled by \textbf{Read(n)} methods. 
 
- \item \textbf{Take(n):} Returns a random set $A$, following the same logic used for $Read()$.
+ \item \textbf{Take(n):} Returns a random set $A$, following the same logic used for $Read(n)$. However, in this case the set $A$ is removed from $ES$, the contents of the EvoStore are then given by $ES = ES \setminus A$; 
+operation and $A_i$ as the output 
+
 However, in this case a sequence of $Take()$ operations provide a temporal dimension to the dynamics of set $ES$.
 We can define $ES_i$ as the set at the moment of the $i-th$ $Take()$ operation and $A_i$ as the output.
 The contents of EvoSapce are then given by $ES_{i+1}= ES_i \setminus A_i$; i.e., the objets taken are effectively removed from $ES$.
+
 The objects taken are also copied to a new set $S_i$ of \emph{sampled objects} and stored
 within a temporary collection $\mathcal{S}$ on the server, implemented as a priority queue.
 Sets $S_i \in \mathcal{S}$ can then be reinserted to $ES$ if necessary.
