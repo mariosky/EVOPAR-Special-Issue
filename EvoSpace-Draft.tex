@@ -137,11 +137,11 @@
                                % implementation methodologies - JJ
 
 In the early 1990s Foster and Kesselman defined the term Grid Computing \cite{Foster:1998}, referring to an infrastructure designed to enable resource sharing from multiple locations while also being coordinated to reach a common goal. Early Grid applications were initially motivated by the particular demands of advanced science and engineering applications \cite{Baxevanidis:2002}, seeking a low cost alternative to dedicated data centers or clusters. What distinguished grid computing from conventional high performance computing systems, such as cluster computing, was that grids tend to be more loosely coupled, heterogeneous, and geographically dispersed \cite{Foster:1998}. With the ubiquity of the Internet, nowadays researchers have access to vast  computational resources which are disperse and available using various technologies, including cloud computing \cite{cloud, varia2008cloud}, peer-to-peer (P2P) networks  \cite{Oram:2001}, and web services \cite{Curbera:2002}. On the other hand, Evolutionary Computation (EC) researchers demand powerful computational resources, since EC algorithms tend to be computationally demanding search processes. EC algorithms can benefit from grid computing infrastructures, by designing them as parallel, distributed and asynchronous systems. Several Evolutionary Algorithms (EAs) have been proposed that distribute the evolutionary process among heterogeneous devices, not only among controlled nodes within in-house clusters, but also in those out side the data center, in users' web browsers and smart phones or external cloud based virtual machines. This reach out approach allows researchers the use of low cost computational power that would not be available otherwise.
-On the other hand, such systems present several noteworthy challenges, such as the need to manage heterogeneous and unreliable computing resources, deal with lost connections,
-low bandwidth communications, abandoned work, security and privacy issues. 
+On the other hand, such systems present several noteworthy challenges, such as the need to manage heterogeneous and unreliable computing resources, deal with lost connections, low bandwidth communications, abandoned work, security and privacy issues. 
  
-This paper is part of an ever-growing effort in the field of EC to develop algorithms suited for taking an opportunistic approach to computing, allowing the exploitation of services freely available over the Internet or as volunteer computing resources. To enable this arbitrary plug-in and plug-out of computational resources for distributed EAs, a new pool-based architecture has been proposed \cite{PoolvsIsland}. The basic idea behind Pool-based EAs (PEAs) is that all the participants of the distributed algorithm share a common population stored in a central server, from which participants pull a set of tasks or data from the server, perform some work and then return the results back to the server. PEAs differs from an island-based system, for instance, since the server only receives stateless requests from participants in a pull based interaction.
-%mainly on the responsibilities assigned to the server. The server in an island-based system is usually responsible for keeping track of the migration of individuals from one island to another. The server must know in advance the available participants in order to send the immigrant individuals. In PEAs on the other hand, the server only receives stateless requests from participants in a pull based interaction. 
+This paper is part of an ever-growing effort in the field of EC to develop algorithms following an opportunistic approach to computing, allowing the exploitation of freely available services over the Internet or volunteer computing resources. To enable this arbitrary plug-in and plug-out of computational resources for distributed EAs, a new pool-based architecture has been proposed \cite{PoolvsIsland}. The basic idea behind Pool-based EAs (PEAs) is that all the participants of the distributed algorithm share a common population stored in a central server, from which participants pull a set of tasks or data from the server, perform some work and then return the results back to the server. PEAs differ from an island-based system,
+%for instance, since the server only receives stateless requests from participants in a pull based interaction.
+mainly on the responsibilities assigned to the server. The server in an island-based system is usually responsible for keeping track of the migration of individuals from one island to another. The server must know in advance the available participants in order to send the immigrant individuals. In PEAs on the other hand, the server only receives stateless requests from participants in a pull based interaction. 
 Although PEAs are capable for ad-hoc collaboration of computing resources, there are still some issues that need to be addressed for a successful deployment, particularly:
 \begin{itemize}
 	\item Redundancy of Work: in a PEA, two or more participants often take the same tasks or data to work on, thus wasting resources.
@@ -149,7 +149,6 @@ Although PEAs are capable for ad-hoc collaboration of computing resources, there
 	\item Participants are unaccountable and essentially anonymous: participants occasionally malfunction and return incorrect results. 
 	
 	\item Participants are unreliable: lost work can happen when participants  abandon the work or loose connection, thus delaying or failing to send the results back to the server.
-	
 	\item Starvation of Population Pool: this happens when there are no more tasks or data in the server, participants must wait for tasks or data to be available. 
 	\item Parametrization: The number of parameters is incremented with respect to a traditional EA, with specialized parameters such as the number of tasks pulled by each participant, the size of the pool, the amount of time the server waits for a result, among others. Moreover, participants could also have internal parameters and then there is the decision if they are set homogeneously or heterogeneously.
 	\item Single Point of Failure: conceptually, there is a single central server managing the pool. If implemented as-is, the system will have a single point of failure; additional architectural components could be needed to provide redundancy when implementing systems with high availability requirements.  	
@@ -170,7 +169,7 @@ This work presents the EvoSpace Model (ESM), a conceptual framework for the deve
 % algorithms? - JJ 
 
 % Aqui se explica brevemente el ESM
-The EvoSpace Model has two main components, a set of EvoWorkers and a single instance of an EvoStore. The EvoStore manages a set of objects representing individuals in a EA population. As it happens, in the basic PEA described earlier, EvoWorkers pull a subset of individuals from the EvoStore, these individuals are removed from the EvoStore and are not available for other workers. There are two differences with the pull operation of the tuple-space. The first is that individuals are removed from the EvoSpace as a random subset or sample of the population, this differs from the tuple-space paradigm which removes only those tuples matching a pattern-based query. Another difference found in EvoStore is the inclusion of a re-insert operation, which allows a sample once removed from the population to be reinserted on-demand. Intuitively this can be seen as if individuals once removed from the EvoStore changed to a phantom state, and if needed they could be brought back to life. Once an EvoWorker has a sample to work on, it can perform a partial evolutionary process, and then return the newly evolved subpopulation to the EvoStore where the new individuals are inserted, at which point they can be taken by other clients. EvoWorkers could also just change the state of individuals and then return the sample. 
+The EvoSpace Model has two main components, a set of EvoWorkers and a single instance of an EvoStore. The EvoStore container manages a set of objects representing individuals in a EA population. As it happens in the basic PEA described earlier, EvoWorkers pull a subset of individuals from the EvoStore, and following the tuple-space model these individuals are removed from the EvoStore and are not available to other workers. The ESM has two differences with the pull operation in a tuple-space. The first is that individuals are removed from the EvoSpace as a random subset or sample of the population, this differs from the tuple-space paradigm which removes only those tuples matching a pattern-based query. The other difference found in EvoStore is the inclusion of a re-insert operation which allows a sample once removed from the population to be reinserted on-demand. Intuitively this can be seen as if individuals once removed from the EvoStore changed to a phantom state, and if needed they could be brought back to life. Once an EvoWorker has a sample to work on, it can perform a partial evolutionary process, and then return the newly evolved subpopulation to the EvoStore where the new individuals replace  those found in the original sample, at this point replaced or reinserted individuals can be taken again by other clients. Another possibility is that  EvoWorkers pull a sample just to change the state of individuals to then return the sample, all of this with out executing an EA loop. Example of this scenario can be found in interactive evolutionary algorithm, where users pull a sample of individuals from the EvoStore container to assign each a fitness value  \cite{Musart,Fire}.  
 
 EvoWorkers, perform their tasks in an asynchronous manner, contrasting with the traditional sequential and synchronous evolutionary model followed by most EAs. Indeed, new evolutionary models, such as the one presented with EvoSpace, allow the design of PEAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{eiben}.
 
@@ -288,47 +287,6 @@ tree based GP, an extension that is easily accomplished with EvoSpace.
                               %system? You should be more precise
                               %about this - JJ
 \label{sec:evospace}
-%Computational resources are offered as different types of services within the Cloud computing model \cite{cloud}.
-%For example, infrastructure as a service (IaaS) such as Amazon's EC2, or Platform as a Service (PaaS) such as Google's App Engine.
-%However, within Evolutionary Computation (EC), most algorithms have
-%not been ported to the Cloud computing model. %These generic
-                                %statements should go to introduction
-                                %- JJ
-
-%EvoSpace works as a population store for the development of EAs that are %intended to run on the Cloud.
-%Within the Cloud computing model, EvoSpace is conceived as a PaaS component, where users can create populations of individuals on demand
-%without the need to install software or invest in additional
-%hardware. % So EvoSpace is an implementation of the tuple model + a
-          % controller that uses an evolutionary algorithm? - JJ
-%EvoSpace is designed to be versatile, since the system that manages
-%the population is decoupled from any particular EA. % So it's the
-                                % tuple model basically? Think about
-                                % the layers and API that EvoSpace
-                                % provides. What part of it is tuple
-                                % space? What is abstract? What is
-                                % specific? - JJ 
-%Client processes, called EvoWorkers, dynamically and asynchronously interact with the EvoSpace store and perform the desired evolutionary processes.
-%EvoWorkers can reside on remote clients or on the platform server if
-%it is needed. %EvoWorkers are part of EvoSpace? Part of the framework?
-              %- JJ 
-%Software as a Service (SaaS) applications could also be developed using EvoSpace, where users could run entire experiments on the
-%Cloud or implement interactive applications that are completely hosted by the service \cite{cloud}.
-%EvoSpace is well suited for this kind of environment, since it can be accessed by any web enabled device and is designed to be robust to lost connections.
-%Figure \ref{fig:cloud} presents a conceptual diagram of how EvoSpace fits within the Cloud computing model.
-
-%\begin{figure*}[t]
-%    \centering
-%        \includegraphics[width=12cm]{cloud2.eps}
-%    \caption{Conceptual diagram of the Cloud Computing Model and of how EvoSpace can fit within, using it as a PaaS or possible using it to develop a SaaS.}
-%    \label{fig:cloud} %this says that EvoSpace is basically a
-                      %population store, is that correct? Then, what
-                      %we are describing in this paper is something
-                      %completely different and more wide-ranging - JJ 
-%\end{figure*}
-
-
-%\subsection{System Design}
-%In this section the ESM is presented in detail.
 The EvoSpace model is a conceptual framework for the development of pool-based EAs. Figure \ref{fig:evo} shows a graphical illustration of the main components and data-flow within the EvoSpace model. The main components are: Individuals, the EvoStore population container and EvoWorkers. An optional Re-Insertion  Manager component is also presented. Each of this components is defined in the following subsections.
 
 %Basically, EvoSpace consists of two main components. % You can't keep
@@ -337,15 +295,6 @@ The EvoSpace model is a conceptual framework for the development of pool-based E
                                 % model. And the graph above includes
                                 % only one EvoSpace box: population
                                 % store. 
-
-
-%First, the EvoSpace container object, which resides on a central server and stores the evolving population.
-%The second component consists of remote EvoWorkers, which are distributed processes that are executed on client machines connected to the server.
-%EvoWorkers execute the actual evolutionary process, while EvoSpace only serves as a population repository.
-%In summary, EvoWorkers extract a small subset of the population, and use it as the initial population for a short evolutionary algorithm that is executed locally on the client machine. Afterwards, the evolved population from each EvoWorker is returned and reinserted into the EvoSpace container.
-%The server-side ReInsert process is used to alleviate possible problems that might occur during the search, such when the EvoSpace container
-%is emptied or when connections are lost with connected EvoWorker clients.
-%Figure \ref{fig:evo} presents a graphical illustration of the main components and data-flow within EvoSpace.
 
 \begin{figure*}[t]
     \centering
@@ -366,13 +315,13 @@ A tuple $t$ is the basic tuple space element, composed by one or more fields and
                                 % that's it's different from SofEA,
                                 % since SofEA is an _array_ of tuples
                                 % that can't be accessed randomly - JJ 
-An EvoStore provides a set of interface methods that operate over a set of objects $ES_i$, each of which can be seen as an independent EA population. For an EA system, objects represent individuals, these are defined in a later subsection. Objects can be removed and replaced into $ES_i$ using a specified set of methods. However, the ESM is different from other tuple space implementations in the sense that retrieving and reading objects from ES are defined as random operations. Individual objects are not of high interest when accessing an $ES$, instead population samples are desired. Therefore, an EvoStore offers the following interface methods:
+An EvoStore provides a set of interface methods that operate over a set of objects $ES$, which can be seen as an independent EA population. If multiple populations are needed, each one must have an index as in $ES_i$. For simplicity in this description, we assume an EvoStore has a single population $ES$. Objects in $ES$ represent individuals in the population, these are defined in the next subsection. Objects can be removed and replaced into $ES$ using a specified set of methods. However, the ESM is different from other tuple space implementations in the sense that retrieving and reading objects from $ES$ are defined as random operations. Retrieving single objects is not of high interest when accessing an $ES$, instead samples of the population are desired.  This is a key difference with SofEA, since SofEA is an $array$ of tuples that can't be accessed randomly \cite{sofea1,sofea2}. The methods provided by the EvoStore container are the following:
 
 \begin{itemize}
  \item \textbf{Read(n):} This method returns a random set $A$ of objects from $ES$, with $|A|=n$ and $A\subset ES$, if $n< |ES|$, the method returns $ES$ otherwise. When using this method, objects are not removed from $ES$ meaning that they are intended for read-only operations, callers must not change the state of objects pulled by \textbf{Read(n)} methods. 
 
 \item \textbf{Take(n):} Returns a random set $A$, following the same logic used for $Read(n)$. However, in this case the set $A$ is removed from $ES$, the contents of the EvoStore are then given by $ES = ES \setminus A$;  $Take()$ operations are atomic and return a set $A_i$ as the output. We define  $A_i$ as the set returned by the $i-th$ $Take()$ operation. The objects taken are also copied to a new set $S_i$ of \emph{Removed samples} and stored
-within a temporary collection $\mathcal{S}$ on the server, implemented as a priority queue. Sets $S_i \in \mathcal{S}$ can then be reinserted to $ES$ if necessary. 
+within a temporary collection $\mathcal{S}$ on the server, implemented as a priority queue. Sets $S_i \in \mathcal{S}$ can then be reinserted to $ES$ if necessary.  
  
  \item \textbf{ReInsert(i):} This method is used to reinsert the subset of elements removed by the $i-th$ $Take()$ operation,
   such that the contents of EvoSpace are now $ES \cup S_i$ if $S_i \in \mathcal{S}$ and $ES$ is left unchanged otherwise. The reinsertion of individuals can have two benefits, it prevents the starvation of the population pool and also compensates for lost work. Other distributed algorithms normally use a random insertion technique, but this might negatively impact the search process if good solutions are lost. In Section \ref{sec:overcome} the effect of both techniques is evaluated.
@@ -388,7 +337,6 @@ within a temporary collection $\mathcal{S}$ on the server, implemented as a prio
   the contents of EvoSpace are now set to $ES \cup (A\cap ES)$.
 \end{itemize}
 
-These methods can be used to implement different PEAs, have properties 
 
 \subsubsection{Individuals}
 As stated above, objects in $ES$ represent individuals in an EA. 
@@ -406,6 +354,7 @@ This representation can be extended according to the requirements of each implem
 
 
 \subsubsection{EvoWorkers}
+<<<<<<< HEAD
 EvoWorkers are autonomous computational entities executed on client machines, they only communicate with the EvoStore and not woth each other. Communication is carried out through message passing, as described in Algorithm \ref{alg:worker}. Each EvoWorker has a local algorithm that executes the main code of the EA. The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_i$ take from the $ES_i$ set.
 Afterwards, locally the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES_i$, then the EvoWorker can request a new set and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation,
 such as is done in SofEA \cite{sofea1}.
@@ -414,28 +363,31 @@ such as is done in SofEA \cite{sofea1}.
 
 
 
+=======
+EvoWorkers are  anonymous client objects residing in multiple autonomous computational entities.EvoWorkers communicate only with the EvoStore container and not with each other, communication is carried out through message passing. Each EvoWorker implements a local EA algorithm. The \textbf{EvoWorker} job is straightforward, it takes a set of objects $A_i$ from the $ES_i$ set.
+Afterwards, the local $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES_i$, then the EvoWorker can request a new set and repeat the process, see Algorithm \ref{alg:worker}. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation. EvoWorkers can communicate with each other only through the EvoStore container, for instance if an EvoWorker has found an optimal solution, it could change the state of an object in the EvoStore indicating a solution has been found, so other EvoWorkers could read it.
+>>>>>>> origin/master
 
-\subsubsection{The EvoSpace Server Processes}
+The conceptual model described above can be seen as the core framework of the ESM. Additional components must be defined in order to have complete PEAs, but these will be constrained by the functionality of this core. The next layer of components has to be designed in accordance with the particular type of PEA to be implemented. These are still abstract components, not tied to a particular implementation platform. In the next section, a layer of components needed for a implementing a PEA is presented. 
 
+\subsubsection{The EvoSpace Server components}
 %This is the key part of the system. Thoughts that went into it should
 %be explicit. In CouchDB we didn't use reinsertion, for instance. Why
 %do you do it here? Are you going to validate it in this paper? - JJ 
-The EvoSpace architecture employs a client-server architecture with a shared memory container.
-On the server side, a process called \textbf{EvoSpaceServer} is executed, which creates and activates a new EvoSpace
-container object and waits for requests to execute interface methods; see Algorithm \ref{alg:evoserver}.
-Additionally, on the server two more processes are executed, these are: \textbf{InitializePopulation} and \textbf{ReInsertionManager} ;
+The EvoSpace Server employs a client-server architecture using at is core an EvoStore container. On the server side, a process called \textbf{EvoSpaceServer} is executed, which creates and activates a new EvoStore container object and waits for requests to execute interface methods; see Algorithm \ref{alg:evoserver}. Additionally, on the server two more processes are executed, these are: \textbf{InitializePopulation} and \textbf{ReInsertionManager};
 see algorithms \ref{alg:population} and \ref{alg:remanager}.
 \textbf{InitializePopulation} is executed once, its goal is obvious, initialize the population by adding $popsize$ random
-individuals. The function that creates new individuals depends on the problem and representation used.
+individuals by calling the $Insert(A)$ method . The function that creates new individuals depends on the problem and representation used.
 \textbf{ReInsertionManager} is used as a failsafe process that periodically checks (every $wt$ seconds) if the size of the population in $ES$
 falls below a certain threshold or if the time after the last $ReInsert()$ is greater than $next_r$.
-If any of these conditions are satisfied, then $rn$ subsets $S_i \in \mathcal{S}$ are reinserted into ES using the $ReInsert()$ method.
-Moreover, the \textbf{ReInsertionManager} makes a $ReInsert(i)$ call when $EvoWorker_i$ (see below) looses a connection with the server,
+If any of these conditions are satisfied, then $rn$ subsets $S_i \in \mathcal{S}$ are reinserted into $ES$ using the $ReInsert(i)$ method.
+Moreover, the \textbf{ReInsertionManager} makes a $ReInsert(i)$ call when an $EvoWorker$ is assumed to have lost a connection with the server,
 thus recovering the population sample.
-%Finally, \textbf{EvolutionManager} periodically checks if a termination condition is satisfied, which is checked by the $isOver()$ method.
-%This method can be implemented according to the needs of the evolutionary search.
-%For instance, $isOver()$ can check if an optimal solution is found or if a maximum number of function evaluations have been performed.
-%No hay EvolutionManager cada worker consulta al EvoSpace
+
+As an example of how different components could be implemented in this layer, 
+a different version of a \textbf{ReInsertionManager} could be defined, that instead of using the $ReInsert(i)$ method, implemented a random generator of
+individuals to generate a random replacement for $S_i$. Once the new set of individuals has been generated, they can be inserted to $ES$ by calling the $Insert(A)$ method.
+
 \begin{algorithm}[t]
 \label{alg:evoserver}
 \caption{The server-side \textbf{EvoSpaceServer} process.}
@@ -486,8 +438,6 @@ thus recovering the population sample.
 \end{algorithm}
 
 
-%We could add a comment indicating that even a person could do part of the job, for instance assigning fitness in an interactive EA. (Mario)
-
 \begin{algorithm}[t]
 \label{alg:worker}
 \caption{The client-side \textbf{EvoWorker} process.}
@@ -509,22 +459,18 @@ thus recovering the population sample.
 \end{algorithmic}
 \end{algorithm}
 
-\subsubsection{Implementation}
-Figure~\ref{fig:evospace} shows a schematic diagram of the proposed architecture and the corresponding information flow with implementation details.
-Individuals are stored in-memory, using the Redis key-value
-database. 
+\subsubsection{Reference Implementation: evospace-py}
+In this section a reference implementation of an ESM-based PEA is presented.
+The system is called evospace-py as it was implemented using the Python language. Individuals are stored in-memory, using the Redis key-value
+database \url{redis.io}. 
 Redis was chosen over a SQL-based management system, or other non-SQL
 alternatives, because it provides a hash based implementation of sets
-and queues which are natural data structures for the EvoSpace
-bag-of-tuples models mentioned in Sec \ref{sss:container}. 
-model. For example, selecting a random key from a set has a complexity
-of O(1). The logic of EvoSpace is implemented as a Python module
-exposed as a  
-JSON-RPC Service using Cherrypy and Django HTTP frameworks.
-The EvoSpace service % service? System? Implementation? You should
+and queues which are natural data structures for the EvoStore container mentioned in Sec \ref{sss:container}. For instance, selecting a random key from a set has a complexity
+of O(1). The logic of the EvoStore and EvoSpace server is implemented as a Python module exposed as a JSON-RPC Service using Cherrypy and Django HTTP frameworks.
+The EvoStore server % service? System? Implementation? You should
                      % _really_ provide a conceptual model of
                      % everything - JJ 
-can interact with any language supporting {\tt json-rpc} or Ajax requests. The EvoSpace module and EvoWorker implementations in JavaScript and Python are available with a Simplified BSD License from \url{http://github.com/mariosky/EvoSpace}.
+can interact with any language supporting {\tt json-rpc} or Ajax requests. The EvoStore module, EvoSpace server and EvoWorker implementations in JavaScript and Python are available with a Simplified BSD License from \url{http://github.com/mariosky/EvoSpace}.
 
 \begin{figure*}[t]
     \centering
@@ -536,15 +482,13 @@ can interact with any language supporting {\tt json-rpc} or Ajax requests. The E
     \label{fig:evospace}
 \end{figure*}
 
-As EvoSpace is only the population store, EvoWorkers must implement the genetic operators of a particular EA.
-As stated earlier, our objective is to let researchers use common tools as in their local setting.
-Given that EvoSpace is implemented as a Python module, a simple way to implement EvoWorkers is using a basic non-distributed GA found in the DEAP (Distributed Evolutionary Algorithms in Python) library \cite{DEAP_JMLR2012}.  Three methods were added to the local DEAP algorithm: $getSample()$ and  $putSample()$; and  another for the  initialization of the population using DEAP´s own methods.
-For instance, to generate the initial population DEAP's initialize() method  is called and the generated population is sent to EvoSpace, then for each generation $getSample()$ is called, the received sample is used to create a DEAP population which is then evolved for a number of generations. Finally the DEAP population is converted to a JSON object and is returned to EvoSpace calling the $putSample()$ method.   
+EvoWorkers must implement the genetic operators for a particular EA.
+As stated earlier, our objective is to let researchers use common tools as in their local setting. Given that evospace-py is implemented as a Python module, a simple way to implement EvoWorkers is by using the basic non-distributed GA found in the DEAP (Distributed Evolutionary Algorithms in Python) library \cite{DEAP_JMLR2012}. Three methods were added to the local DEAP algorithm: $getSample()$ and  $putSample()$; and  another for the  initialization of the population using DEAP´s own methods.
+For instance, to generate the initial population DEAP's $initialize()$ method  is called and the generated population is sent to EvoSpace, then for each generation $getSample()$ is called, the received sample is used to create a DEAP population which is then evolved for a number of generations. Finally the DEAP population is converted to a JSON object and is returned to EvoStore calling the $putSample()$ method.   
 
-%% TO DO: Write a more detailed explanation than above (Mario). 
-
-\subsection{EvoSpace on the Cloud}
-This section describes how EvoSpace can be configured to run on the Cloud using Heroku and PiCloud; a schematic view of the cloud architecture is shown in figure~\ref{herokuPiCloud}.
+\subsection{evospace-py in a Cloud Architecture}
+The first version of evospace-py was implemented as a multi-process application running in a single computer, this implementation was used to run the first set of experiments found in Section \ref{sec:exp1}. However networked based implementation was needed to further evaluate the ESM.  
+This section describes how evospace-py can be configured to run on a cloud architecture using two Platform as a Service (PaaS) components, Heroku for the EvoSpace Server and PiCloud for simulating EvoWorkers; a schematic view of the cloud architecture is shown in figure~\ref{herokuPiCloud}.
 
 \begin{figure}[t]
 \centering
@@ -552,9 +496,6 @@ This section describes how EvoSpace can be configured to run on the Cloud using 
 \caption{EvoSpace cloud-based architecture.}
 \label{herokuPiCloud}
 \end{figure}
-
-
-\subsection{Evospace as a Heroku Application}
 
 Heroku (\url{http://heroku.com}) is a multi-language PaaS, supporting among others Ruby, Python and Java applications. The basic unit of composition on
 Heroku is a lightweight container running a single user-specified
@@ -572,7 +513,7 @@ Once deployed the web process can be scaled up by assigning more dynos;
 in our case and in the more demanding experiments, the web process was scaled to 20 dynos. Instructions and code for deployment is available at \url{http://www.evospace.org/software.html} 
 
 
-\subsection{Evoworkers as PiCloud Jobs}
+\subsection{EvoWorkers as PiCloud Jobs}
 PiCloud is a PaaS, with deep Python integration; 
 using a library, Python functions are transparently uploaded to PiCLoud's 
 servers as units of computational work they call \emph{jobs}. 
@@ -587,7 +528,8 @@ The code for the EvoWorkers implementation and experiment data is publicly avail
 % \url{http://goo.gl/92tMFw}. % Github tiene su
                                 % propio acortador, pero también
                                 % tienes que anonimizarlo - JJ 
-The following sections present an experimental evaluation of EvoSpace using standard benchmark problems for GAs.
+
+The following sections present an experimental evaluation of the ESM through the reference implementation (evospace-py) using standard benchmark problems for GAs.
 In particular, EvoSpace is first evaluated based on performance and efficiency, compared to a canonical GA, this is done
 in Section \ref{sec:exp1}.
 Afterwards, specific issues with PEA algorithms are discussed and experimentally evaluated in Section \ref{sec:overcome},
@@ -596,7 +538,7 @@ that illustrate how potential shortcomings are avoided with the EvoSpace framewo
 
 \section{Experiments and Results}
 \label{sec:exp1}
-This section presents an experimental evaluation of EvoSpace using two well-known benchmarks for GAs;
+This section presents an experimental evaluation of the ESM using two well-known benchmarks for GAs;
 the K-trap problem \cite{trap} and the P-Peaks function
 \cite{Jong:PS97}. %To prove what? Validate the approach? Check
                   %performance? Scalability? Both? - JJ
