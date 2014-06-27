@@ -366,13 +366,13 @@ A tuple $t$ is the basic tuple space element, composed by one or more fields and
                                 % that's it's different from SofEA,
                                 % since SofEA is an _array_ of tuples
                                 % that can't be accessed randomly - JJ 
-An EvoStore provides a set of interface methods that operate over a set of objects $ES_i$, each of which can be seen as an independent EA population. For an EA system, objects represent individuals, these are defined in a later subsection. Objects can be removed and replaced into $ES_i$ using a specified set of methods. However, the ESM is different from other tuple space implementations in the sense that retrieving and reading objects from ES are defined as random operations. Individual objects are not of high interest when accessing an $ES$, instead population samples are desired. Therefore, an EvoStore offers the following interface methods:
+An EvoStore provides a set of interface methods that operate over a set of objects $ES$, which can be seen as an independent EA population. If multiple populations are needed, each one must have an index as in $ES_i$. For simplicity in this description, we assume an EvoStore has a single population $ES$. Objects in $ES$ represent individuals in the population, these are defined in the next subsection. Objects can be removed and replaced into $ES$ using a specified set of methods. However, the ESM is different from other tuple space implementations in the sense that retrieving and reading objects from $ES$ are defined as random operations. Retrieving single objects is not of high interest when accessing an $ES$, instead samples of the population are desired.  This is a key difference with SofEA, since SofEA is an $array$ of tuples that can't be accessed randomly \cite{sofea1,sofea2}. The methods provided by the EvoStore container are the following:
 
 \begin{itemize}
  \item \textbf{Read(n):} This method returns a random set $A$ of objects from $ES$, with $|A|=n$ and $A\subset ES$, if $n< |ES|$, the method returns $ES$ otherwise. When using this method, objects are not removed from $ES$ meaning that they are intended for read-only operations, callers must not change the state of objects pulled by \textbf{Read(n)} methods. 
 
 \item \textbf{Take(n):} Returns a random set $A$, following the same logic used for $Read(n)$. However, in this case the set $A$ is removed from $ES$, the contents of the EvoStore are then given by $ES = ES \setminus A$;  $Take()$ operations are atomic and return a set $A_i$ as the output. We define  $A_i$ as the set returned by the $i-th$ $Take()$ operation. The objects taken are also copied to a new set $S_i$ of \emph{Removed samples} and stored
-within a temporary collection $\mathcal{S}$ on the server, implemented as a priority queue. Sets $S_i \in \mathcal{S}$ can then be reinserted to $ES$ if necessary. 
+within a temporary collection $\mathcal{S}$ on the server, implemented as a priority queue. Sets $S_i \in \mathcal{S}$ can then be reinserted to $ES$ if necessary.  
  
  \item \textbf{ReInsert(i):} This method is used to reinsert the subset of elements removed by the $i-th$ $Take()$ operation,
   such that the contents of EvoSpace are now $ES \cup S_i$ if $S_i \in \mathcal{S}$ and $ES$ is left unchanged otherwise. The reinsertion of individuals can have two benefits, it prevents the starvation of the population pool and also compensates for lost work. Other distributed algorithms normally use a random insertion technique, but this might negatively impact the search process if good solutions are lost. In Section \ref{sec:overcome} the effect of both techniques is evaluated.
@@ -388,7 +388,6 @@ within a temporary collection $\mathcal{S}$ on the server, implemented as a prio
   the contents of EvoSpace are now set to $ES \cup (A\cap ES)$.
 \end{itemize}
 
-These methods can be used to implement different PEAs, have properties 
 
 \subsubsection{Individuals}
 As stated above, objects in $ES$ represent individuals in an EA. 
@@ -406,16 +405,12 @@ This representation can be extended according to the requirements of each implem
 
 
 \subsubsection{EvoWorkers}
-EvoWorkers are autonomous computational entities executed on client machines, they only communicate with the EvoStore and not woth each other. Communication is carried out through message passing see Algorithm \ref{alg:worker}. Each EvoWorker has local algorithm that executes the main code of the EA. The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_i$ from the $ES_i$ set.
-Afterwards, localy the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES_i$, then the EvoWorker can request a new set and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation.
+EvoWorkers are  anonymous client objects residing in multiple autonomous computational entities.EvoWorkers communicate only with the EvoStore container and not with each other, communication is carried out through message passing. Each EvoWorker implements a local EA algorithm. The \textbf{EvoWorker} job is straightforward, it takes a set of objects $A_i$ from the $ES_i$ set.
+Afterwards, the local $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES_i$, then the EvoWorker can request a new set and repeat the process, see Algorithm \ref{alg:worker}. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation. EvoWorkers can communicate with each other only through the EvoStore container, for instance if an EvoWorker has found an optimal solution, it could change the state of an object in the EvoStore indicating a solution has been found, so other EvoWorkers could read it.
 
-
-
-
-
+The ESM can be used to implement PEAs,  
 
 \subsubsection{The EvoSpace Server Processes}
-
 %This is the key part of the system. Thoughts that went into it should
 %be explicit. In CouchDB we didn't use reinsertion, for instance. Why
 %do you do it here? Are you going to validate it in this paper? - JJ 
