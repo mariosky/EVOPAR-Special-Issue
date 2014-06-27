@@ -288,47 +288,6 @@ tree based GP, an extension that is easily accomplished with EvoSpace.
                               %system? You should be more precise
                               %about this - JJ
 \label{sec:evospace}
-%Computational resources are offered as different types of services within the Cloud computing model \cite{cloud}.
-%For example, infrastructure as a service (IaaS) such as Amazon's EC2, or Platform as a Service (PaaS) such as Google's App Engine.
-%However, within Evolutionary Computation (EC), most algorithms have
-%not been ported to the Cloud computing model. %These generic
-                                %statements should go to introduction
-                                %- JJ
-
-%EvoSpace works as a population store for the development of EAs that are %intended to run on the Cloud.
-%Within the Cloud computing model, EvoSpace is conceived as a PaaS component, where users can create populations of individuals on demand
-%without the need to install software or invest in additional
-%hardware. % So EvoSpace is an implementation of the tuple model + a
-          % controller that uses an evolutionary algorithm? - JJ
-%EvoSpace is designed to be versatile, since the system that manages
-%the population is decoupled from any particular EA. % So it's the
-                                % tuple model basically? Think about
-                                % the layers and API that EvoSpace
-                                % provides. What part of it is tuple
-                                % space? What is abstract? What is
-                                % specific? - JJ 
-%Client processes, called EvoWorkers, dynamically and asynchronously interact with the EvoSpace store and perform the desired evolutionary processes.
-%EvoWorkers can reside on remote clients or on the platform server if
-%it is needed. %EvoWorkers are part of EvoSpace? Part of the framework?
-              %- JJ 
-%Software as a Service (SaaS) applications could also be developed using EvoSpace, where users could run entire experiments on the
-%Cloud or implement interactive applications that are completely hosted by the service \cite{cloud}.
-%EvoSpace is well suited for this kind of environment, since it can be accessed by any web enabled device and is designed to be robust to lost connections.
-%Figure \ref{fig:cloud} presents a conceptual diagram of how EvoSpace fits within the Cloud computing model.
-
-%\begin{figure*}[t]
-%    \centering
-%        \includegraphics[width=12cm]{cloud2.eps}
-%    \caption{Conceptual diagram of the Cloud Computing Model and of how EvoSpace can fit within, using it as a PaaS or possible using it to develop a SaaS.}
-%    \label{fig:cloud} %this says that EvoSpace is basically a
-                      %population store, is that correct? Then, what
-                      %we are describing in this paper is something
-                      %completely different and more wide-ranging - JJ 
-%\end{figure*}
-
-
-%\subsection{System Design}
-%In this section the ESM is presented in detail.
 The EvoSpace model is a conceptual framework for the development of pool-based EAs. Figure \ref{fig:evo} shows a graphical illustration of the main components and data-flow within the EvoSpace model. The main components are: Individuals, the EvoStore population container and EvoWorkers. An optional Re-Insertion  Manager component is also presented. Each of this components is defined in the following subsections.
 
 %Basically, EvoSpace consists of two main components. % You can't keep
@@ -337,15 +296,6 @@ The EvoSpace model is a conceptual framework for the development of pool-based E
                                 % model. And the graph above includes
                                 % only one EvoSpace box: population
                                 % store. 
-
-
-%First, the EvoSpace container object, which resides on a central server and stores the evolving population.
-%The second component consists of remote EvoWorkers, which are distributed processes that are executed on client machines connected to the server.
-%EvoWorkers execute the actual evolutionary process, while EvoSpace only serves as a population repository.
-%In summary, EvoWorkers extract a small subset of the population, and use it as the initial population for a short evolutionary algorithm that is executed locally on the client machine. Afterwards, the evolved population from each EvoWorker is returned and reinserted into the EvoSpace container.
-%The server-side ReInsert process is used to alleviate possible problems that might occur during the search, such when the EvoSpace container
-%is emptied or when connections are lost with connected EvoWorker clients.
-%Figure \ref{fig:evo} presents a graphical illustration of the main components and data-flow within EvoSpace.
 
 \begin{figure*}[t]
     \centering
