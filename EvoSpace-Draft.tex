@@ -146,7 +146,7 @@ Although PEAs are capable for ad-hoc collaboration of computing resources, there
 \begin{itemize}
 	\item Redundancy of Work: in a PEA, two or more participants often take the same tasks or data to work on, thus wasting resources.  
 	\item Lost Work: when a participant does not return the result back to the server.
-	\item Empty Population Pool: this happens when there are no more tasks or data in the server, participants must wait for tasks or data to be available. 
+	\item Starvation of Population Pool: this happens when there are no more tasks or data in the server, participants must wait for tasks or data to be available. 
 	\item Parametrization: The number of parameters is incremented with respect to a traditional EA, with specialized parameters such as the number of tasks pulled by each participant, the size of the pool, the amount of time the server waits for a result, among others. Moreover, participants could also have internal parameters and then there is the decision if they are set homogeneously or heterogeneously.
 	\item Single Point of Failure: conceptually, there is a single central server managing the pool. If implemented as-is, the system will have a single point of failure; additional architectural components could be needed to provide redundancy when implementing systems with high availability requirements.  	
 	%\item Asynchronous Behavior: Asynchronous systems could be hard to implement.
@@ -324,7 +324,8 @@ tree based GP, an extension that is easily accomplished with EvoSpace.
 
 
 %\subsection{System Design}
-In this section the ESM is presented in detail. The EvoSpace model is a conceptual framework for the development of pool-based EAs. Figure \ref{fig:evo} shows a graphical illustration of the main components and data-flow within the EvoSpace model. The main components are: Individuals, the EvoStore population container and EvoWorkers. An optional Re-Insertion  Manager component is also presented. Each of this components is defined next subsections.
+%In this section the ESM is presented in detail.
+The EvoSpace model is a conceptual framework for the development of pool-based EAs. Figure \ref{fig:evo} shows a graphical illustration of the main components and data-flow within the EvoSpace model. The main components are: Individuals, the EvoStore population container and EvoWorkers. An optional Re-Insertion  Manager component is also presented. Each of this components is defined in the following subsections.
 
 %Basically, EvoSpace consists of two main components. % You can't keep
                                 % re-defining EvoSpace. Later on you
@@ -356,33 +357,25 @@ In this section the ESM is presented in detail. The EvoSpace model is a conceptu
 \label{sss:container}
 %This should be included in the Fig 1. Is it the same as the
 %Population Store? In Fig. 2 EvoSpace is only the population store. 
-As stated earlier the EvoStore container incorporates some of the principles of the tuple-space model, an associatively addressed memory space shared by several processes. A tuple space can be described as a distributed shared memory (DSM) abstraction, organized as a \emph{bag} of tuples.
+The EvoStore is an associatively addressed memory space shared by several processes following the principles of the tuple-space model, which can be described as a distributed shared memory (DSM) abstraction, organized as a \emph{bag} of tuples.
 A tuple $t$ is the basic tuple space element, composed by one or more fields and corresponding values. In this model, the basic operations that a process can perform is to insert or withdraw tuples from the tuple space. % You could say here
                                 % that's it's different from SofEA,
                                 % since SofEA is an _array_ of tuples
                                 % that can't be accessed randomly - JJ 
-An EvoStore provides a set of interface methods that operate over a set of objects $ES$. For an EA system, objects represent individuals, these are defined in a later subsection. Objects can be removed and replaced again into $ES$ using a specified set of methods. However, EvoSpace is different from other tuple space implementations in the sense that retrieving and reading objects from ES are random operations. Individual objects are not of high interest when accessing $ES$. Therefore, an EvoStore offers the following interface methods:
+An EvoStore provides a set of interface methods that operate over a set of objects $ES_i$, each of which can be seen as an independent EA population. For an EA system, objects represent individuals, these are defined in a later subsection. Objects can be removed and replaced into $ES_i$ using a specified set of methods. However, the ESM is different from other tuple space implementations in the sense that retrieving and reading objects from ES are defined as random operations. Individual objects are not of high interest when accessing an $ES$, instead population samples are desired. Therefore, an EvoStore offers the following interface methods:
 
 \begin{itemize}
- \item \textbf{Read(n):} This method returns a random set $A$ of objects from $ES$, with $|A|=n$ and $A\subset ES$, if $n< |ES|$, the method returns $ES$ otherwise. When using this method objects are not removed from $ES$ meaning that they are intended for Read-Only operations, callers cannot change the state of objects pulled by \textbf{Read(n)} methods. 
+ \item \textbf{Read(n):} This method returns a random set $A$ of objects from $ES$, with $|A|=n$ and $A\subset ES$, if $n< |ES|$, the method returns $ES$ otherwise. When using this method, objects are not removed from $ES$ meaning that they are intended for read-only operations, callers must not change the state of objects pulled by \textbf{Read(n)} methods. 
 
- \item \textbf{Take(n):} Returns a random set $A$, following the same logic used for $Read(n)$. However, in this case the set $A$ is removed from $ES$, the contents of the EvoStore are then given by $ES = ES \setminus A$; 
-operation and $A_i$ as the output 
-
-However, in this case a sequence of $Take()$ operations provide a temporal dimension to the dynamics of set $ES$.
-We can define $ES_i$ as the set at the moment of the $i-th$ $Take()$ operation and $A_i$ as the output.
-The contents of EvoSapce are then given by $ES_{i+1}= ES_i \setminus A_i$; i.e., the objets taken are effectively removed from $ES$.
-
-The objects taken are also copied to a new set $S_i$ of \emph{sampled objects} and stored
-within a temporary collection $\mathcal{S}$ on the server, implemented as a priority queue.
-Sets $S_i \in \mathcal{S}$ can then be reinserted to $ES$ if necessary.
-
+\item \textbf{Take(n):} Returns a random set $A$, following the same logic used for $Read(n)$. However, in this case the set $A$ is removed from $ES$, the contents of the EvoStore are then given by $ES = ES \setminus A$;  $Take()$ operations are atomic and return a set $A_i$ as the output. We define  $A_i$ as the set returned by the $i-th$ $Take()$ operation. The objects taken are also copied to a new set $S_i$ of \emph{Removed samples} and stored
+within a temporary collection $\mathcal{S}$ on the server, implemented as a priority queue. Sets $S_i \in \mathcal{S}$ can then be reinserted to $ES$ if necessary. 
+ 
  \item \textbf{ReInsert(i):} This method is used to reinsert the subset of elements removed by the $i-th$ $Take()$ operation,
-  such that the contents of EvoSpace are now $ES \cup S_i$ if $S_i \in \mathcal{S}$ and $ES$ is left unchanged otherwise.
+  such that the contents of EvoSpace are now $ES \cup S_i$ if $S_i \in \mathcal{S}$ and $ES$ is left unchanged otherwise. The reinsertion of individuals can have two benefits, it prevents the starvation of the population pool and also compensates for lost work. Other distributed algorithms normally use a random insertion technique, but this might negatively impact the search process if good solutions are lost. In Section \ref{sec:overcome} the effect of both techniques is evaluated.
+      
+ \item \textbf{Insert(A):} This method represents the union operation $ES \cup A$. This method is normally used to initialize the population.
 
- \item \textbf{Insert(A):} This method represents the union operation $ES \cup A$.
-
- \item \textbf{Replace(A,i):} Similar to $Add()$, however set $A$ should be understood as a replacement for
+ \item \textbf{Replace(A,i):} Similar to $Insert()$, however set $A$ should be understood as a replacement for
   some $S_i \in \mathcal{S}$, hence $|A| = |S_i|$, but the objects in $A$ can be different (evolved) objects from those in $S_i$.
   Moreover, if $S_i$ exists it is removed from $\mathcal{S}$.
   However, if $S_i$ does not exist this means that a $ReInsert(i)$ operation preceded it, this increases the size of $ES$.
@@ -391,20 +384,32 @@ Sets $S_i \in \mathcal{S}$ can then be reinserted to $ES$ if necessary.
   the contents of EvoSpace are now set to $ES \cup (A\cap ES)$.
 \end{itemize}
 
+These methods can be used to implement different PEAs, have properties 
+
 \subsubsection{Individuals}
-As stated above, objects in $ES$ represent individuals in an EA.
-Explicitly, the objects in $ES$ are stored as \emph{dictionaries}, an abstract data type that represents a collection
-of unique keys and values with a one to one association.
-In this case, keys represent specific properties of each object and the values can be of different types, such as
-numbers, strings, lists, tuples or other dictionaries.
-In the current implementation, the objects in $ES$ are described by the following basic fields.
+As stated above, objects in $ES$ represent individuals in an EA. 
+Explicitly, the objects in $ES$ are stored as \emph{dictionaries}, an abstract data type that represents a collection of unique keys and values with a one to one association.
+Objects in $ES$ are described by the following basic fields:
 An \textbf{id} string that represents a unique identifier for each object.
 A \textbf{chromosome} string, which depends on the EA and the representation used.
 The \textbf{fitness} dictionary for each individual; allowing the system to store multiple fitness values for multi-objective or dynamic scenarios.
 A \textbf{parents} dictionary with identifiers of the individual(s) from which it was produced.
-Finally, a \textbf{GeneticOperator}  string that specifies the
-operator that produced it. %Are you using this for something? Why do
+This representation can be extended according to the requirements of each implementation. 
+
+%Finally, a \textbf{GeneticOperator}  string that specifies the
+%operator that produced it. %Are you using this for something? Why do
                            %you need it - JJ ?
+
+
+\subsubsection{EvoWorkers}
+EvoWorkers are the processes executed on client machines, referred to as \textbf{EvoWorkers}, see Algorithm \ref{alg:worker}.
+Each client loads a process that executes the main code of the EA.
+The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_i$ from the $ES$ container.
+Afterwards, the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES$, then the EvoWorker can request a new set from $ES$ and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation; an approach not taken in the present work.
+
+
+
+
 
 
 \subsubsection{The EvoSpace Server Processes}
@@ -478,16 +483,6 @@ thus recovering the population sample.
 \end{algorithm}
 
 
-
-\subsubsection{The EvoSpace Clients: EvoWorkers}
-The second component of the proposed model are the processes executed on client machines, referred to as \textbf{EvoWorkers}, see Algorithm \ref{alg:worker}.
-Each client loads a process that executes the main code of the EA.
-The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_i$ from the $ES$ container.
-Afterwards, the $Evolve()$ function is called where the actual evolutionary cycle is performed.
-In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations.
-The result of this evolution is then returned and reinserted into $ES$, then the EvoWorker can request a new set from $ES$ and repeat the process.
-Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation;
-an approach not taken in the present work.
 %We could add a comment indicating that even a person could do part of the job, for instance assigning fitness in an interactive EA. (Mario)
 
 \begin{algorithm}[t]
