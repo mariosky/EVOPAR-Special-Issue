@@ -144,8 +144,12 @@ This paper is part of an ever-growing effort in the field of EC to develop algor
 %mainly on the responsibilities assigned to the server. The server in an island-based system is usually responsible for keeping track of the migration of individuals from one island to another. The server must know in advance the available participants in order to send the immigrant individuals. In PEAs on the other hand, the server only receives stateless requests from participants in a pull based interaction. 
 Although PEAs are capable for ad-hoc collaboration of computing resources, there are still some issues that need to be addressed for a successful deployment, particularly:
 \begin{itemize}
-	\item Redundancy of Work: in a PEA, two or more participants often take the same tasks or data to work on, thus wasting resources.  
-	\item Lost Work: when a participant does not return the result back to the server.
+	\item Redundancy of Work: in a PEA, two or more participants often take the same tasks or data to work on, thus wasting resources.
+	  
+	\item Participants are unaccountable and essentially anonymous: participants occasionally malfunction and return incorrect results. 
+	
+	\item Participants are unreliable: lost work can happen when participants  abandon the work or loose connection, thus delaying or failing to send the results back to the server.
+	
 	\item Starvation of Population Pool: this happens when there are no more tasks or data in the server, participants must wait for tasks or data to be available. 
 	\item Parametrization: The number of parameters is incremented with respect to a traditional EA, with specialized parameters such as the number of tasks pulled by each participant, the size of the pool, the amount of time the server waits for a result, among others. Moreover, participants could also have internal parameters and then there is the decision if they are set homogeneously or heterogeneously.
 	\item Single Point of Failure: conceptually, there is a single central server managing the pool. If implemented as-is, the system will have a single point of failure; additional architectural components could be needed to provide redundancy when implementing systems with high availability requirements.  	
@@ -402,10 +406,8 @@ This representation can be extended according to the requirements of each implem
 
 
 \subsubsection{EvoWorkers}
-EvoWorkers are the processes executed on client machines, referred to as \textbf{EvoWorkers}, see Algorithm \ref{alg:worker}.
-Each client loads a process that executes the main code of the EA.
-The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_i$ from the $ES$ container.
-Afterwards, the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES$, then the EvoWorker can request a new set from $ES$ and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation; an approach not taken in the present work.
+EvoWorkers are autonomous computational entities executed on client machines, they only communicate with the EvoStore and not woth each other. Communication is carried out through message passing see Algorithm \ref{alg:worker}. Each EvoWorker has local algorithm that executes the main code of the EA. The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_i$ from the $ES_i$ set.
+Afterwards, localy the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES_i$, then the EvoWorker can request a new set and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation.
 
 
 
