@@ -406,8 +406,9 @@ This representation can be extended according to the requirements of each implem
 
 
 \subsubsection{EvoWorkers}
-EvoWorkers are autonomous computational entities executed on client machines, they only communicate with the EvoStore and not woth each other. Communication is carried out through message passing see Algorithm \ref{alg:worker}. Each EvoWorker has local algorithm that executes the main code of the EA. The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_i$ from the $ES_i$ set.
-Afterwards, localy the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES_i$, then the EvoWorker can request a new set and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation.
+EvoWorkers are autonomous computational entities executed on client machines, they only communicate with the EvoStore and not woth each other. Communication is carried out through message passing, as described in Algorithm \ref{alg:worker}. Each EvoWorker has a local algorithm that executes the main code of the EA. The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_i$ take from the $ES_i$ set.
+Afterwards, locally the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES_i$, then the EvoWorker can request a new set and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation,
+such as is done in SofEA \cite{sofea1}.
 
 
 
