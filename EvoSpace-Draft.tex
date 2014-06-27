@@ -408,28 +408,26 @@ This representation can be extended according to the requirements of each implem
 EvoWorkers are  anonymous client objects residing in multiple autonomous computational entities.EvoWorkers communicate only with the EvoStore container and not with each other, communication is carried out through message passing. Each EvoWorker implements a local EA algorithm. The \textbf{EvoWorker} job is straightforward, it takes a set of objects $A_i$ from the $ES_i$ set.
 Afterwards, the local $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_i$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES_i$, then the EvoWorker can request a new set and repeat the process, see Algorithm \ref{alg:worker}. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation. EvoWorkers can communicate with each other only through the EvoStore container, for instance if an EvoWorker has found an optimal solution, it could change the state of an object in the EvoStore indicating a solution has been found, so other EvoWorkers could read it.
 
-The ESM can be used to implement PEAs,  
+The conceptual model described above can be seen as the core framework of the ESM. Additional components must be defined in order to have complete PEAs, but these will be constrained by the functionality of this core. The next layer of components has to be designed in accordance with the particular type of PEA to be implemented. These are still abstract components, not tied to a particular implementation platform. In the next section, a layer of components needed for a implementing a PEA is presented. 
 
-\subsubsection{The EvoSpace Server Processes}
+\subsubsection{The EvoSpace Server components}
 %This is the key part of the system. Thoughts that went into it should
 %be explicit. In CouchDB we didn't use reinsertion, for instance. Why
 %do you do it here? Are you going to validate it in this paper? - JJ 
-The EvoSpace architecture employs a client-server architecture with a shared memory container.
-On the server side, a process called \textbf{EvoSpaceServer} is executed, which creates and activates a new EvoSpace
-container object and waits for requests to execute interface methods; see Algorithm \ref{alg:evoserver}.
-Additionally, on the server two more processes are executed, these are: \textbf{InitializePopulation} and \textbf{ReInsertionManager} ;
+The EvoSpace Server employs a client-server architecture using at is core an EvoStore container. On the server side, a process called \textbf{EvoSpaceServer} is executed, which creates and activates a new EvoStore container object and waits for requests to execute interface methods; see Algorithm \ref{alg:evoserver}. Additionally, on the server two more processes are executed, these are: \textbf{InitializePopulation} and \textbf{ReInsertionManager};
 see algorithms \ref{alg:population} and \ref{alg:remanager}.
 \textbf{InitializePopulation} is executed once, its goal is obvious, initialize the population by adding $popsize$ random
-individuals. The function that creates new individuals depends on the problem and representation used.
+individuals by calling the $Insert(A)$ method . The function that creates new individuals depends on the problem and representation used.
 \textbf{ReInsertionManager} is used as a failsafe process that periodically checks (every $wt$ seconds) if the size of the population in $ES$
 falls below a certain threshold or if the time after the last $ReInsert()$ is greater than $next_r$.
-If any of these conditions are satisfied, then $rn$ subsets $S_i \in \mathcal{S}$ are reinserted into ES using the $ReInsert()$ method.
-Moreover, the \textbf{ReInsertionManager} makes a $ReInsert(i)$ call when $EvoWorker_i$ (see below) looses a connection with the server,
+If any of these conditions are satisfied, then $rn$ subsets $S_i \in \mathcal{S}$ are reinserted into $ES$ using the $ReInsert(i)$ method.
+Moreover, the \textbf{ReInsertionManager} makes a $ReInsert(i)$ call when an $EvoWorker$ is assumed to have lost a connection with the server,
 thus recovering the population sample.
-%Finally, \textbf{EvolutionManager} periodically checks if a termination condition is satisfied, which is checked by the $isOver()$ method.
-%This method can be implemented according to the needs of the evolutionary search.
-%For instance, $isOver()$ can check if an optimal solution is found or if a maximum number of function evaluations have been performed.
-%No hay EvolutionManager cada worker consulta al EvoSpace
+
+As an example of how different components could be implemented in this layer, 
+a different version of a \textbf{ReInsertionManager} could be defined, that instead of using the $ReInsert(i)$ method, implemented a random generator of
+individuals to generate a random replacement for $S_i$. Once the new set of individuals has been generated, they can be inserted to $ES$ by calling the $Insert(A)$ method.
+
 \begin{algorithm}[t]
 \label{alg:evoserver}
 \caption{The server-side \textbf{EvoSpaceServer} process.}
@@ -479,8 +477,6 @@ thus recovering the population sample.
 \end{algorithmic}
 \end{algorithm}
 
-
-%We could add a comment indicating that even a person could do part of the job, for instance assigning fitness in an interactive EA. (Mario)
 
 \begin{algorithm}[t]
 \label{alg:worker}
