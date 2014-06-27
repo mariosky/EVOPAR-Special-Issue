@@ -111,7 +111,7 @@
 \maketitle
 
 \begin{abstract}
-
+This work presents the EvoSpace model, a conceptual framework for the development of pool-based evolutionary algorithms. The EvoSpace model is built conceptually around a central repository or population store, incorporating some of the principles of the tuple-space model and adding additional features to tackle some of the issues associated with pool-based evolutionary algorithms: work redundancy, starvation of the population pool, unreliable workers, and parametrization. The model can serve as a platform to develop algorithms following an opportunistic approach to computing, allowing the exploitation of freely available services over the Internet or volunteer computing resources. A comprehensive analysis of the model at both the conceptual and implementation levels is provided. Particularly, the problems of lost connections and system parametrization are studied and validated experimentally, with encouraging results, that suggest how EvoSpace can be used to develop and implement different PEAs for search and optimization.    
 
 \keywords{Pool-based Evolutionary Algorithms \and Distributed Evolutionary Algorithms\and Heterogeneous Computing Platforms for Bioinspired Algorithms  \and Parameter Setting}
 
@@ -144,7 +144,7 @@ This paper is part of an ever-growing effort in the field of EC to develop algor
 mainly on the responsibilities assigned to the server. The server in an island-based system is usually responsible for keeping track of the migration of individuals from one island to another. The server must know in advance the available participants in order to send the immigrant individuals. In PEAs on the other hand, the server only receives stateless requests from participants in a pull based interaction. 
 Although PEAs are capable for ad-hoc collaboration of computing resources, there are still some issues that need to be addressed for a successful deployment, particularly:
 \begin{itemize}
-	\item Redundancy of Work: in a PEA, two or more participants often take the same tasks or data to work on, thus wasting resources.
+	\item Work Redundancy: in a PEA, two or more participants often take the same tasks or data to work on, thus wasting resources.
 	  
 	\item Participants are unaccountable and essentially anonymous: participants occasionally malfunction and return incorrect results. 
 	
