@@ -111,7 +111,15 @@
 \maketitle
 
 \begin{abstract}
-This work presents the EvoSpace model, a conceptual framework for the development of pool-based evolutionary algorithms. The EvoSpace model is built conceptually around a central repository or population store, incorporating some of the principles of the tuple-space model and adding additional features to tackle some of the issues associated with pool-based evolutionary algorithms: work redundancy, starvation of the population pool, unreliable workers, and parametrization. The model can serve as a platform to develop algorithms following an opportunistic approach to computing, allowing the exploitation of freely available services over the Internet or volunteer computing resources. A comprehensive analysis of the model at both the conceptual and implementation levels is provided. Particularly, the problems of lost connections and system parametrization are studied and validated experimentally, with encouraging results, that suggest how EvoSpace can be used to develop and implement different PEAs for search and optimization.    
+This work presents the EvoSpace model, a framework for the development of pool-based evolutionary algorithms.
+Conceptually, the EvoSpace model is built around a central repository or population store, incorporating some of the principles of the tuple-space model
+and adding additional features to tackle some of the issues associated with pool-based evolutionary algorithms;
+such as, work redundancy, starvation of the population pool, unreliability of connected clients or workers, and a large parameter space.
+The model is intended as a platform to develop search algorithms that take an opportunistic approach to computing,
+allowing the exploitation of freely available services over the Internet or volunteer computing resources within a local network.
+A comprehensive analysis of the model at both the conceptual and implementation levels is provided.
+Particularly, the problems of lost connections and system parametrization are studied and validated experimentally, with encouraging results,
+that suggest how EvoSpace can be used to develop and implement different PEAs for search and optimization.    
 
 \keywords{Pool-based Evolutionary Algorithms \and Distributed Evolutionary Algorithms\and Heterogeneous Computing Platforms for Bioinspired Algorithms  \and Parameter Setting}
 
@@ -1064,11 +1072,37 @@ Nevertheless, it is obvious that using a random heterogeneous parametrization ca
 
 
 
-\subsection{Discussion}
+%\subsection{Discussion}
 
 
 \section{Concluding Remarks}
 \label{sec:conclusions}
+This paper presents the EvoSpace model for the development of pool-based EAs, which is design to exploit computing resources over a network and can be
+implemented to run directly on the cloud.
+PEAs present several interesting properties that are not present in standard EAs, storing the population in a central store and
+performing the evolutionary process in an asynchronous and distributed manner using distributed clients, which in the ESM are referred to as EvoWorkers.
+In this sense, what is particularly interesting of a PEA is that it incorporates features from natural evolution that are abstracted away in common EA implementations.
+Moreover, they are intended as means by which evolutionary computation techniques can incorporate modern computing frameworks that are executed over the Internet.
+However, PEAs also present several noteworthy design challenges, that must be addressed.
+The proposed ESM is intended as a conceptual framework that addresses some of these challenges and allows for the development of a variety of search techniques
+that follow this pool-based approach.
+
+At the implementation level, this work also presents an ESM instantiation called EvoSpace-py, a software tool that simplifies the deployment of PEAs,
+as multi-threaded processes or on the cloud.
+The system programmed using the Python programming language and the well-known DEAP library for EAs, additionally the ESM model is implemented using
+the Redis key-value database.
+
+Experimental results are presented for a pool-based GA, using standard benchmarks and comparing the system with standard GA search.
+Results are encouraging in several respects.
+First, performance of the ESM is equivalent or better than standard search, with the added benefit of improved efficiency and population diversity during the search.
+Second, experimental results illustrate the benefits of adding client workers to the evolutionary process.
+Third, several apparent issues with the PEA approach are studied, regarding the lost connection of unreliable workers and the increases size of the algorithm's parameter space.
+In both cases, experimental results suggest that the ESM can handle both issues quite robustly, using inbuilt mechanism and simple implementation strategies.
+
+This paper is the first to comprehensively describe and contextualize the ESM, and provides a comprehensive evaluation with respect to standard evolutionary search.
+Future work will have to explore the limits and comparative benefits of ESM, as it compares to other distributed EAs or island-model search strategies,
+in order to define the proper domain of competence of PEAs in general and the ESM in particular.
+Moreover, the ESM will be leveraged to implement and deploy a complete web-based PEA, that simplifies the use for other researchers in an easy to setup manner.
 
 
 
