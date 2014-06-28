@@ -892,6 +892,9 @@ a random insertion technique, but this might negatively impact the search proces
     (f) Time to solution, 30\% returned samples; (g-h) Fitness by sample number, 30\% returned samples, 16 Workers,
     for each sample the average fitness was measured at the start (green) and at the end (blue) of the local evolution, with (g) random algorithm and
     (h) reinsertion algorithm.  }
+% Please note that max values are higher in the random case, although
+% there are more substantial drops. Maximun is also reached
+% first. Maybe this should go to the explanation? - JJ 
     \label{fig:effort_unreliable}
 \end{figure*}
 
@@ -1054,7 +1057,10 @@ each of the three methods evaluated here.
     {\includegraphics[width=6cm]{PPeaks-w16.eps}}
         \subfigure[120 EvoWorkers]
     {\includegraphics[width=6cm]{PPeaks-w120.eps}}
-    \caption{Convergence plots for the P-Peaks with 16 (a) and 120 (b) EvoWorkers .}
+    \caption{Convergence plots for the P-Peaks with 16 (a) and 120 (b)
+      EvoWorkers .}
+% Both plots should use the same x-axis; it''s misleading otherwise -
+% JJ 
     \label{fig:PPeaks}
 \end{figure}
 
@@ -1096,7 +1102,7 @@ Results are encouraging in several respects.
 First, performance of the ESM is equivalent or better than standard search, with the added benefit of improved efficiency and population diversity during the search.
 Second, experimental results illustrate the benefits of adding client workers to the evolutionary process.
 Third, several apparent issues with the PEA approach are studied, regarding the lost connection of unreliable workers and the increases size of the algorithm's parameter space.
-In both cases, experimental results suggest that the ESM can handle both issues quite robustly, using inbuilt mechanism and simple implementation strategies.
+In both cases, experimental results suggest that the ESM can handle both issues quite robustly, using built-in mechanisms and simple implementation strategies.
 
 This paper is the first to comprehensively describe and contextualize the ESM, and provides a comprehensive evaluation with respect to standard evolutionary search.
 Future work will have to explore the limits and comparative benefits of ESM, as it compares to other distributed EAs or island-model search strategies,
