@@ -30,7 +30,7 @@
 %closepath
 %2 setlinewidth
 %gsave
-%  .4 setgray fill
+%  .4 setgray \textit{fill}
 %grestore
 %stroke
 %grestore
@@ -63,7 +63,7 @@
 %
 \begin{document}
 
-\title{EvoSpace: A framework for Pool-Based Evolutionary Algorithms}
+\title{The EvoSpace Model for Pool-Based Evolutionary Algorithms}
 % a framework that does what? That is the best for what? Is this a
 % publicity paper or something more? What are you going to say about
 % this framework? Introducing? Assessing? - JJ
@@ -111,7 +111,7 @@
 \maketitle
 
 \begin{abstract}
-This work presents the EvoSpace model, a framework for the development of pool-based evolutionary algorithms.
+This work presents the EvoSpace model, a framework for the development of pool-based evolutionary algorithms (Pool-EA).
 Conceptually, the EvoSpace model is built around a central repository or population store, incorporating some of the principles of the tuple-space model
 and adding additional features to tackle some of the issues associated with pool-based evolutionary algorithms;
 such as, work redundancy, starvation of the population pool, unreliability of connected clients or workers, and a large parameter space.
@@ -119,7 +119,7 @@ The model is intended as a platform to develop search algorithms that take an op
 allowing the exploitation of freely available services over the Internet or volunteer computing resources within a local network.
 A comprehensive analysis of the model at both the conceptual and implementation levels is provided.
 Particularly, the problems of lost connections and system parametrization are studied and validated experimentally, with encouraging results,
-that suggest how EvoSpace can be used to develop and implement different PEAs for search and optimization.    
+that suggest how EvoSpace can be used to develop and implement different Pool-EAs for search and optimization.    
 
 \keywords{Pool-based Evolutionary Algorithms \and Distributed Evolutionary Algorithms\and Heterogeneous Computing Platforms for Bioinspired Algorithms  \and Parameter Setting}
 
@@ -147,12 +147,12 @@ that suggest how EvoSpace can be used to develop and implement different PEAs fo
 In the early 1990s Foster and Kesselman defined the term Grid Computing \cite{Foster:1998}, referring to an infrastructure designed to enable resource sharing from multiple locations while also being coordinated to reach a common goal. Early Grid applications were initially motivated by the particular demands of advanced science and engineering applications \cite{Baxevanidis:2002}, seeking a low cost alternative to dedicated data centers or clusters. What distinguished grid computing from conventional high performance computing systems, such as cluster computing, was that grids tend to be more loosely coupled, heterogeneous, and geographically dispersed \cite{Foster:1998}. With the ubiquity of the Internet, nowadays researchers have access to vast  computational resources which are disperse and available using various technologies, including cloud computing \cite{cloud,varia2008cloud}, peer-to-peer (P2P) networks  \cite{Oram:2001}, and web services \cite{Curbera:2002}. On the other hand, Evolutionary Computation (EC) researchers demand powerful computational resources, since EC algorithms tend to be computationally demanding search processes. EC algorithms can benefit from grid computing infrastructures, by designing them as parallel, distributed and asynchronous systems. Several Evolutionary Algorithms (EAs) have been proposed that distribute the evolutionary process among heterogeneous devices, not only among controlled nodes within in-house clusters, but also in those out side the data center, in users' web browsers and smart phones or external cloud based virtual machines. This reach out approach allows researchers the use of low cost computational power that would not be available otherwise.
 On the other hand, such systems present several noteworthy challenges, such as the need to manage heterogeneous and unreliable computing resources, deal with lost connections, low bandwidth communications, abandoned work, security and privacy issues. 
  
-This paper is part of an ever-growing effort in the field of EC to develop algorithms following an opportunistic approach to computing, allowing the exploitation of freely available services over the Internet or volunteer computing resources. To enable this arbitrary plug-in and plug-out of computational resources for distributed EAs, a new pool-based architecture has been proposed \cite{sofea1,sofea2,PoolvsIsland}. The basic idea behind Pool-based EAs (PEAs) is that all the participants of the distributed algorithm share a common population stored in a central server, from which participants pull a set of tasks or data from the server, perform some work and then return the results back to the server. PEAs differ from an island-based system,
+This paper is part of an ever-growing effort in the field of EC to develop algorithms following an opportunistic approach to computing, allowing the exploitation of freely available services over the Internet or volunteer computing resources. To enable this arbitrary plug-in and plug-out of computational resources for distributed EAs, a new pool-based architecture has been proposed \cite{sofea1,sofea2,PoolvsIsland}. The basic idea behind Pool-based EAs (Pool-EAs) is that all the participants of the distributed algorithm share a common population stored in a central server, from which participants pull a set of tasks or data from the server, perform some work and then return the results back to the server. Pool-EAs differ from an island-based system,
 %for instance, since the server only receives stateless requests from participants in a pull based interaction.
-mainly on the responsibilities assigned to the server. The server in an island-based system is usually responsible for keeping track of the migration of individuals from one island to another. The server must know in advance the available participants in order to send the immigrant individuals. In PEAs on the other hand, the server only receives stateless requests from participants in a pull based interaction. 
-Although PEAs are capable for ad-hoc collaboration of computing resources, there are still some issues that need to be addressed for a successful deployment, particularly:
+mainly on the responsibilities assigned to the server. The server in an island-based system is usually responsible for keeping track of the migration of individuals from one island to another. The server must know in advance the available participants in order to send the immigrant individuals. In Pool-EAs on the other hand, the server only receives stateless requests from participants in a pull based interaction. 
+Although Pool-EAs are capable for ad-hoc collaboration of computing resources, there are still some issues that need to be addressed for a successful deployment, particularly:
 \begin{itemize}
-	\item Work Redundancy: in a PEA, two or more participants often take the same tasks or data to work on, thus wasting resources.
+	\item Work Redundancy: in a Pool-EA, two or more participants often take the same tasks or data to work on, thus wasting resources.
 	  
 	\item Participants are unaccountable and essentially anonymous: participants occasionally malfunction and return incorrect results. 
 	
@@ -163,9 +163,9 @@ Although PEAs are capable for ad-hoc collaboration of computing resources, there
 	%\item Asynchronous Behavior: Asynchronous systems could be hard to implement.
 \end{itemize}
         
-Some of the issues mentioned above have been addressed previously by early research in distributed systems, a particular implementation based on shared objects was proposed by Gelertner and Carriero \cite{linda}, the model brought the concept of a tuple space, a repository of tuples that can be accessed concurrently by several processes. This tuple space also functions as the communication and coordination mechanism  between processes, as they interact with each other using these shared tuples. A distinctive characteristic of this model is that in order to change the state of a tuple, processes need to atomically remove the tuple from the space and place it back only after it has been released; this inherently provides mutual exclusion as no other process can access a tuple while it is been used. A benefit of such a model for PEAs is that it forbids two clients from pulling the same work. 
+Some of the issues mentioned above have been addressed previously by early research in distributed systems, a particular implementation based on shared objects was proposed by Gelertner and Carriero \cite{linda}, the model brought the concept of a tuple space, a repository of tuples that can be accessed concurrently by several processes. This tuple space also functions as the communication and coordination mechanism  between processes, as they interact with each other using these shared tuples. A distinctive characteristic of this model is that in order to change the state of a tuple, processes need to atomically remove the tuple from the space and place it back only after it has been released; this inherently provides mutual exclusion as no other process can access a tuple while it is been used. A benefit of such a model for Pool-EAs is that it forbids two clients from pulling the same work. 
 
-This work presents the EvoSpace Model (ESM), a conceptual framework for the development of Pool-based EAs \cite{Evospace}. ESM is built conceptually around a central repository or population store, incorporating some of the principles of the tuple-space model and adding additional features suited for PEAs development. The ESM is not simply an implementation of a tuple-space model for EAs, since additional concepts are included that tackle some of the issues associated with a PEA that were listed above.
+This work presents the EvoSpace Model (ESM), a conceptual framework for the development of Pool-based EAs \cite{Evospace}. ESM is built conceptually around a central repository or population store, incorporating some of the principles of the tuple-space model and adding additional features suited for Pool-EAs development. The ESM is not simply an implementation of a tuple-space model for EAs, since additional concepts are included that tackle some of the issues associated with a Pool-EA that were listed above.
 % EvoSpace is a model? Is it
                                 % an implementation of a well-known model? You should make
                                 % clear which one you're talking about
@@ -177,19 +177,19 @@ This work presents the EvoSpace Model (ESM), a conceptual framework for the deve
 % algorithms? - JJ 
 
 % Aqui se explica brevemente el ESM
-The EvoSpace Model has two main components, a set of EvoWorkers and a single instance of an EvoStore. The EvoStore container manages a set of objects representing individuals in a EA population. As it happens in the basic PEA described earlier, EvoWorkers pull a subset of individuals from the EvoStore, and following the tuple-space model these individuals are removed from the EvoStore and are not available to other workers. The ESM has two differences with the pull operation in a tuple-space. The first is that individuals are removed from the EvoSpace as a random subset or sample of the population, this differs from the tuple-space paradigm which removes only those tuples matching a pattern-based query. The other difference found in EvoStore is the inclusion of a re-insert operation which allows a sample once removed from the population to be reinserted on-demand. Intuitively this can be seen as if individuals once removed from the EvoStore changed to a phantom state, and if needed they could be brought back to life. Once an EvoWorker has a sample to work on, it can perform a partial evolutionary process, and then return the newly evolved subpopulation to the EvoStore where the new individuals replace  those found in the original sample, at this point replaced or reinserted individuals can be taken again by other clients. Another possibility is that  EvoWorkers pull a sample just to change the state of individuals to then return the sample, all of this with out executing an EA loop. Example of this scenario can be found in interactive evolutionary algorithm, where users pull a sample of individuals from the EvoStore container to assign each a fitness value  \cite{Musart,Fire}.  
+The EvoSpace Model has two main components, a set of EvoWorkers and a single instance of an EvoStore. The EvoStore container manages a set of objects representing individuals in a EA population. As it happens in the basic Pool-EA described earlier, EvoWorkers pull a subset of individuals from the EvoStore, and following the tuple-space model these individuals are removed from the EvoStore and are not available to other workers. The ESM has two differences with the pull operation in a tuple-space. The first is that individuals are removed from the EvoSpace as a random subset or sample of the population, this differs from the tuple-space paradigm which removes only those tuples matching a pattern-based query. The other difference found in EvoStore is the inclusion of a re-insert operation which allows a sample once removed from the population to be reinserted on-demand. Intuitively this can be seen as if individuals once removed from the EvoStore changed to a phantom state, and if needed they could be brought back to life. Once an EvoWorker has a sample to work on, it can perform a partial evolutionary process, and then return the newly evolved subpopulation to the EvoStore where the new individuals replace  those found in the original sample, at this point replaced or reinserted individuals can be taken again by other clients. Another possibility is that  EvoWorkers pull a sample just to change the state of individuals to then return the sample, all of this without executing an EA loop. Example of this scenario can be found in interactive evolutionary algorithm, where users pull a sample of individuals from the EvoStore container to assign each a fitness value  \cite{Musart,Fire}.  
 
-EvoWorkers, perform their tasks in an asynchronous manner, contrasting with the traditional sequential and synchronous evolutionary model followed by most EAs. Indeed, new evolutionary models, such as the one presented with EvoSpace, allow the design of PEAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{eiben}.
+EvoWorkers, perform their tasks in an asynchronous manner, contrasting with the traditional sequential and synchronous evolutionary model followed by most EAs. Indeed, new evolutionary models, such as the one presented with EvoSpace, allow the design of Pool-EAs that include algorithmic features present in natural evolutionary systems, but are difficult to reproduce in sequential and synchronous processes \cite{eiben}.
 
 This paper presents a detailed description of the EvoSpace Model, building upon previous contributions made by the authors \cite{Evospace,FreeLunch},
 providing a comprehensive analysis of the system at both the
 conceptual and implementation levels, %these levels should very
                                 %clearly made apart - JJ
 discussing how the model can be
-employed to implement a PEA.
+employed to implement a Pool-EA.
 Furthermore, several design issues are addressed, that illustrate the robustness of ESM.
 Particularly, the problems of lost connections and system parametrization are studied and validated experimentally, with
-encouraging results, that suggest how EvoSpace can be used to develop and implement different PEAs for search and optimization.
+encouraging results, that suggest how EvoSpace can be used to develop and implement different Pool-EAs for search and optimization.
 
 %Firstly, distributed systems have to account for unreliable clients, and how lost connections can compromise system performance,
 %an issue that is experimentally evaluated in this paper.
@@ -200,13 +200,15 @@ encouraging results, that suggest how EvoSpace can be used to develop and implem
 %This issue is addressed by using a simple, but efficient,
 %parametrization method originally developed for Island model EAs
 %\cite{fuku2}.
-% A small panorama of PEAs should be introduce here, showing the
+% A small panorama of Pool-EAs should be introduce here, showing the
 % different options and how pool-based models fit within them - - JJ
 
 The remainder of the paper proceeds as follows.
 First, a comprehensive discussion pertaining to related work is presented in Section \ref{sec:related}.
-Afterwards, the ESM is detailed in Section \ref{sec:evospace}, and Section \ref{sec:exp1} discusses two example implementations, first a multi-process implementation where diversity and scalability are tested, and a second implementation using a cloud based architecture where the system's performance and communication costs are evaluated on standard genetic algorithm (GA) benchmarks.
-Section \ref{sec:overcome} deals with two general issues associated with PEAs in general and ESM in particular,
+Afterwards, the ESM is detailed in Section \ref{sec:evospace}, a reference implementation is presented in Section \ref{sec:ref}.
+Two experimental validations are performed in Section \ref{sec:exp1}, the first is a multi-process implementation where diversity and scalability are tested,
+and the second uses a cloud based architecture where the system's performance and communication costs are evaluated on standard genetic algorithm (GA) benchmarks.
+Section \ref{sec:overcome} deals with two general issues associated with Pool-EAs in general and ESM in particular,
 and proposes useful solutions which are validated experimentally.
 Finally, a summary of this work, conclusions and future work is given in Section \ref{sec:conclusions}.
  
@@ -216,7 +218,7 @@ Finally, a summary of this work, conclusions and future work is given in Section
 In terms of parallelizing EAs, a large body of work has developed a variety of parallel models, with
 important practical and theoretical results \cite{parallelEA}.
 However, this work focuses on the goal of distributing an EA over a grid, a much less explored topic by the EA community.
-In particular, this section will contextualize the recently developed PEA class of algorithms, within the more general research area of distributed EAs,
+In particular, this section will contextualize the recently developed Pool-EA class of algorithms, within the more general research area of distributed EAs,
 in order to correctly frame the contributions made in the proposed ESM.
 
 Probably the most unobtrusive way to distribute an EA over an heterogeneous collection of computing resources is to run an EA over the Internet using web browsers.
@@ -254,27 +256,27 @@ implementation \cite{FlexGP}.
 
 
 All of these works show great promise in extending EAs towards modern computing models.
-However, distributing an EA over a network does not necessarily imply that the underlying search process is modified in any substantial way.
+However, they focus on exploiting current distributed computing technologies to enhance EA performance, while maintaining the same basic evolutionary model.
 In other words, in terms of the search the EA might perform the exact same process, even if it is done more efficiently through distributed computing technologies.
-On the other hand, the current work deals with a novel EA model called pool-based EAs or PEAs.
-What is particularly interesting in a PEA, is that they are explicitly designed to exploit a distributed computing framework, while also employing
+On the other hand, the current work deals with a novel EA model called pool-based EAs or Pool-EAs.
+What is particularly interesting in a Pool-EA, is that they are explicitly designed to exploit a distributed computing framework, while also employing
 an EA model that incorporates non-traditional search dynamics.
-In a PEA, the evolving population is stored in a centralized repository or store, while distributed clients asynchronously extract a subset
+In a Pool-EA, the evolving population is stored in a centralized repository or store, while distributed clients asynchronously extract a subset
 of individuals and return a new subset of individuals after performing the actual search operators.
-PEAs are closely related with Island-Model EAs (IMEA) \cite{cantu} with several noteworthy differences \cite{PoolvsIsland}.
+Pool-EAs are closely related with Island-Model EAs (IMEA) \cite{cantu} with several noteworthy differences \cite{PoolvsIsland}.
 For instance, an IMEA presents a fixed topological structure, with a predefined interaction protocol among each evolving population,
 this leads to a coordinated, or even synchronized, interaction between the islands.
-On the other hand, a PEA does not consider such a structure, the interactions between workers is much less structured or controlled.
+On the other hand, a Pool-EA does not consider such a structure, the interactions between workers is much less structured or controlled.
 Second, in an IMEA each island represents an individual evolutionary process, sharing some of the same dynamics as standard EAs.
-In a PEA, however, only a single centralized population exists, samples of which are distributed across workers, but ultimately combined once again
+In a Pool-EA, however, only a single centralized population exists, samples of which are distributed across workers, but ultimately combined once again
 in the centralized pool.
 
-PEAs are related to more general systems, such as the A-Teams system proposed in \cite{ateam}, a problem-solving multi-agent architecture based on a strongly cyclic network.
+Pool-EAs are related to more general systems, such as the A-Teams system proposed in \cite{ateam}, a problem-solving multi-agent architecture based on a strongly cyclic network.
 G. Roy et al. \cite{roy:2009} also developed a multi-threaded system with a shared memory architecture that is executed within a distributed environment,
 where the evolving population of a GA is stored in a centralized pool or database.
 Another example is developed by Bollini and Piastra \cite{bollini:1999}, who proposed a system that decouples population storage from the actual evolutionary operations.
 
-However, the most complete PEA model proposed thus far is the SofEA algorithm by Merelo et al. \cite{sofea1,sofea2}.
+However, the most complete Pool-EA model proposed thus far is the SofEA algorithm by Merelo et al. \cite{sofea1,sofea2}.
 SofEA is an evolutionary algorithm mapped to a central CouchDB object store. It provides an asynchronous and distributed search process,
 where the four main evolutionary operators are completely decoupled from the evolving population; these are: Initialization, Evaluation, Reproduction and Elimination.
 The last three processes can be executed in any order and in any given time step, and more than a single Evaluator and Reproducer have been executed concurrently
@@ -285,7 +287,7 @@ On the other hand, in EvoSpace evolution is carried out locally on each client, 
 Second, while both systems attempt to decouple population storage from the search operations, SofEA maintains a fine-grained control of each individual
 within the population that limits the ability of each to interact with remote clients.
 Thirdly, since SofEA considers each individual as unique, it does not allow duplicates to appear within the evolving population, something that is useful for diversity preservation but that might curtail the exploitation capability of the EA.
-Furthermore, if an individual \emph{dies} (or is eliminated), then another copy of it cannot be reintroduced into the population, even if might be useful
+Furthermore, if an individual dies (or is eliminated), then another copy of it cannot be reintroduced into the population, even if might be useful
 at a later stage of the search.
 Finally, by using the individual chromosome as ID, it appears problematic to extend SofEAs implementation to representations such as that of
 tree based GP, an extension that is easily accomplished with EvoSpace.
@@ -314,11 +316,11 @@ The EvoSpace model is a conceptual framework for the development of pool-based E
 % In all these sections there's a lot of description but very little
 % fo the rationale behind them. Why did you do it this way? That
 % applies to sections above and below - JJ
-\subsubsection{The EvoStore container}
+\subsection{The EvoStore container}
 \label{sss:container}
 %This should be included in the Fig 1. Is it the same as the
 %Population Store? In Fig. 2 EvoSpace is only the population store. 
-The EvoStore is an associatively addressed memory space shared by several processes following the principles of the tuple-space model, which can be described as a distributed shared memory (DSM) abstraction, organized as a \emph{bag} of tuples.
+The EvoStore is an associatively addressed memory space shared by several processes following the principles of the tuple-space model, which can be described as a distributed shared memory (DSM) abstraction, organized as a bag of tuples.
 A tuple $t$ is the basic tuple space element, composed by one or more fields and corresponding values. In this model, the basic operations that a process can perform is to insert or withdraw tuples from the tuple space. % You could say here
                                 % that's it's different from SofEA,
                                 % since SofEA is an _array_ of tuples
@@ -326,15 +328,20 @@ A tuple $t$ is the basic tuple space element, composed by one or more fields and
 An EvoStore provides a set of interface methods that operate over a set of objects $ES$, which can be seen as an independent EA population. If multiple populations are needed, each one must have an index as in $ES_i$. For simplicity in this description, we assume an EvoStore has a single population $ES$. Objects in $ES$ represent individuals in the population, these are defined in the next subsection. Objects can be removed and replaced into $ES$ using a specified set of methods. However, the ESM is different from other tuple space implementations in the sense that retrieving and reading objects from $ES$ are defined as random operations. Retrieving single objects is not of high interest when accessing an $ES$, instead samples of the population are desired.  This is a key difference with SofEA, since SofEA is an $array$ of tuples that can't be accessed randomly \cite{sofea1,sofea2}. The methods provided by the EvoStore container are the following:
 
 \begin{itemize}
- \item \textbf{Read(n):} This method returns a random set $A$ of objects from $ES$, with $|A|=n$ and $A\subset ES$, if $n< |ES|$, the method returns $ES$ otherwise. When using this method, objects are not removed from $ES$ meaning that they are intended for read-only operations, callers must not change the state of objects pulled by \textbf{Read(n)} methods. 
+ \item \textbf{Read(n):} This method returns a random set $A$ of objects from $ES$, with $|A|=n$ and $A\subset ES$, if $n< |ES|$, the method returns $ES$ otherwise. When using this method, objects are not removed from $ES$ meaning that they are intended for read-only operations, callers must not change the state of objects pulled by \textbf{Read(n)} methods. This method is useful to analyze the evolving population without interfering with the search, to compute statistics or performance measures of the process.
 
-\item \textbf{Take(n):} Returns a random set $A$, following the same logic used for $Read(n)$. However, in this case the set $A$ is removed from $ES$, the contents of the EvoStore are then given by $ES = ES \setminus A$;  $Take()$ operations are atomic and return a set $A_i$ as the output. We define  $A_i$ as the set returned by the $i-th$ $Take()$ operation. The objects taken are also copied to a new set $S_i$ of \emph{Removed samples} and stored
+\item \textbf{Take(n):} Returns a random set $A$, following the same logic used for $Read(n)$. However, in this case the set $A$ is removed from $ES$, the contents of the EvoStore are then given by $ES = ES \setminus A$;  $Take()$ operations are atomic and return a set $A_i$ as the output. We define  $A_i$ as the set returned by the $i-th$ $Take()$ operation. The objects taken are also copied to a new set $S_i$ of Removed samples and stored
 within a temporary collection $\mathcal{S}$ on the server, implemented as a priority queue. Sets $S_i \in \mathcal{S}$ can then be reinserted to $ES$ if necessary.  
  
  \item \textbf{ReInsert(i):} This method is used to reinsert the subset of elements removed by the $i-th$ $Take()$ operation,
-  such that the contents of EvoSpace are now $ES \cup S_i$ if $S_i \in \mathcal{S}$ and $ES$ is left unchanged otherwise. The reinsertion of individuals can have two benefits, it prevents the starvation of the population pool and also compensates for lost work. Other distributed algorithms normally use a random insertion technique, but this might negatively impact the search process if good solutions are lost. In Section \ref{sec:overcome} the effect of both techniques is evaluated.
+  such that the contents of EvoSpace are now $ES \cup S_i$ if $S_i \in \mathcal{S}$ and $ES$ is left unchanged otherwise.
+  In other words, the method ReInserts previously taken samples from the population store.
+  The ReInsert method can be triggered when a worker loses its connection to the server or when the population size gets below a threshold, this prevents the starvation
+  of the population pool and also compensates for lost work. Other distributed algorithms normally use a random insertion technique, but this might negatively impact the search process if good solutions are lost. In Section \ref{sec:overcome} the effect of both techniques is evaluated.
       
- \item \textbf{Insert(A):} This method represents the union operation $ES \cup A$. This method is normally used to initialize the population.
+ \item \textbf{Insert(A):} This method represents the union operation $ES \cup A$, where $A$ is a set of individuals.
+ This method is normally used to initialize the population, with a randomly generated set of individuals, instead of using ReInsert to introduce previously
+ generated individuals. Indeed, when a random set of individuals is reinserted, as studied in Section \ref{sec:overcome}, it is in fact performing an Insert operation.
 
  \item \textbf{Replace(A,i):} Similar to $Insert()$, however set $A$ should be understood as a replacement for
   some $S_i \in \mathcal{S}$, hence $|A| = |S_i|$, but the objects in $A$ can be different (evolved) objects from those in $S_i$.
@@ -342,13 +349,13 @@ within a temporary collection $\mathcal{S}$ on the server, implemented as a prio
   However, if $S_i$ does not exist this means that a $ReInsert(i)$ operation preceded it, this increases the size of $ES$.
 
  \item \textbf{Remove(A):} This method removes all of the objects in $A$ that are also in $ES$, in such a way that
-  the contents of EvoSpace are now set to $ES \cup (A\cap ES)$.
+  the contents of EvoSpace are now set to $ES \setminus (A\cap ES)$.
 \end{itemize}
 
 
-\subsubsection{Individuals}
+\subsection{Individuals}
 As stated above, objects in $ES$ represent individuals in an EA. 
-Explicitly, the objects in $ES$ are stored as \emph{dictionaries}, an abstract data type that represents a collection of unique keys and values with a one to one association.
+Explicitly, the objects in $ES$ are stored as dictionaries, an abstract data type that represents a collection of unique keys and values with a one to one association.
 Objects in $ES$ are described by the following basic fields:
 An \textbf{id} string that represents a unique identifier for each object.
 A \textbf{chromosome} string, which depends on the EA and the representation used.
@@ -361,19 +368,19 @@ This representation can be extended according to the requirements of each implem
                            %you need it - JJ ?
 
 
-\subsubsection{EvoWorkers}
+\subsection{EvoWorkers}
 EvoWorkers are autonomous computational entities that are executed on client machines, they only communicate with the EvoStore but not with each other. Communication is carried out through message passing, as described in Algorithm \ref{alg:worker}. Each EvoWorker has a local algorithm that executes the main code of the EA search. The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_j$ taken from the $ES_i$ set.
 Afterwards, locally the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_j$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned and reinserted into $ES_i$, then the EvoWorker can request a new set and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation,
 such as is done in SofEA \cite{sofea1}.
 
 
-The conceptual model described above is the core framework of the ESM. Additional components must be defined in order to implement a complete PEA, but these will be constrained by the structure and functionality of this core. The next layer of components has to be designed in accordance with the particular type of PEA to be implemented. Nonetheless, these are still abstract components, not tied to a particular implementation platform. In the next section, the main layer of components required to implement a EA are presented. 
+The conceptual model described above is the core framework of the ESM. Additional components must be defined in order to implement a complete Pool-EA, but these will be constrained by the structure and functionality of this core. The next layer of components has to be designed in accordance with the particular type of Pool-EA to be implemented. Nonetheless, these are still abstract components, not tied to a particular implementation platform. In the next section, the main layer of components required to implement a EA are presented. 
 
-\subsubsection{The EvoSpace Server components}
+\subsection{The EvoSpace Server components}
 %This is the key part of the system. Thoughts that went into it should
 %be explicit. In CouchDB we didn't use reinsertion, for instance. Why
 %do you do it here? Are you going to validate it in this paper? - JJ 
-The EvoSpace Server employs a client-server architecture using at is core an EvoStore container. On the server side, a process called \textbf{EvoSpaceServer} is executed, which creates and activates a new EvoStore container object and waits for requests to execute interface methods; see Algorithm \ref{alg:evoserver}. Additionally, on the server two more processes are executed, these are: \textbf{InitializePopulation} and \textbf{ReInsertionManager};
+The EvoSpace Server employs a client-server architecture using at its core an EvoStore container. On the server side, a process called \textbf{EvoSpaceServer} is executed, which creates and activates a new EvoStore container object and waits for requests to execute interface methods; see Algorithm \ref{alg:evoserver}. Additionally, on the server two more processes are executed, these are: \textbf{InitializePopulation} and \textbf{ReInsertionManager};
 see algorithms \ref{alg:population} and \ref{alg:remanager}.
 \textbf{InitializePopulation} is executed once, its goal is obvious, initialize the population by adding $popsize$ random
 individuals by calling the $Insert(A)$ method . The function that creates new individuals depends on the problem and representation used.
@@ -388,57 +395,6 @@ a different version of a \textbf{ReInsertionManager} could be defined, that inst
 individuals to generate a random replacement for $S_i$. Once the new set of individuals has been generated, they can be inserted to $ES$ by calling the $Insert(A)$ method.
 
 \begin{algorithm}[t]
-\label{alg:evoserver}
-\caption{The server-side \textbf{EvoSpaceServer} process.}
-\begin{algorithmic}
-\STATE $EvoSpace$ $\leftarrow$ new EvoSpace
-\STATE $EvoSpace.active$ $\leftarrow$ true
-\WHILE{$EvoSpace.active$}
-\STATE read method
-\RETURN $EvoSpace.method()$
-\ENDWHILE
-\end{algorithmic}
-\end{algorithm}
-
-
-\begin{algorithm}[t]
-\label{alg:population}
-\caption{The server-side \textbf{InitializePopulation} process.}
-\begin{algorithmic}
-\REQUIRE $EvoSpace \leftarrow$ Reference to an Evospace Server
-\REQUIRE $popsize \leftarrow$ Number of individuals
-\STATE $j \leftarrow 0$
-\FOR{$j < popsize$}
-\STATE $ind$ $\leftarrow$ new individual() \COMMENT{Problem dependent}
-\STATE $EvoSpace.ES.Add(i)$
-\STATE j++
-\ENDFOR
-\end{algorithmic}
-\end{algorithm}
-
-\begin{algorithm}[t]
-\label{alg:remanager}
-\caption{The server-side \textbf{ReInsertionManager} process.}
-\begin{algorithmic}
-\REQUIRE $ri \leftarrow$ re-insertion interval
-\REQUIRE $min \leftarrow$ population size threshold
-\REQUIRE $rn \leftarrow$ number of samples to re-insert
-\REQUIRE $EvoSpace \leftarrow$ Reference to an Evospace Server
-\REQUIRE $wt \leftarrow$ wait interval
-\STATE $next_r \leftarrow +ri$
-\WHILE{$EvoSpace.active$}
-\IF{$|EvoSpace.ES| \leq min$ OR $currentTime \geq next_r$}
-\STATE $EvoSpace.RespawnOld(rn)$
-\STATE $next_r \leftarrow currentTime + ri$
-\ENDIF
-\STATE $wait(wt)$
-\ENDWHILE
-\end{algorithmic}
-\end{algorithm}
-
-
-\begin{algorithm}[t]
-\label{alg:worker}
 \caption{The client-side \textbf{EvoWorker} process.}
 \begin{algorithmic}
 \REQUIRE $EvoSpace \leftarrow$ Reference to an Evospace Server
@@ -456,10 +412,62 @@ individuals to generate a random replacement for $S_i$. Once the new set of indi
 \ENDIF
 \ENDWHILE
 \end{algorithmic}
+\label{alg:worker}
 \end{algorithm}
 
-\subsubsection{Reference Implementation: EvoSpace-py}
-In this section a reference implementation of an ESM-based PEA is presented.
+\begin{algorithm}[t]
+\caption{The server-side \textbf{EvoSpaceServer} process.}
+\begin{algorithmic}
+\STATE $EvoSpace$ $\leftarrow$ new EvoSpace
+\STATE $EvoSpace.active$ $\leftarrow$ true
+\WHILE{$EvoSpace.active$}
+\STATE read method
+\RETURN $EvoSpace.method()$
+\ENDWHILE
+\end{algorithmic}
+\label{alg:evoserver}
+\end{algorithm}
+
+
+\begin{algorithm}[t]
+\caption{The server-side \textbf{InitializePopulation} process.}
+\begin{algorithmic}
+\REQUIRE $EvoSpace \leftarrow$ Reference to an Evospace Server
+\REQUIRE $popsize \leftarrow$ Number of individuals
+\STATE $j \leftarrow 0$
+\FOR{$j < popsize$}
+\STATE $ind$ $\leftarrow$ new individual() \COMMENT{Problem dependent}
+\STATE $EvoSpace.ES.Add(i)$
+\STATE j++
+\ENDFOR
+\end{algorithmic}
+\label{alg:population}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{The server-side \textbf{ReInsertionManager} process.}
+\begin{algorithmic}
+\REQUIRE $ri \leftarrow$ re-insertion interval
+\REQUIRE $min \leftarrow$ population size threshold
+\REQUIRE $rn \leftarrow$ number of samples to re-insert
+\REQUIRE $EvoSpace \leftarrow$ Reference to an Evospace Server
+\REQUIRE $wt \leftarrow$ wait interval
+\STATE $next_r \leftarrow +ri$
+\WHILE{$EvoSpace.active$}
+\IF{$|EvoSpace.ES| \leq min$ OR $currentTime \geq next_r$}
+\STATE $EvoSpace.RespawnOld(rn)$
+\STATE $next_r \leftarrow currentTime + ri$
+\ENDIF
+\STATE $wait(wt)$
+\ENDWHILE
+\end{algorithmic}
+\label{alg:remanager}
+\end{algorithm}
+
+
+\section{Reference Implementation: EvoSpace-py}
+\label{sec:ref}
+In this section a reference implementation of an ESM-based Pool-EA is presented.
 The system is called EvoSpace-py since it was implemented using the Python language. 
 In the proposed implementation, individuals are stored in-memory, using the Redis key-value database \url{redis.io}. 
 Redis was chosen over a SQL-based management system, or other non-SQL
@@ -488,7 +496,7 @@ For instance, to generate the initial population DEAP's $initialize()$ method  i
 
 \subsection{EvoSpace-py in a Cloud Architecture}
 The first version of EvoSpace-py was implemented as a multi-process application running in a single computer, this implementation was used to run the first set of experiments found in Section \ref{sec:exp1}. However, a networked based implementation was needed to further evaluate the ESM.  
-This section describes how EvoSpace-py can be configured to run on a cloud architecture using two Platform as a Service (PaaS) components, Heroku for the EvoSpace Server and PiCloud for simulating EvoWorkers; a schematic view of the cloud architecture is shown in figure~\ref{herokuPiCloud}.
+This section describes how EvoSpace-py can be configured to run on a cloud architecture using two Platform as a Service (PaaS) components, Heroku for the EvoSpace Server and PiCloud for simulating EvoWorkers; a schematic view of the cloud architecture is shown in Figure~\ref{herokuPiCloud}.
 
 \begin{figure}[t]
 \centering
@@ -516,7 +524,7 @@ in our case and in the more demanding experiments, the web process was scaled to
 \subsection{EvoWorkers as PiCloud Jobs}
 PiCloud is a PaaS, with deep Python integration; 
 using a library, Python functions are transparently uploaded to PiCLoud's 
-servers as units of computational work they call \emph{jobs}. 
+servers as units of computational work they call jobs. 
 Each job is added to a queue, and when there is a core available, 
 the job is assigned to it. Both Heroku and PiCloud 
 platforms are deployed on top of Amazon Web Services (AWS) 
@@ -532,7 +540,7 @@ The code for the EvoWorkers implementation and experiment data is publicly avail
 The following sections present an experimental evaluation of the ESM through the reference implementation (evospace-py) using standard benchmark problems for GAs.
 In particular, EvoSpace is first evaluated based on performance and efficiency, compared to a canonical GA, this is done
 in Section \ref{sec:exp1}.
-Afterwards, specific issues with PEA algorithms are discussed and experimentally evaluated in Section \ref{sec:overcome},
+Afterwards, specific issues with Pool-EA algorithms are discussed and experimentally evaluated in Section \ref{sec:overcome},
 that illustrate how potential shortcomings are avoided with the EvoSpace framework.
 
 
@@ -552,10 +560,10 @@ of connected EvoWorkers.
 This problem presents a multi-modal and deceptive fitness landscape.
 Table \ref{tab:exp} summarizes the different experimental configurations tested in this work, based on the $K$ value, number of EvoWorkers, the sample size taken by each worker and the chromosome length used in each K-trap problem. The number of individuals in the EvoSpace repository is set to 1024 for 4-trap experiments and to 4096 for 5-trap.
 Moreover, Table \ref{tab:exp2} summarizes the shared parameters and algorithmic configuration.
-The maximum number of samples that each EvoWorker can take from EvoSpace is 1000.
+The maximum number of samples that can be taken from EvoSpace is 1000.
 For comparison, a standard GA is applied to each benchmark problem.
 For the 4-trap problem, the maximum number of generations is 4000, for the 5-trap problem it is 1000,
-this bounds the number of function evaluations based on the maximum number of samples taken from all of the EvoSpace runs.
+this bounds the number of function evaluations so it is equivalent to the maximum number of function evaluations performed by any of the EvoSpace runs.
 In total, $50$ runs were performed of each experimental configuration.
 
 
@@ -597,18 +605,22 @@ Evolution of fitness is organized based on the two temporal axis of the horizont
 one corresponds with the sample number, independent of which EvoWorker took the sample, and the other corresponds
 to the generations of the local evolutionary process executed on the EvoWorker.
 In other words, these plots provide a collective view of the evolutionary process from the perspective of all EvoWorkers.
-Since the global optimum is a fitness value of 10, we can see that the evolution on the last sample taken from EvoSpace reaches the global optimum.
+Since the global optimum is a fitness value of 10, we can see that the evolution on the last sample taken from EvoSpace reaches the global optimum;
+also notice the low fitness value for the first few samples taken.
 %and after this no more samples are taken since the search is halted at that moment.
-The overall performance of EvoSpace is summarized in Table \ref{tab:found}, which shows the total number of runs, out of $50$,
-that found the global optima.
+%The overall performance of EvoSpace is summarized in Table \ref{tab:found}, which shows the total number of runs, out of $50$,
+%that found the global optima.
 EvoSpace outperforms the standard GA on both functions, with a substantial increase in the number of optima found.
+In most experiments (11) EvoSpace always found the optimal solution, while in the other four cases (A,D,E and H) it does no worse than
+48 optima found.
+On the other hand, the GA only finds 34 optima on the 5-trap problem and 29 on the 4-trap case.
 
 \begin{table}[t]
 \caption{Different experimental configurations used to test the
   performance of EvoSpace.} %Why these? What do you want to evaluate?
                             %Is it complete? 
 \centering
-\tiny
+\scriptsize
 \begin{tabular}{|l||c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
    \hline
              \textbf{Experiment} 	& A & B & C & D & E & F & G & H & I & J & K & L & M & N & O \\
@@ -617,7 +629,7 @@ EvoSpace outperforms the standard GA on both functions, with a substantial incre
                \textbf{K-trap}   	& 4  & 4  & 4  & 4  & 4  & 4  & 4  & 4  & 4 & 5 & 5 & 5 & 5 & 5 & 5 \\
 			   \textbf{EvoWorkers}  & 1  & 1  & 4  & 4  & 8  & 8  & 16 & 16 & 32 & 1 & 4 & 8 & 16 & 32 & 40 \\
 			   \textbf{Sample size} & 32 & 64 & 32 & 64 & 32 & 64 & 32 & 64 & 32 & 64 & 64 & 64 & 64 & 64 & 64 \\
-			   \textbf{Chromosome length} & 40 & 40 & 40 & 40 & 40 & 40 & 40 & 40 & 40 & 50 & 50 & 50 & 50 & 50 & 50 \\
+			   \textbf{Chromosome} & 40 & 40 & 40 & 40 & 40 & 40 & 40 & 40 & 40 & 50 & 50 & 50 & 50 & 50 & 50 \\
    \hline
 \end{tabular}
 \label{tab:exp}
@@ -629,11 +641,11 @@ EvoSpace outperforms the standard GA on both functions, with a substantial incre
 \centering
 \begin{tabular}{|c||c|c|c|c|}
    \hline
-                       & Maximum Function         &                    &                  & Generations per \\
-   \textbf{Parameter}  & Evaluations              & Crossover (Prob.)  & Mutation (Prob.) & EvoWorker        \\
+                       & Maximum          &                    &                  & Generations per \\
+   \textbf{Parameter}  & total samples    & Crossover (Prob.)  & Mutation (Prob.) & EvoWorker        \\
 
 	\hline
-   \textbf{Value}     &	100 Gens per worker &	Single point (1) &	Point  (0.06)   & 100    \\
+   \textbf{Value}     &	1000 &	Single point (1) &	Point  (0.06)   & 100    \\
    \hline
 
 \end{tabular}
@@ -641,22 +653,22 @@ EvoSpace outperforms the standard GA on both functions, with a substantial incre
 \end{table}
 
 
-\begin{table}[t]
-\caption{Different experimental configurations used to test the performance of EvoSpace.
-GA-K are the baseline GA results for the 4-trap and 5-trap functions respectively.}
-\centering
-\tiny
-\begin{tabular}{|l||c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
-   \hline
-             \textbf{Experiment} & A & B & C & D & E & F & G & H & I & J & K & L & M & N & O & GA-4 & GA-5 \\
-
-   \hline
-        \textbf{Optima found}   & 48 & 50 & 50 & 49 & 49 & 50 & 48 & 50 & 50 & 50 & 50 & 50 & 50 & 50 & 50 & 34 & 29 \\
-
-   \hline
-\end{tabular}
-\label{tab:found}
-\end{table}
+%\begin{table}[t]
+%\caption{Different experimental configurations used to test the performance of EvoSpace.
+%GA-K are the baseline GA results for the 4-trap and 5-trap functions respectively.}
+%\centering
+%\tiny
+%\begin{tabular}{|l||c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+%   \hline
+%             \textbf{Experiment} & A & B & C & D & E & F & G & H & I & J & K & L & M & N & O & GA-4 & GA-5 \\
+%
+%   \hline
+%        \textbf{Optima found}   & 48 & 50 & 50 & 49 & 49 & 50 & 48 & 50 & 50 & 50 & 50 & 50 & 50 & 50 & 50 & 34 & 29 \\
+%
+%   \hline
+%\end{tabular}
+%\label{tab:found}
+%\end{table}
 
 \begin{figure*}[t]
     \centering
@@ -676,13 +688,15 @@ GA-K are the baseline GA results for the 4-trap and 5-trap functions respectivel
 
 Since every EvoWorker takes a random sample of individuals, one concern might be that some individuals of the initial population might
 not be chosen and evaluated wasting valuable genetic material.
-However, Figure \ref{fig:others}b shows that the percentage of not evaluated individuals within EvoSpace quickly decreases as more samples are taken.
+Figure \ref{fig:others}b shows a scatter plot of all of the runs for experiment K, depicting the percentage of individuals
+that have not yet been evaluated; here it is important to remember that some runs required more samples than others.
+The figure clearly shows that the percentage individuals not evaluated within EvoSpace quickly decreases as more samples are taken.
 Another interesting question is how the EvoSpace search impacts diversity, here given by the sum of the pairwise Hamming distances
 of all individuals within the population \cite{diversity}.
 Figure \ref{fig:others}c shows how diversity evolves for experiment K, and
 Figure \ref{fig:others}d shows the same for the basic GA\footnote{The time scale is given by
 the number of individuals evaluated, increments correspond to the number of individuals evaluated in 10 samples.}
-These plots show how the standard GA has a problem maintaining diversity, which leads to its poor performance shown in Table \ref{tab:found}.
+These plots show how the standard GA has a problem maintaining diversity, which leads to its poor performance.
 On the other hand, EvoSpace maintains a more diverse population which leads to a better exploration of the search space and more successful runs.
 
 Finally, a comparison of the computational effort required in each experiment is given in
@@ -693,7 +707,7 @@ Figures show that run time is significantly reduced as the number of EvoWorkers 
 
 
 
-\subsubsection{Experiment B: P-Peaks}
+\subsection{Experiment B: P-Peaks}
 % Why this second experiment? Do you want to prove something you
 % haven't before?  - JJ 
 
@@ -787,7 +801,7 @@ the number of workers increases, the number of individuals that remain
 in the population waiting to be replaced decreases. As there are fewer
 individuals in the population the probability of taking the same individuals
 when replacing a sample is increased. This problem is also reported
-by Merelo et al. in  \cite{sofea:naco}, where they present a PEA architecture with heterogeneous workers.
+by Merelo et al. in  \cite{sofea:naco}, where they present a Pool-EA architecture with heterogeneous workers.
 
 For other problems where the evaluation of individuals is not very
 demanding, the added cost of communication between EvoSpace and EvoWorkers can become a concern.
@@ -826,12 +840,12 @@ three main methods on the EvoWorkers from 30 runs of the 28 Realtime workers exp
 \label{sec:overcome}
 The previous section showed how the ESM can be used to implement a distributed and asynchronous EA based on the developed EvoSpace-py implementation,
 with strong results on two benchmark tests.
-However, as stated before, there are possible downsides to using a PEA, some of which are directly addressed my the underlying ESM.
+However, as stated before, there are possible downsides to using a Pool-EA, some of which are directly addressed by the underlying ESM.
 However, some issues persist, particularly the critical problem of possible lost work due to the unreliable connection of EvoWorkers,
-and the tedious problem of algorithm parametrization, a common issue with almost all EAs that is severely amplified in a PEA approach.
+and the tedious problem of algorithm parametrization, a common issue with almost all EAs that is severely amplified in a Pool-EA approach.
 
 \subsection{Unreliable Workers}
-In this section, the effect of node unavailability in an EvoSpace PEA is assessed.
+In this section, the effect of node unavailability in an EvoSpace Pool-EA is assessed.
 The ESM contrasts with the use of a global queue of tasks and implementations
 of map-reduce algorithms, such as in \cite{fazenda2012}, with several benefits relevant to
 concurrency control and workload distribution. 
@@ -908,8 +922,14 @@ The algorithm stops when reaching the optimum value, or when all workers
 pulled 100 samples. To simulate unreliable workers each worker was assigned a
 return sample probability. In the experiments the lower probability was a 30\%
 chance of an EvoWorker returning a sample or an EvoWorker failing 70\% of the
-time; other return sample probabilities where 50\%, 70\% and 90\%. Experiments
-where carried out for 4, 8 and 16 EvoWorkers.
+time; other return sample probabilities where 50\%, 70\% and 90\%.
+Here, it might be said that workers with a low return probability (say 30\%) should in fact be avoided,
+and a proper strategy would be to eliminate those workers from the evolutionary process.
+Here we consider a scenario were the reliability of a worker is not known a priori, their reliability can only be assessed a posteriori for a single experiment.
+Over time, however, it might be possible to build historic profiles of participating workers at take appropriate steps to improve performance,
+but such configurations are left for future work.
+
+Experiments where carried out using a total of 4, 8 and 16 EvoWorkers.
 Although supported by EvoSpace, time intervals were not chosen as triggers
 to feed the population with new individuals, population size was used instead.
 The population size is a better threshold as it is more critical
@@ -928,7 +948,8 @@ had comparable times. For 30 percent, both approaches
 had a slight increase in time. For 8 workers, shown in Figure~\ref{fig:plot_time_ri_w8},  there was a marginal
 decrease in overall time; and results where similar to those found in the experiments with 4 workers.  
 Figure~\ref{fig:plot_time_ri_w16} shows results for 16 workers,
-when there was only a 30\% chance of returning a sample the rate of reinsertion was high, approximately once every 35 samples.
+when there was only a 30\% chance of returning a sample the rate of reinsertion was high, this produced one reinsertion event approximately once every 35 samples,
+considering that 8 samples were reinserted at every such event.
 In this case, the insertion of random individuals resulted in a higher time to solution.
 For these experiments when the rate of reinsertion is low, both alternatives
 have similar results, but the reinsertion algorithm is better
@@ -967,7 +988,7 @@ characteristic convergence curves without substantial fitness drops.
 In general, EAs are sometimes criticized by the large number of parameters they require,
 that for real world problems need to be tuned empirically or require additional heuristic processes to be included into the search to
 adjust the parameters automatically \cite{parameters,ss}.
-In the case of a PEAs, this issue is magnified since the underlying system architecture adds several degrees of freedom to the search process,
+In the case of a Pool-EAs, this issue is magnified since the underlying system architecture adds several degrees of freedom to the search process,
 with unknown interactions.
 This problem is of particular importance in real-world scenarios, where there might be little prior insights regarding what could be the best
 configuration for an EA tool, especially if the intent is to use it as a black-box optimizer;
@@ -975,15 +996,15 @@ a comprehensive survey on this topic is given in \cite{parameters}.
 
 A noteworthy contribution is made by Cant\'u Paz, who addresses the problem of deriving theoretical models of the effects
 of parameters related to population size and migration in Island-Model EAs (IMEA) \cite{cantu}.
-However, it does not cover the effects of all possible parameters, or the intricacies of a PEA algorithm.
+However, it does not cover the effects of all possible parameters, or the intricacies of a Pool-EA algorithm.
 %Here, we would stress some important differences between PEAs and IMEAs.
 %First, an IMEA presents a fixed topological structure, with a predefined interaction protocol among each evolving population,
 %this leads to a coordinated, or even synchronized, interaction between the islands.
-%On the other hand, a PEA does not consider such a structure, the interactions between workers is much less structured or controlled.
+%On the other hand, a Pool-EA does not consider such a structure, the interactions between workers is much less structured or controlled.
 %Second, in an IMEA each island represents an individual evolutionary process, sharing some of the same dynamics as standard EAs.
-%In a PEA, however, only a single centralized population exists, samples of which are distributed across workers, but ultimately combined once again
+%In a Pool-EA, however, only a single centralized population exists, samples of which are distributed across workers, but ultimately combined once again
 %in the centralized pool.
-Therefore, some of the well-known insights derived from IMEA research (regarding, for example, migration policies) are not necessarily relevant in the PEA framework.
+Therefore, some of the well-known insights derived from IMEA research (regarding, for example, migration policies) are not necessarily relevant in the Pool-EA framework.
 
 Therefore, the recent approach called Randomized Parameter Setting Strategy (RPSS) \cite{fuku1,fuku2} is tested with EvoSpace in this section.
 The idea behind RPSS is that in a distributed EA, algorithm parametrization may be completely skipped to conduct a successful search.
@@ -994,7 +1015,7 @@ Therefore, the proposal in \cite{fuku1} is to set the parameter values randomly,
 The RPSS approach sets the parameters of each deme randomly at the beginning of the run, a very simple and apparently naive approach.
 Results suggest that when the number of distributed process is large enough, algorithm parameters can be set randomly and still achieve
 good results.
-Therefore the goal of this section is to evaluate RPSS on an EvoSpace PEA, which lacks the fixed population structure of an IMEA.
+Therefore the goal of this section is to evaluate RPSS on an EvoSpace Pool-EA, which lacks the fixed population structure of an IMEA.
 
 \begin{table}[!t]
 \renewcommand{\arraystretch}{1.3}
@@ -1028,7 +1049,7 @@ Number of Executions & 30 \\
 \end{tabular}
 \end{table}
 
-To gauge the effectiveness of RPSS on a PEA, it is compared with three different parametrization strategies, similar to what is done in \cite{fuku1,fuku2}.
+To gauge the effectiveness of RPSS on a Pool-EA, it is compared with three different parametrization strategies, similar to what is done in \cite{fuku1,fuku2}.
 All methods are compared based on average performance over a set of runs.
 First, the simplest approach consists on setting all of the EvoWorker parameters homogeneously.
 To do this, 200 random parametrizations are created, based on the ranges established in Table \ref{tab:params}.
@@ -1085,15 +1106,15 @@ Nevertheless, it is obvious that using a random heterogeneous parametrization ca
 \label{sec:conclusions}
 This paper presents the EvoSpace model for the development of pool-based EAs, which is design to exploit computing resources over a network and can be
 implemented to run directly on the cloud.
-PEAs present several interesting properties that are not present in standard EAs, storing the population in a central store and
+Pool-EAs present several interesting properties that are not present in standard EAs, storing the population in a central store and
 performing the evolutionary process in an asynchronous and distributed manner using distributed clients, which in the ESM are referred to as EvoWorkers.
-In this sense, what is particularly interesting of a PEA is that it incorporates features from natural evolution that are abstracted away in common EA implementations.
+In this sense, what is particularly interesting of a Pool-EA is that it incorporates features from natural evolution that are abstracted away in common EA implementations.
 Moreover, they are intended as means by which evolutionary computation techniques can incorporate modern computing frameworks that are executed over the Internet.
-However, PEAs also present several noteworthy design challenges, that must be addressed.
+However, Pool-EAs also present several noteworthy design challenges, that must be addressed.
 The proposed ESM is intended as a conceptual framework that addresses some of these challenges and allows for the development of a variety of search techniques
 that follow this pool-based approach.
 
-At the implementation level, this work also presents an ESM instantiation called EvoSpace-py, a software tool that simplifies the deployment of PEAs,
+At the implementation level, this work also presents an ESM instantiation called EvoSpace-py, a software tool that simplifies the deployment of Pool-EAs,
 as multi-threaded processes or on the cloud.
 The system has been programmed using the Python programming language and the well-known DEAP library for EAs, additionally the ESM model is implemented using the Redis key-value database.
 
@@ -1101,13 +1122,13 @@ Experimental results are presented for a pool-based GA, using standard benchmark
 Results are encouraging in several respects.
 First, performance of the ESM is equivalent or better than standard search, with the added benefit of improved efficiency and population diversity during the search.
 Second, experimental results illustrate the benefits of adding client workers to the evolutionary process.
-Third, several apparent issues with the PEA approach are studied, regarding the lost connection of unreliable workers and the increases size of the algorithm's parameter space.
+Third, several apparent issues with the Pool-EA approach are studied, regarding the lost connection of unreliable workers and the increases size of the algorithm's parameter space.
 In both cases, experimental results suggest that the ESM can handle both issues quite robustly, using built-in mechanisms and simple implementation strategies.
 
 This paper is the first to comprehensively describe and contextualize the ESM, and provides a comprehensive evaluation with respect to standard evolutionary search.
 Future work will have to explore the limits and comparative benefits of ESM, as it compares to other distributed EAs or island-model search strategies,
-in order to define the proper domain of competence of PEAs in general and the ESM in particular.
-Moreover, the ESM will be leveraged to implement and deploy a complete web-based PEA, that simplifies the use for other researchers in an easy to setup manner.
+in order to define the proper domain of competence of Pool-EAs in general and the ESM in particular.
+Moreover, the ESM will be leveraged to implement and deploy a complete web-based Pool-EA, that simplifies the use for other researchers in an easy to setup manner.
 
 
 
@@ -1125,8 +1146,275 @@ Moreover, the ESM will be leveraged to implement and deploy a complete web-based
 
 \bibliographystyle{spmpsci}      % mathematics and physical sciences
 %\bibliographystyle{spphys}       % APS-like style for physics
+%\bibliography{biblio}   % name your BibTeX data base
 
-\bibliography{biblio}   % name your BibTeX data base
+
+\begin{thebibliography}{10}
+\providecommand{\url}[1]{{#1}}
+\providecommand{\urlprefix}{URL }
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{DOI~\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{DOI~\discretionary{}{}{}\begingroup
+  \urlstyle{rm}\Url}\fi
+
+\bibitem{parallelEA}
+Alba, E.: Parallel Metaheuristics: {A} New Class of Algorithms.
+\newblock John Wiley \& Sons (2005)
+
+\bibitem{cloud}
+Armbrust, M., Fox, A., Griffith, R., Joseph, A.D., Katz, R., Konwinski, A.,
+  Lee, G., Patterson, D., Rabkin, A., Stoica, I., Zaharia, M.: A view of cloud
+  computing.
+\newblock Commun. ACM \textbf{53}(4), 50--58 (2010)
+
+\bibitem{Baxevanidis:2002}
+Baxevanidis, K., Davies, H., Foster, I., Gagliardi, F.: Grids and research
+  networks as drivers and enablers of future internet architectures.
+\newblock Comput. Netw. \textbf{40}(1), 5--17 (2002)
+
+\bibitem{bollini:1999}
+Bollini, A., Piastra, M.: Distributed and persistent evolutionary algorithms: A
+  design pattern.
+\newblock In: Proceedings of the Second European Workshop on Genetic
+  Programming, pp. 173--183. Springer-Verlag, London, UK, UK (1999)
+
+\bibitem{ParadisEO}
+Cahon, S., Melab, N., Talbi, E.G.: {ParadisEO}: A framework for the reusable
+  design of parallel and distributed metaheuristics.
+\newblock Journal of Heuristics \textbf{10}(3), 357--380 (2004)
+
+\bibitem{cantu}
+Cant\'u-Paz, E.: Parameter setting in parallel genetic algorithms.
+\newblock In: F.G. Lobo, C.F. Lima, Z.~Michalewicz (eds.) Parameter Setting in
+  Evolutionary Algorithms, \emph{Studies in Computational Intelligence},
+  vol.~54, pp. 259--276. Springer (2007)
+
+\bibitem{MilkyWay}
+Cole, N., Desell, T.J., Gonzalez, D.L., de~Vega, F.F., Magdon-Ismail, M.,
+  Newberg, H.J., Szymanski, B.K., Varela, C.A.: Evolutionary algorithms on
+  volunteer computing platforms: The milkyway@ home project.
+\newblock In: Parallel and Distributed Computational Intelligence,
+  \emph{Studies in Computational Intelligence}, vol. 269, pp. 63--90. Springer
+  (2010)
+
+\bibitem{cotillon:2012}
+Cotillon, A., Valencia, P., Jurdak, R.: Android genetic programming framework.
+\newblock In: Proceedings of the 15th European conference on Genetic
+  Programming, EuroGP'12, pp. 13--24. Springer-Verlag, Berlin, Heidelberg
+  (2012)
+
+\bibitem{Curbera:2002}
+Curbera, F., Duftler, M., Khalaf, R., Nagy, W., Mukhi, N., Weerawarana, S.:
+  Unraveling the web services web: An introduction to soap, wsdl, and uddi.
+\newblock IEEE Internet Computing \textbf{6}(2), 86--93 (2002)
+
+\bibitem{Jong:PS97}
+De~Jong, K.A., Potter, M.A., Spears, W.M.: Using problem generators to explore
+  the effects of epistasis.
+\newblock In: T.~B\"ack (ed.) ICGA, pp. 338--345. Morgan Kaufmann (1997)
+
+\bibitem{Jong:1990}
+De~Jong, K.A., Spears, W.M.: An analysis of the interacting roles of population
+  size and crossover in genetic algorithms.
+\newblock In: Proceedings of the 1st Workshop on Parallel Problem Solving from
+  Nature, PPSN I, pp. 38--47. Springer-Verlag, London, UK, UK (1991).
+\newblock \urlprefix\url{http://dl.acm.org/citation.cfm?id=645821.670188}
+
+\bibitem{eiben}
+Eiben, A.E., Smith, J.E.: Introduction to Evolutionary Computing.
+\newblock SpringerVerlag (2003)
+
+\bibitem{fazenda2012}
+Fazenda, P., McDermott, J., O'Reilly, U.M.: A library to run evolutionary
+  algorithms in the cloud using mapreduce.
+\newblock In: C.~di~Chio, et~al. (eds.) Applications of Evolutionary
+  Computation, \emph{LNCS}, vol. 7248, pp. 416--425. Springer Berlin Heidelberg
+  (2012)
+
+\bibitem{nc}
+Fern\'{a}ndez De~Vega, F., Olague, G., Trujillo, L., Lombra\~{n}a Gonz\'{a}lez,
+  D.: {Customizable Execution Environments for Evolutionary Computation Using
+  BOINC + Virtualization}.
+\newblock Natural Computing \textbf{12}(2), 163--177 (2013)
+
+\bibitem{DEAP_JMLR2012}
+Fortin, F.A., Rainville, F.M.D., Gardner, M.A., Parizeau, M., Gagn\'e, C.:
+  {DEAP}: Evolutionary algorithms made easy.
+\newblock Journal of Machine Learning Research \textbf{13}, 2171--2175 (2012)
+
+\bibitem{Foster:1998}
+Foster, I., Kesselman, C. (eds.): The Grid: Blueprint for a New Computing
+  Infrastructure.
+\newblock Morgan Kaufmann Publishers Inc., San Francisco, CA, USA (1999)
+
+\bibitem{garcia2011}
+Garcia-Arenas, M., Merelo, J.J., Mora, A.M., Castillo, P., Romero, G., Laredo,
+  J.: Assessing speed-ups in commodity cloud storage services for distributed
+  evolutionary algorithms.
+\newblock In: 2011 IEEE Congress on Evolutionary Computation (CEC), pp.
+  304--311. IEEE (2011)
+
+\bibitem{FreeLunch}
+Garcia-Valdez, M., Mancilla, A., Trujillo, L., Merelo, J.J., Fernandez-de Vega,
+  F.: Is there a free lunch for cloud-based evolutionary algorithms?
+\newblock In: 2013 IEEE Congress on Evolutionary Computation (CEC), pp.
+  1255--1262 (2013)
+
+\bibitem{Musart}
+Garcia-Valdez, M., Trujillo, L., Fern{\'a}ndez~de Vega, F., Merelo~Guerv{\'o}s,
+  J., Olague, G.: Evospace-interactive: A framework to develop distributed
+  collaborative-interactive evolutionary algorithms for artistic design.
+\newblock In: P.~Machado, et~al. (eds.) Evolutionary and Biologically Inspired
+  Music, Sound, Art and Design, \emph{LNCS}, vol. 7834, pp. 121--130. Springer
+  Berlin Heidelberg (2013)
+
+\bibitem{Evospace}
+Garc{\'\i}a-Valdez, M., Trujillo, L., Fern{\'a}ndez~de Vega, F.,
+  Merelo~Guerv\'os, J.J., Olague, G.: {EvoSpace: A Distributed Evolutionary
+  Platform Based on the Tuple Space Model}.
+\newblock In: A.~Esparcia-Alc{\'a}zar, et~al. (eds.) Applications of
+  Evolutionary Computation, \emph{LNCS}, vol. 7835, pp. 499--508. Springer
+  Berlin Heidelberg (2013)
+
+\bibitem{linda}
+Gelernter, D.: Generative communication in linda.
+\newblock ACM Trans. Program. Lang. Syst. \textbf{7}(1), 80--112 (1985)
+
+\bibitem{fuku1}
+Gong, Y., Fukunaga, A.: Distributed island-model genetic algorithms using
+  heterogeneous parameter settings.
+\newblock In: IEEE Congress on Evolutionary Computation, pp. 820--827. IEEE
+  (2011)
+
+\bibitem{spector:2007}
+Klein, J., Spector, L.: Unwitting distributed genetic programming via
+  asynchronous javascript and xml.
+\newblock In: Proceedings of the 9th annual conference on Genetic and
+  evolutionary computation, GECCO '07, pp. 1628--1635. ACM, New York, NY, USA
+  (2007)
+
+\bibitem{ss}
+Kramer, O.: Self-Adaptive Heuristics for Evolutionary Computation,
+  \emph{Studies in Computational Intelligence}, vol. 147.
+\newblock Springer (2008)
+
+\bibitem{langdon:2004}
+Langdon, W.B.: Global distributed evolution of l-systems fractals.
+\newblock In: M.~Keijzer, U.M. O'Reilly, S.M. Lucas, E.~Costa, T.~Soule (eds.)
+  Genetic Programming, Proceedings of EuroGP'2004, \emph{LNCS}, vol. 3003, pp.
+  349--358. Springer-Verlag (2004)
+
+\bibitem{parameters}
+Lobo, F.G., Lima, C.F., Michalewicz, Z.: Parameter Setting in Evolutionary
+  Algorithms.
+\newblock Springer Publishing Company, Incorporated (2007)
+
+\bibitem{PoolvsIsland}
+Merelo, J.J., Mora, A., Fernandes, C., Esparcia-Alcazar, A., Laredo, J.: Pool
+  vs. island based evolutionary algorithms: An initial exploration.
+\newblock In: P2P, Parallel, Grid, Cloud and Internet Computing (3PGCIC), 2012
+  Seventh International Conference on, pp. 19--24 (2012)
+
+\bibitem{sofea:naco}
+Merelo, J.J., Mora, A., Fernandes, C., Esparcia-Alc{\'a}zar, A.I.: Designing
+  and testing a pool-based evolutionary algorithm.
+\newblock Natural Computing pp. 1--14 (2012)
+
+\bibitem{sofea1}
+Merelo-Guerv\'{o}s, J.J., Mora, A., Cruz, J.A., Esparcia, A.I.: Pool-based
+  distributed evolutionary algorithms using an object database.
+\newblock In: Proceedings of the 2012t European conference on Applications of
+  Evolutionary Computation, EvoApplications'12, pp. 446--455. Springer-Verlag,
+  Berlin, Heidelberg (2012)
+
+\bibitem{sofea2}
+Merelo-Guervos, J.J., Mora, A., Cruz, J.A., Esparcia-Alcazar, A.I., Cotta, C.:
+  Scaling in distributed evolutionary algorithms with persistent population.
+\newblock In: 2012 IEEE Congress on Evolutionary Computation (CEC), pp. 1 --8.
+  IEEE Comuter Society (2012)
+
+\bibitem{merelo:2008}
+Merelo~Guervos, J.J., Valdivieso, P.A.C., Laredo, J.L.J., Garc{\'\i}a, A.M.,
+  Prieto, A.: Asynchronous distributed genetic algorithms with {Javascript} and
+  {JSON}.
+\newblock In: IEEE Congress on Evolutionary Computation, pp. 1372--1379. IEEE
+  (2008)
+
+\bibitem{diversity}
+Morrison, R.W., Jong, K.A.D.: Measurement of population diversity.
+\newblock In: Selected Papers from the 5th European Conference on Artificial
+  Evolution, pp. 31--41. Springer-Verlag, London, UK, UK (2002)
+
+\bibitem{Oram:2001}
+Oram, A. (ed.): Peer-to-Peer: Harnessing the Power of Disruptive Technologies.
+\newblock O'Reilly \& Associates, Inc., Sebastopol, CA, USA (2001)
+
+\bibitem{DREAM}
+Paechter, B., Back, T., Schoenauer, M., Sebag, M., Eiben, A., Merelo, J.J.,
+  Fogarty, T.: A distributed resource evolutionary algorithm machine ({DREAM}).
+\newblock In: Evolutionary Computation, 2000. Proceedings of the 2000 Congress
+  on, vol.~2, pp. 951--958 vol.2 (2000)
+
+\bibitem{roy:2009}
+Roy, G., Lee, H., Welch, J.L., Zhao, Y., Pandey, V., Thurston, D.: A
+  distributed pool architecture for genetic algorithms.
+\newblock In: Proceedings of the Eleventh conference on Congress on
+  Evolutionary Computation, CEC'09, pp. 1177--1184. IEEE Press, Piscataway, NJ,
+  USA (2009)
+
+\bibitem{free-form}
+Schmidt, M., Lipson, H.: Distilling free-form natural laws from experimental
+  data.
+\newblock Science \textbf{324}, 81--85 (2009)
+
+\bibitem{picbreeder}
+Secretan, J., Beato, N., D'Ambrosio, D.B., Rodriguez, A., Campbell, A.,
+  Folsom-Kovarik, J.T., Stanley, K.O.: Picbreeder: A case study in
+  collaborative evolutionary exploration of design space.
+\newblock Evol. Comput. \textbf{19}(3), 373--403 (2011)
+
+\bibitem{FlexGP}
+Sherry, D., Veeramachaneni, K., McDermott, J., O'Reilly, U.M.: Flex-gp: Genetic
+  programming on the cloud.
+\newblock In: C.~di~Chio, et~al. (eds.) Applications of Evolutionary
+  Computation, \emph{LNCS}, vol. 7248, pp. 477--486. Springer Berlin Heidelberg
+  (2012)
+
+\bibitem{ateam}
+Talukdar, S., Baerentzen, L., Gove, A., De~Souza, P.: Asynchronous teams:
+  Cooperation schemes for autonomous agents.
+\newblock Journal of Heuristics \textbf{4}(4), 295--321 (1998)
+
+\bibitem{fuku2}
+Tanabe, R., Fukunaga, A.: Evaluation of a randomized parameter setting strategy
+  for island-model evolutionary algorithms.
+\newblock In: IEEE Congress on Evolutionary Computation, pp. 1263--1270. IEEE
+  (2013)
+
+\bibitem{trap}
+Thierens, D.: Scalability problems of simple genetic algorithms.
+\newblock Evolutionary Computation \textbf{7}, 331--352 (1999)
+
+\bibitem{Fire}
+Trujillo, L., Valdez, M.G., de~Vega, F.F., Merelo-Guerv\'os, J.J.: {Fireworks:
+  Evolutionary art project based on EvoSpace-interactive}.
+\newblock In: IEEE Congress on Evolutionary Computation, pp. 2871--2878. IEEE
+  (2013)
+
+\bibitem{varia2008cloud}
+Varia, J.: Cloud architectures.
+\newblock White Paper of Amazon  (2008)
+
+\bibitem{VecchiolaCORR}
+Vecchiola, C., Kirley, M., Buyya, R.: Multi-objective problem solving with
+  offspring on enterprise clouds.
+\newblock CoRR \textbf{abs/0903.1386} (2009)
+
+\end{thebibliography}
+
+
+
+
 \end{document}
 % end of file template.tex
 
