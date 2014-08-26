@@ -87,8 +87,7 @@
            \and
            Leonardo Trujillo \at
            Instituto Tecnol\'ogico de Tijuana, Calzada Tecnol\'ogico S/N, Tijuana, BC, 22414  \\	
-           \email{leonardo@tectijuana.edu.mx} \\
-           www.tree-lab.org \\ 
+           Website: www.tree-lab.org \\ 
 			\and
 			Juan-J Merelo
 	         \at
@@ -170,7 +169,7 @@ Although Pool-EAs are capable of an ad-hoc collaboration of computing resources,
         
 Issue (5) is a deployment problem, that can be addressed at the technological level, without regards to the evolutionary model.
 Most of the other issues have been extensively studied in distributed systems research.
-For instance, a relevant model that addresses issue (1) was proposed by Gelertner and Carriero \cite{linda}, the model introduced the concept of a tuple space, a repository of tuples, or shared objects, that can be accessed concurrently by several processes. This tuple space functions as a communication and coordination mechanism between distributed processes that interact with each other through these shared tuples. A distinctive characteristic of this model is that in order to change the state of a tuple, a process needs to atomically remove the tuple from the space and place it back only after it has released it; this inherently provides mutual exclusion since another process cannot access a tuple while it is been used. A benefit of such a model for Pool-EAs is that it forbids two clients from pulling the same work. 
+For instance, Gelertner and Carriero \cite{linda} developed a model that addresses issue (1), introducing the concept of a tuple space, a repository of tuples or shared objects, that can be accessed concurrently by several processes. This tuple space functions as a communication and coordination mechanism between distributed processes that interact with each other through these shared tuples. A distinctive characteristic of this model is that in order to change the state of a tuple, a process needs to atomically remove the tuple from the space and place it back only after it has released it; this inherently provides mutual exclusion since another process cannot access a tuple while it is been used. A benefit of such a model for Pool-EAs is that it forbids two clients from pulling the same work. 
 
 This papers presents the EvoSpace Model (ESM), a conceptual framework for the development of Pool-based EAs \cite{Evospace}.
 The ESM is built conceptually around a central repository or population store, incorporating some of the main principles of the tuple-space model.
@@ -506,9 +505,9 @@ can interact with any language supporting {\tt json-rpc} or Ajax requests. The E
 
 On the other hand, EvoWorkers must implement the genetic operators for a particular EA.
 Given that EvoSpace-py is implemented as a Python module, a simple way to implement EvoWorkers is by using the basic non-distributed GA found in the Distributed Evolutionary Algorithms in Python (DEAP) library \cite{DEAP_JMLR2012}. 
-However, three methods were added to the local DEAP algorithm: $getSample()$ and  $putSample()$; and  another for the  initialization of the population using DEAP´s own methods.
+However, three methods were added to the local DEAP algorithm: $getSample()$ and  $setSample()$; and  another for the  initialization of the population using DEAP´s own methods.
 For instance, to generate the initial population DEAP's $initialize()$ method  is called and the generated population is sent to EvoSpace, then for each generation $getSample()$ function is called, this executes the EvoStore $Take()$ method, and the received sample is used to create a DEAP population which is then evolved for a predefined number of generations.
-Finally, the $putSample()$ function converts the DEAP population to a JSON object and returns it to the EvoStore through the $Replace()$ method.   
+Finally, the $setSample()$ function converts the DEAP population to a JSON object and returns it to the EvoStore through the $Replace()$ method.   
 
 \subsection{EvoSpace-py in a Cloud Architecture}
 The first version of EvoSpace-py was implemented as a multi-process application running in a single computer, this implementation was used to run the first set of experiments described in Section \ref{sec:exp1}.
@@ -565,11 +564,15 @@ and there is no charge for data transfer costs between both services.
 \section{Experiments and Results}
 \label{sec:exp1}
 The goal of this section is to evaluate the ESM and the proposed EvoSpace-py implementation, using well-known benchmarks for GAs,
-the OneMax, K-trap problem \cite{trap} and P-Peaks problems \cite{Jong:PS97}.
+the OneMax problem, the K-trap problem \cite{trap} and the P-Peaks problem \cite{Jong:PS97}.
 In particular, two different versions of EvoSpace-py are evaluated, a local multi-process implementation and a cloud-based implementation,
-using three experimental setups (A,B and C).
-The goal is to evaluate the quality of the results found, the computational effort, and the performance of ESM with different numbers
-of connected EvoWorkers, comparing with an IMEA and a canonical GA.
+using three experimental setups.
+In the first experiment, the ESM is compared with the IMEA using the OneMax problem, to evaluate how it compares to a closely related EA model that is also
+amenable to distributed computing frameworks.
+In the second experiment, the ESM is evaluated based on its ability to find local optima on the deceptive K-trap problem,
+comparing its performance and diversity with that of a canonical GA.
+Finally, in the third experimental setup the speedup offered by the cloud-based implementation is evaluated given the communication overhead
+that the distributed approach requires, comparing it with a local execution.
  %To prove what? Validate the approach? Check
                   %performance? Scalability? Both? - JJ
 
@@ -607,22 +610,22 @@ Therefore, these results suggest that EvoSpace can perform a more efficient sear
     \centering
     \subfigure[EvoSpace]
     {
-       \includegraphics[width=5.5cm]{one_max_plot_evaluations_evospace.eps}
+       \includegraphics[width=5.9cm]{one_max_plot_evaluations_evospace.eps}
        %\includegraphics[width=5cm]{Plot-Individuals-Eval-k4w32s32.eps}
 
     }
     \subfigure[IMEA]
     {
-        \includegraphics[width=5.5cm]{one_max_plot_evaluations_island.eps}
+        \includegraphics[width=5.9cm]{one_max_plot_evaluations_island.eps}
     }
     \\
     \subfigure[EvoSpace]
     {
-        \includegraphics[width=5.5cm]{one_max_plot_time_evospace.eps}
+        \includegraphics[width=5.9cm]{one_max_plot_time_evospace.eps}
     }
     \subfigure[IMEA]
     {
-        \includegraphics[width=5.5cm]{one_max_plot_time_island.eps}
+        \includegraphics[width=5.9cm]{one_max_plot_time_island.eps}
     }
     \caption{
     Comparison of EvoSpace with an IMEA: (a,b) Number of fitness function evaluations; (c,d) Total time to solution.}
@@ -675,22 +678,22 @@ the EvoSpace runs. In total, $50$ runs were performed of each experimental confi
     \centering
     \subfigure[Evolution of Fitness]
     {
-       \includegraphics[width=6cm]{Plot-Surface-Best-Run0-k5w4s64.eps}
+       \includegraphics[width=5.9cm]{Plot-Surface-Best-Run0-k5w4s64.eps}
        %\includegraphics[width=5cm]{Plot-Individuals-Eval-k4w32s32.eps}
 
     }
     \subfigure[Evaluated]
     {
-        \includegraphics[width=6cm]{Plot-Individuals-Eval-k5w4s64.eps}
+        \includegraphics[width=5.9cm]{Plot-Individuals-Eval-k5w4s64.eps}
     }
     \\
     \subfigure[Experiment K]
     {
-        \includegraphics[width=6cm]{DivMeanEvoSameScale.eps}
+        \includegraphics[width=5.9cm]{DivMeanEvoSameScale.eps}
     }
     \subfigure[Standard GA]
     {
-        \includegraphics[width=6cm]{DivMeanGASameScale.eps}
+        \includegraphics[width=5.9cm]{DivMeanGASameScale.eps}
     }
     \caption{
     (a) Evolution of fitness for a run of experiment K; the plot shows how fitness evolves for each sample taken by the EvoWorkers.
@@ -778,11 +781,11 @@ On the other hand, the GA only finds 34 optima on the 5-trap problem and 29 on t
     \centering
     \subfigure[]
     {
-        \includegraphics[width=6cm]{Evaluados.eps}
+        \includegraphics[width=5.9cm]{Evaluados.eps}
     }
     \subfigure[]
     {
-        \includegraphics[width=6cm]{TimeBox.eps}
+        \includegraphics[width=5.9cm]{TimeBox.eps}
     }
     \caption{
     (a) Number of evaluated individuals over all runs.
@@ -871,68 +874,74 @@ Number of Executions & 30 \\
 As a baseline execution, the experiment was also conducted on a local computer. The specifications for the local computer are as follows, a
 2.2 Ghz Intel Core i7 processor, 16 GB of 1333 DDR3 memory, and Mac OS X 10.7.5,
 using the Python interpreter version 2.7.2 for 64-bit architectures. 
+In this setting, the problem required considerable computational time: each run took an average of 1567.36 seconds to find the optimal solution.
+The execution used a single core and CPU activity remained low for the whole length of the experiment. On the other hand,
+the parallel execution time was significantly lower even when only two workers were used, clocking in at less than 180s even in the worst cases.
 
-In this setting, the problem required considerable computational time: each run took an average of 1567.36 seconds to find the optimal solution (see Table~\ref{local}).
-The execution used a single core and CPU activity remained low for the whole length of the experiment. On the other hand, the parallel execution time was significantly lower even when only two workers were used,
-clocking in at less than 180s even in the worst cases.
-
-\begin{table}[t]
-\renewcommand{\arraystretch}{1.3}
-\caption{Average Times and Evaluations of 30 executions in a local computer.}
-\label{local}
-\centering
-\begin{tabular}{|c|c|}
-\hline
-Average time in seconds & Average number of evaluations \\
-\hline
-1567.36 & 100690.5  \\
-\hline
-\end{tabular}
-\end{table}
+%\begin{table}[t]
+%\renewcommand{\arraystretch}{1.3}
+%\caption{Average Times and Evaluations of 30 executions in a local computer.}
+%\label{local}
+%\centering
+%\begin{tabular}{|c|c|}
+%\hline
+%Average time in seconds & Average number of evaluations \\
+%\hline
+%1567.36 & 100690.5  \\
+%\hline
+%\end{tabular}
+%\end{table}
 
 Average times for the configuration using Realtime cores in PiCloud,
 are presented in Figure~\ref{fig:plot_time_real}. It can be seen that
-incrementing the number of workers reduced the time to solution, but only up to 16 workers. With 28 workers time to solution did not improve. This is
-related to the increase in the number of evaluations needed to find
-the optima, which is shown in Figure~\ref{fig:plot_evals_real}.
-This figure shows that the number of evaluations needed to find the
-solution increases as more workers are used. This behavior has an
-impact on the time to solution, because each evaluation (as stated
-earlier), is computationally expensive. From 2 to 8 workers the number
-of evaluations remains less than in the baseline GA, but from that point on
-the number is higher. A possible reason for this is that as
-the number of workers increases, the number of individuals that remain
-in the population waiting to be replaced decreases. As there are fewer
-individuals in the population the probability of taking the same individuals
-when replacing a sample is increased. This problem is also reported
-by Merelo et al. in  \cite{sofea:naco}, where they present a Pool-EA architecture with heterogeneous workers.
+incrementing the number of workers reduced the time to solution, but only up to 16 workers,
+however with 28 workers the median time to solution did not improve.
+There seems to be a point at which the overall speedup of the distributed search levels off,
+at least with the problems tested here.
+% This is
+%related to the increase in the number of evaluations needed to find
+%the optima, which is shown in Figure~\ref{fig:plot_evals_real}.
+%This figure shows that the number of evaluations needed to find the
+%solution increases as more workers are used. This behavior has an
+%impact on the time to solution, because each evaluation (as stated
+%earlier), is computationally expensive. From 2 to 8 workers the number
+%of evaluations remains less than in the baseline GA, but from that point on
+%the number is higher. A possible reason for this is that as
+%the number of workers increases, the number of individuals that remain
+%in the population waiting to be replaced decreases. As there are fewer
+%individuals in the population the probability of taking the same individuals
+%when replacing a sample is increased. This problem is also reported
+%by Merelo et al. in  \cite{sofea:naco}, where they present a Pool-EA architecture with heterogeneous workers.
 
-For other problems where the evaluation of individuals is not very
-demanding, the added cost of communication between EvoSpace and EvoWorkers can become a concern.
-In these experiments this cost is negligible, Figure~\ref{plot_ges} shows boxplots of the time required two perform the
-three main methods on the EvoWorkers from 30 runs of the 28 Realtime workers experiment.
+For problem domains where fitness evaluation of individuals is not demanding, the added overhead of communication between the EvoStore and the EvoWorkers
+can become a concern.
+However, our experiments suggest that this cost is practically negligible.
+Figure~\ref{plot_ges} presents boxplots of the time required to perform the
+three main EvoSpace-py functions on the EvoWorkers, computed over all of the 30 runs using 28 Realtime PiCloud workers.
+It is clear that almost all of the computational time is consumed by the $Evolve()$ function which actually performs the search operations,
+while the cost of taking a and returning a sample is relatively low.
 
 
 \begin{figure*}[t]
     \centering
     \subfigure[Time to solution]
     {
-        \includegraphics[width=6cm]{plot_time_realtime.eps}
+        \includegraphics[width=5.9cm]{plot_time_realtime.eps}
         \label{fig:plot_time_real}
     }
-    \subfigure[Number of Evaluations]
-    {
-        \includegraphics[width=6cm]{plot_evals_realtime.eps}
-        \label{fig:plot_evals_real}
-    }\\
+%    \subfigure[Number of Evaluations]
+%    {
+%        \includegraphics[width=5.9cm]{plot_evals_realtime.eps}
+%        \label{fig:plot_evals_real}
+%    }\\
         \subfigure[Worker Costs]
     {
-        \includegraphics[width=6cm]{plot_ges.eps}
+        \includegraphics[width=5.9cm]{plot_ges.eps}
         \label{plot_ges}
     }
     \caption{Evaluation on the P-Peaks problem:
     (a) Time required to solution;
-    (b) Number of evaluations to solution; (c) Time of worker's methods, GetSample(), Evolve(), PutSample().}
+    (b) Number of evaluations to solution; (c) Time of worker's methods, getSample(), Evolve(), setSample().}
     \label{fig:effort_real_time}
 \end{figure*}
 
@@ -967,32 +976,32 @@ a random insertion technique, but this might negatively impact the search proces
     \centering
     \subfigure[]
     {
-        \includegraphics[width=6cm]{plot_time_CRS_w4.eps}
+        \includegraphics[width=5.9cm]{plot_time_CRS_w4.eps}
         \label{fig:plot_time_ri_w4}
     }
     \subfigure[]
     {
-        \includegraphics[width=6cm]{plot_time_CRS_w8.eps}
+        \includegraphics[width=5.9cm]{plot_time_CRS_w8.eps}
         \label{fig:plot_time_ri_w8}
     }
     \subfigure[]
     {
-        \includegraphics[width=6cm]{plot_time_CRS_w16.eps}
+        \includegraphics[width=5.9cm]{plot_time_CRS_w16.eps}
         \label{fig:plot_time_ri_w16}
     }
         \subfigure[]
     {
-        \includegraphics[width=6cm]{16_plot_evals.eps}
+        \includegraphics[width=5.9cm]{16_plot_evals.eps}
         \label{fig:plot_evals_w16}
     }
         \subfigure[]
     {
-        \includegraphics[width=6cm]{plot_percent_90.eps}
+        \includegraphics[width=5.9cm]{plot_percent_90.eps}
         \label{fig:plot_percent_90}
     }
         \subfigure[]
     {
-        \includegraphics[width=6cm]{plot_percent_30.eps}
+        \includegraphics[width=5.9cm]{plot_percent_30.eps}
         \label{fig:plot_percent_30}
     }
     \caption{Unreliable workers: (a) Time to solution, 4 Workers; (b) Time to solution, 8 Worker;
@@ -1009,12 +1018,12 @@ a random insertion technique, but this might negatively impact the search proces
     \centering
     \subfigure[]
     {
-        \includegraphics[width=6cm]{Fitness-w16-30-random.eps}
+        \includegraphics[width=5.9cm]{Fitness-w16-30-random.eps}
         \label{fig:Fitness-w16-30-random}
     }
         \subfigure[]
     {
-        \includegraphics[width=6cm]{Fitness-w16-30-reinsert.eps}
+        \includegraphics[width=5.9cm]{Fitness-w16-30-reinsert.eps}
         \label{fig:Fitness-w16-30-reinsert}
     }
     \caption{Evolution of fitness with respect to sample number, using 30\% returned samples and 16 Workers,
@@ -1187,9 +1196,9 @@ These results are presented in Figure \ref{fig:PPeaks}, showing the average perf
 \begin{figure}[t]
     \centering
     	\subfigure[16 EvoWorkers]
-    {\includegraphics[width=6cm]{PPeaks-w16.eps}}
+    {\includegraphics[width=5.9cm]{PPeaks-w16.eps}}
         \subfigure[120 EvoWorkers]
-    {\includegraphics[width=6cm]{PPeaks-w120.eps}}
+    {\includegraphics[width=5.9cm]{PPeaks-w120.eps}}
     \caption{Convergence plots for the P-Peaks with 16 (a) and 120 (b)
       EvoWorkers .}
 % Both plots should use the same x-axis; it''s misleading otherwise -
@@ -1246,6 +1255,12 @@ in order to define the proper domain of competence of Pool-EAs in general and th
 Moreover, the ESM will be leveraged to implement and deploy a complete web-based Pool-EA, that simplifies the use for other researchers in an easy to setup manner.
 
 
+\section*{Acknowledgements}
+Funding provided by CONACYT (Mexico) Project No. 29537 from the Programa de Estimulo a la Innovaci\'on, CONACYT
+Basic Science Research Project No. 178323, DGEST (Mexico) Research Projects No.5149.13-P and TIJ-ING-2012-110,
+and IRSES project ACoBSEC from the European Commission.
+Additional funding provided by projects P08-TIC-03903 (Andalusian Regional Government), TIN2011-28627-C04-02 (Spanish Ministry of Science and Innovation),
+project 83 (CANUBE) awarded by the CEI-BioTIC UGR. Regional Government Junta de Extremadura, Consejer\'ia de Econom\'ia, Comercio e Innovaci\'on and FEDER, project GRU10029.
 
 
 %\begin{acknowledgements}
