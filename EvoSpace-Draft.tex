@@ -398,11 +398,11 @@ The EvoSpace Server employs a client-server architecture using at its core an Ev
 see algorithms \ref{alg:population} and \ref{alg:remanager}.
 \textbf{InitializePopulation} is executed once, its goal is obvious, initialize the population by adding $popsize$ random
 individuals by calling the $Insert(A)$ method . The function that creates new individuals depends on the problem and representation used.
-\textbf{ReInsertionManager} is used as a failsafe process that periodically checks (every $wt$ seconds) if the size of the population in $ES$
-falls below a certain threshold or if the time after the last $ReInsert()$ is greater than $next_r$.
+\textbf{ReInsertionManager} is used as a fail-safe process that periodically checks (every $wt$ seconds) if the size of the population in $ES$
+falls below a certain threshold.% or if the time after the last $ReInsert()$ is greater than $next_r$.
 If any of these conditions are satisfied, then $rn$ subsets $S_i \in \mathcal{S}$ are reinserted into $ES$ using the $ReInsert(i)$ method.
-Moreover, the \textbf{ReInsertionManager} makes a $ReInsert(i)$ call when an $EvoWorker$ is assumed to have lost a connection with the server,
-thus recovering the population sample.
+Moreover, the \textbf{ReInsertionManager} can also make a $ReInsert(i)$ call when an $EvoWorker$ is assumed to have lost a connection with the server,
+after waiting for a maximum amount of time for a return, thus recovering the population sample taken by the EvoWorker.
 
 As an example of how different components could be implemented in this layer, 
 a different version of a \textbf{ReInsertionManager} could be defined, that instead of using the $ReInsert(i)$ method, generates a random replacement for $S_i$ and inserts into $ES$ by calling the $Insert(A)$ method.
@@ -460,16 +460,16 @@ a different version of a \textbf{ReInsertionManager} could be defined, that inst
 \begin{algorithm}[t]
 \caption{The server-side \textbf{ReInsertionManager} process.}
 \begin{algorithmic}
-\REQUIRE $ri \leftarrow$ re-insertion interval
+%\REQUIRE $ri \leftarrow$ re-insertion interval
 \REQUIRE $min \leftarrow$ population size threshold
 \REQUIRE $rn \leftarrow$ number of samples to re-insert
 \REQUIRE $EvoSpace \leftarrow$ Reference to an Evospace Server
 \REQUIRE $wt \leftarrow$ wait interval
-\STATE $next_r \leftarrow +ri$
+%\STATE $next_r \leftarrow +ri$
 \WHILE{$EvoSpace.active$}
-\IF{$|EvoSpace.ES| \leq min$ OR $currentTime \geq next_r$}
-\STATE $EvoSpace.RespawnOld(rn)$
-\STATE $next_r \leftarrow currentTime + ri$
+\IF{$|EvoSpace.ES| \leq min$} %OR $currentTime \geq next_r$}
+\STATE $EvoSpace.ReInsert(rn)$
+%\STATE $next_r \leftarrow currentTime + ri$
 \ENDIF
 \STATE $wait(wt)$
 \ENDWHILE
@@ -665,13 +665,15 @@ Tournament selection & size 4 \\
 \subsection{Experiment B: K-trap Function}
 This problem presents a multi-modal and deceptive fitness landscape.
 Table \ref{tab:exp} summarizes the different experimental configurations tested, based on the $K$ value, number of EvoWorkers, the sample size taken by each worker and the chromosome length.
+A bit-string representation is used, and each EvoWorker performs 100 total generations on each sample,
+using with one-point crossover (with crossover probability set to 1) and one-point mutation (mutation probability set to 0.06).
 The number of individuals in the EvoStore is set to 1024 for 4-trap experiments and to 4096 for 5-trap,
-and the maximum number of samples taken from the EvoStore is 1000..
-Table \ref{tab:exp2} summarizes the shared parameters and algorithmic configuration.
+and the maximum number of total samples that can be taken from the EvoStore in each run is 1000.
 For comparison, a standard GA is applied to each benchmark problem.
-For the 4-trap problem, the maximum number of generations is 4000, for the 5-trap problem it is 1000,
-this bounds the number of function evaluations so it is equivalent to the maximum number of function evaluations performed in all of
-the EvoSpace runs. In total, $50$ runs were performed of each experimental configuration.
+For the 4-trap problem the maximum number of generations is set to 4000, and for the 5-trap problem it is set to 1000.
+These values limit the maximum number of function evaluations that can be performed, in fact these values were chosen so the limit is equivalent to the
+maximum number of function evaluations from all of the EvoSpace runs; however, most EvoSpace runs required much less function evaluations than these maximum values.
+In total, $50$ runs were performed of each experimental configuration.
 
 
 \begin{figure*}[t]
@@ -687,7 +689,7 @@ the EvoSpace runs. In total, $50$ runs were performed of each experimental confi
         \includegraphics[width=5.9cm]{Plot-Individuals-Eval-k5w4s64.eps}
     }
     \\
-    \subfigure[Experiment K]
+    \subfigure[EvoSpace]
     {
         \includegraphics[width=5.9cm]{DivMeanEvoSameScale.eps}
     }
@@ -696,11 +698,10 @@ the EvoSpace runs. In total, $50$ runs were performed of each experimental confi
         \includegraphics[width=5.9cm]{DivMeanGASameScale.eps}
     }
     \caption{
-    (a) Evolution of fitness for a run of experiment K; the plot shows how fitness evolves for each sample taken by the EvoWorkers.
-    (b) Scatter plot, considering all runs, of the percentage of non-evaluated individuals from experiment K.
-    (c) Evolution of diversity in EvoSpace for experiment K.
-    Plots c-d are double y-axis plots, showing the mean diversity over all runs (dark line) and the number of runs $N$ used to compute the mean.
-    (d) Evolution of diversity for the basic GA on the 5-trap problem.}
+    These plots summarize the results for Experiment K:
+    (a) evolution of fitness for a single run, the plot shows how fitness evolves for each sample taken by the EvoWorkers;
+    (b) scatter plot, considering all runs, of the percentage of non-evaluated individuals;
+    (c-d) evolution of diversity, these are y-axis plots that show the mean diversity over all runs (dark line) and the number of runs $N$ used to compute the mean.}
     \label{fig:others}
 \end{figure*}
 
@@ -717,10 +718,13 @@ also notice the low fitness value for the first few samples taken.
 %and after this no more samples are taken since the search is halted at that moment.
 %The overall performance of EvoSpace is summarized in Table \ref{tab:found}, which shows the total number of runs, out of $50$,
 %that found the global optima.
-EvoSpace outperforms the standard GA on both functions, with a substantial increase in the number of optima found.
+EvoSpace outperforms the standard GA on both tests, with a substantial increase in the number of optima found.
 In eleven experiments EvoSpace found the optimal solution in all runs, in the other four cases (experiment A,D,E and H) it does no worse than
 48 total optima found.
 On the other hand, the GA only finds 34 optima on the 5-trap problem and 29 on the 4-trap case.
+These results were not expected, since the EvoSpace algorithm is using the same representation and search operators (mutation and crossover) than the standard
+GA. Therefore, it is evident that the novel population dynamics induced by the ESM model are able to substantially improve the quality of the results
+while otherwise using basic representation and genetic operators.
 
 \begin{table}[t]
 \caption{Different experimental configurations used to test the
@@ -743,21 +747,21 @@ On the other hand, the GA only finds 34 optima on the 5-trap problem and 29 on t
 \end{table}
 
 
-\begin{table}[t]
-\caption{Parameters and algorithm configurations for all experiments.}
-\centering
-\begin{tabular}{|c||c|c|c|c|}
-   \hline
-                       & Maximum          &                    &                  & Generations per \\
-   \textbf{Parameter}  & total samples    & Crossover (Prob.)  & Mutation (Prob.) & EvoWorker        \\
-
-	\hline
-   \textbf{Value}     &	1000 &	Single point (1) &	Point  (0.06)   & 100    \\
-   \hline
-
-\end{tabular}
-\label{tab:exp2}
-\end{table}
+%\begin{table}[t]
+%\caption{Parameters and algorithm configurations for all experiments.}
+%\centering
+%\begin{tabular}{|c||c|c|c|c|}
+%   \hline
+%                       & Maximum          &                    &                  & Generations per \\
+%   \textbf{Parameter}  & total samples    & Crossover (Prob.)  & Mutation (Prob.) & EvoWorker        \\
+%
+%	\hline
+%   \textbf{Value}     &	1000 &	Single point (1) &	Point  (0.06)   & 100    \\
+%   \hline
+%
+%\end{tabular}
+%\label{tab:exp2}
+%\end{table}
 
 
 %\begin{table}[t]
@@ -843,7 +847,7 @@ Regarding algorithm parameters these are summarized in Table \ref{tab:paramse}.
 
 \begin{table}[t]
 \renewcommand{\arraystretch}{1.3}
-\caption{GA and EvoWorker parameters for experiments.}
+\caption{GA and EvoWorker parameters for Experiment C.}
 \label{tab:paramse}
 \centering
 \begin{tabular}{|l||c|}
@@ -1048,9 +1052,9 @@ chance of an EvoWorker returning a sample or an EvoWorker failing 70\% of the
 time; other return sample probabilities where 50\%, 70\% and 90\%.
 Here, it might be said that workers with a low return probability (say 30\%) should in fact be avoided,
 and a proper strategy would be to eliminate those workers from the evolutionary process.
-Here we consider a scenario were the reliability of a worker is not known a priori, their reliability can only be assessed a posteriori.
-Over time, however, it might be possible to build historic profiles of participating workers at take appropriate steps to improve performance,
-but incorporating such strategies is left as future work.
+However, we consider a scenario were the reliability of a worker is not known a priori, their reliability can only be assessed after an experiment is conducted (or during).
+Over time, however, it might be possible to build historic profiles of participating workers at take appropriate steps to improve performance when a highly unreliable
+worker is detected, but incorporating such strategies is left as future work.
 
 Experiments where carried out using a total of 4, 8 and 16 EvoWorkers.
 Although supported by EvoSpace, time intervals were not chosen as triggers
@@ -1074,28 +1078,25 @@ Figure~\ref{fig:plot_time_ri_w16} shows results for 16 workers,
 when there was only a 30\% chance of returning a sample the rate of reinsertion was high, this produced one reinsertion event approximately once every 35 samples,
 considering that 8 samples were reinserted at every such event.
 In this case, the insertion of random individuals resulted in a higher time to solution.
-For these experiments when the rate of reinsertion is low, both alternatives
-have similar results, but the reinsertion algorithm is better
-for situations when starvation is common.
-It appears that the insertion of random individuals is not detrimental when there
-are other evolved individuals in the pool. But when the remaining
-pool almost consists of random individuals, samples pulled by
-EvoWorkers need to start the search from scratch. 
-If a small number of samples are returned to the pool, the work needed to reach the
+
+In summary, the results suggest that the reinsertion algorithm is better
+for situations when starvation of the pool is common.
+On the other hand, inserting random individuals is not detrimental when there
+are other evolved individuals within the pool, but when the remaining
+pool mainly consists of random individuals, new samples pulled by EvoWorkers need to start the search from scratch. 
+Therefore, if only a small number of samples are returned to the pool, the work needed to reach the
 optimum is increased. Figure~\ref{fig:plot_evals_w16} also shows the number 
 of evaluations needed to reach an optimum for 16 workers.
 Figures~\ref{fig:plot_percent_90} and \ref{fig:plot_percent_30} show
-the time required to solution for 30\% and 90\% of returned samples.
-For 90\% both algorithms had similar speedups when the number of
-workers is higher.
-For 30\% there was practically no speedup at all. The reinsert algorithm,
-although not significant, had a consistent decrease in time.         
+the time required to solution for 30\% and 90\% of returned samples, two extreme cases.
+For 90\% both algorithms had similar speedups as the number of workers increases.
+Conversely, for a return probability of 30\% there is practically no speedup at all with more EvoWorkers.
+The reinsert algorithm, however, does show a lower median total time compared with the random strategy, particularly with 4 and 16 EvoWorkers.         
 
 Fitness with respect to time was measured as the average from each consecutive
 sample pulled by each worker. For each sample, the average fitness
 was measured at the start and at the end of the local evolution.
-Also the minimum and maximum fitness values at the start and finish was 
-recorded.    
+Also the minimum and maximum fitness values at the start and finish was recorded.    
 Figure~\ref{fig:Fitness-w16-30-random} shows the evolution of fitness
 with the random insertion algorithm, where the initial fitness drops
 at certain points when random insertion occurs, while average final fitness 
@@ -1143,7 +1144,7 @@ Therefore the goal of this section is to evaluate RPSS on an EvoSpace Pool-EA.
 
 \begin{table}[t]
 \renewcommand{\arraystretch}{1.3}
-\caption{GA and EvoWorker parameters for experiments.}
+\caption{GA and EvoWorker parameters used in Section 6.2.}
 \label{tab:params}
 \centering
 \begin{tabular}{|l|c|}
@@ -1217,7 +1218,8 @@ When the number of EvoWorkers is increased, which is shown in Figure \ref{fig:PP
 however the differences among the algorithms is reduced.
 Future work will compare this technique with other known parametrization methods \cite{cantu}, to determine the best
 parametrization strategies for a wider range of EAs and problem domains. 
-Nevertheless, these results suggest that a random heterogeneous parametrization could be used as a simple parametrization approach for the ESM.
+Nevertheless, these results suggest that a random heterogeneous parametrization following the RPSS approach could be used as a simple off-the-shelf
+parametrization approach for practitioners interested in using the ESM.
 
 %\subsection{Discussion}
 
@@ -1245,7 +1247,7 @@ a solution on a standard benchmark.
 Second, performance of the ESM is equivalent or better than standard search, with the added benefit of improved efficiency
 and population diversity.
 Third, results illustrate the benefits of adding client workers to the evolutionary process.
-Fourth, several apparent issues with the Pool-EA approach are studied, regarding the lost connection of unreliable workers and the increases size of the algorithm's parameter space.
+Fourth, several apparent issues with the Pool-EA approach are studied, regarding the lost connection of unreliable workers and the increased size of the algorithm's parameter space.
 In both cases, experimental results suggest that the ESM can handle both issues robustly, using built-in mechanisms and a simple
 parametrization strategy.
 
