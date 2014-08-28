@@ -81,18 +81,20 @@
 %\authorrunning{Short form of author list} % if too long for running head
 
 \institute{Mario Garc\'ia-Valdez \at
-           Instituto Tecnol\'ogico de Tijuana, Calzada Tecnol\'ogico S/N, Tijuana, BC, 22414  \\	
+           Instituto Tecnol\'ogico de Tijuana, Calzada Tecnol\'ogico S/N, Tijuana, BC, 22414, Mexico  \\	
               \email{mario@tectijuana.edu.mx}           %  \\
 %             \emph{Present address:} of F. Author  %  if needed
            \and
            Leonardo Trujillo \at
-           Instituto Tecnol\'ogico de Tijuana, Calzada Tecnol\'ogico S/N, Tijuana, BC, 22414  \\
+           Departamento de Ingenier\'ia El\'ectrica y Electr\'onica, Posgrado en Ciencias de la Ingenier\'ia,
+           Instituto Tecnol\'ogico de Tijuana, Calzada Tecnol\'ogico S/N, Tijuana, BC, 22414, Mexico  \\
            \email{leonardo.trujillo@tectijuana.edu.mx} \\	
            Website: www.tree-lab.org \\ 
 			\and
 			Juan-J Merelo
 	         \at
-	        Departamento de Arquitectura y Tecnolog\'ia de Computadores and CITIC \url{http://citic.ugr.es} University of Granada, Spain\\
+	        Departamento de Arquitectura y Tecnolog\'ia de Computadores, Centro de Investigaci\'on en Tecnolog\'ias de la Informaci\'on y las Comunicaciones, \url{http://citic.ugr.es}
+	         Universidad de Granada, Spain\\
 	\email{jmerelo@geneura.ugr.es}
 			\and
 			Francisco Fern\'andez-de-Vega
@@ -102,7 +104,7 @@
 		\and
 		Gustavo Olague
 		\at
-		Centro de Investigaci\'on Cient\'ifica y de Educaci\'on Superior de Ensenada\\
+		Centro de Investigaci\'on Cient\'ifica y de Educaci\'on Superior de Ensenada, Ensenada, BC, Mexico\\
 \email{olague@cicese.mx}		
 }
 
@@ -147,7 +149,7 @@ that suggest how EvoSpace can be used to develop and implement different Pool-EA
                                % need to adapt algorithms and
                                % implementation methodologies - JJ
 
-In the early 1990s Foster and Kesselman defined the term Grid Computing \cite{Foster:1998}, referring to an infrastructure designed to enable resource sharing from multiple locations, while also being coordinated to reach a common goal. Early Grid applications were initially motivated by the particular demands of advanced science and engineering applications \cite{Baxevanidis:2002}, seeking a low cost alternative to dedicated data centers or clusters. What distinguished grid computing from conventional high performance computing systems, was that grids tend to be more loosely coupled, heterogeneous, and geographically dispersed \cite{Foster:1998}. With the ubiquity of the Internet, nowadays researchers have access to vast  computational resources which are disperse and available using various technologies, including cloud computing \cite{cloud,varia2008cloud}, peer-to-peer (P2P) networks  \cite{Oram:2001}, and web services \cite{Curbera:2002}.
+Grid Computing was developed by Foster and Kesselman in the early 1990s \cite{Foster:1998}, an infrastructure designed to enable resource sharing from multiple locations, while also being coordinated to reach a common goal. Early Grid applications were initially motivated by the particular demands of advanced science and engineering applications \cite{Baxevanidis:2002}, seeking a low cost alternative to dedicated data centers or clusters. What distinguished grid computing from conventional high performance computing systems, was that grids tend to be more loosely coupled, heterogeneous, and geographically dispersed \cite{Foster:1998}. With the ubiquity of the Internet, nowadays researchers have access to vast  computational resources which are disperse and available using various technologies, including cloud computing \cite{cloud,varia2008cloud}, peer-to-peer (P2P) networks  \cite{Oram:2001}, and web services \cite{Curbera:2002}.
 
 On the other hand, Evolutionary Computation (EC) researchers require powerful computational resources, since EC algorithms tend to be computationally demanding. EC algorithms can benefit from grid computing infrastructures, by designing them as parallel, distributed and asynchronous systems. Several Evolutionary Algorithms (EAs) have been proposed that distribute the evolutionary process among heterogeneous devices, not only among controlled nodes within in-house clusters, but also in those outside the data center, in users' web browsers, smart phones or external cloud based virtual machines. This reach out approach allows researchers the use of low cost computational power that would not be available otherwise.
 However, such systems present several noteworthy challenges, such as the need to manage heterogeneous and unreliable computing resources,
@@ -174,9 +176,9 @@ However, there are still several open issues that need to be addressed for the d
         
 Issue (5) is a deployment problem, that can be addressed at the technological level, without regards to the evolutionary model.
 Most of the other issues have been extensively studied in distributed systems research.
-For instance, Gelertner and Carriero \cite{linda} developed a model that addresses issue (1), introducing the concept of a tuple space, a repository of tuples or shared objects, that can be accessed concurrently by several processes. This tuple space functions as a communication and coordination mechanism between distributed processes that interact with each other through these shared tuples. A distinctive characteristic of this model is that in order to change the state of a tuple, a process needs to atomically remove the tuple from the space and place it back only after it has released it; this inherently provides mutual exclusion since another process cannot access a tuple while it is being used. A benefit of such a model for Pool-EAs is that it forbids two clients from duplicating work. 
+For instance, Gelertner and Carriero \cite{linda} developed a model that addresses issue (1), introducing the concept of a tuple space, a repository of tuples or shared objects, that can be accessed concurrently by several processes. This tuple space works as a communication and coordination mechanism between distributed processes that interact with each other through these shared tuples. A distinctive characteristic of this model is that in order to change the state of a tuple, a process needs to atomically remove the tuple from the space and place it back only after it has released it; this inherently provides mutual exclusion since another process cannot access a tuple while it is being used. A benefit of such a model for Pool-EAs is that it forbids two clients from duplicating work. 
 
-This papers presents the EvoSpace Model (ESM), a conceptual framework for the development of Pool-based EAs \cite{Evospace}.
+This paper presents the EvoSpace Model (ESM), a conceptual framework for the development of Pool-based EAs \cite{Evospace}.
 The ESM is built around a central repository or population store, incorporating some of the main principles of the tuple-space model.
 However, the ESM is not simply an implementation of the tuple-space model for EAs,
 since it incorporates additional mechanisms and concepts specifically tailored to address each of the above listed issues for Pool-EAs.
@@ -247,6 +249,7 @@ Jim\'enez-Laredo et al. \cite{garcia2011} uses a P2P architecture to distribute 
 Similarly, the DREAM framework presented in \cite{DREAM} also distributes an EA using a P2P network based on mobile multi-agent systems.
 Another example is the ParadisEO object-oriented framework for the reusable design of parallel and distributed metaheuristics, including EAs, developed
 by Cahon et al. \cite{ParadisEO} using a distributed model based on the Farmer/Worker paradigm.
+
 Recently, researchers have also begun to fully integrate EAs into the Cloud computing model.
 For instance, the Eureqa \footnote{http://www.nutonian.com/} GP-based modeling tool, originally developed by Schmidt and Lipson \cite{free-form},
 and now marketed by Nutonian, easily integrates with Amazon's EC2 Cloud service for faster computation.
@@ -287,9 +290,14 @@ In other words, a Pool-EA allows for the deployment of an ad-hoc distributed EA,
 EA process without strict prior restrictions or system configuration.
 However, whether or not these differences provide any performance advantages can be seen as an empirical question, one that is considered
 in the experimental sections of this paper.
+Moreover, even if it does not, this paper attempts to determine the performance of a pool-based system when it is the only, or the best,
+alternative to implement a distributed evolutionary algorithm.
 
 The most complete Pool-EA model proposed thus far is the SofEA algorithm by Merelo et al. \cite{sofea1,sofea2,sofea3}.
-SofEA is an evolutionary algorithm mapped to a central CouchDB object store. It provides an asynchronous and distributed search process,
+It is an evolutionary algorithm mapped to a central CouchDB object store;
+CouchDB is one of several such systems available on the market; its main advantage over others is its massive concurrency due
+to its Erlang base and its API based in REST and JavaScrip.
+SofEA provides an asynchronous and distributed search process,
 where the four main evolutionary operators are completely decoupled from the evolving population; these are: Initialization, Evaluation, Reproduction and Elimination.
 The last three processes can be executed in any order and in any given time step, and more than a single Evaluator and Reproducer can be
 executed concurrently.
@@ -502,7 +510,7 @@ can interact with any language supporting {\tt json-rpc} or Ajax requests. The E
 \begin{figure*}[t]
     \centering
         \includegraphics[width=8cm]{evospace.eps}
-    \caption{EvoSpace-py implementation architecture } %EvoSpace the
+    \caption{The EvoSpace-py implementation architecture.} %EvoSpace the
                                 %whole enchilada? EvoSpace the
                                 %population store? Why implementation
                                 %in Capitals? - JJ
@@ -591,7 +599,7 @@ a solution will be found in over 90\% of the runs following the strategy describ
 additional configuration details are given in Table \ref{tab:exp3}.
 %In the case of SofEA results are taken from those published in \cite{sofea3}, where a multi-processor local implementation is used.
 EvoSpace and the IMEA are executed locally, for the latter the reference implementation provided by DEAP is used.
-For EvoSpace, the problem is tested with 2,3,4 and 6 distributed workers,
+For EvoSpace, the problem is tested with 2,3,4 and 6 distributed EvoWorkers,
 and for the IMEA the same number of demes, or islands, are used. In each case, a different population (or deme) size is used, or in 
 the case of EvoSpace a different sample size, following \cite{nodeo}.
 
@@ -600,11 +608,11 @@ and the total time to solution.
 Figures \ref{fig:island}(a) and \ref{fig:island}(b) show the total number of evaluations for EvoSpace and IMEA respectively,
 and Figures \ref{fig:island}(c) and \ref{fig:island}(d)  show the same for total time to solution.
 First, it is clearly shown that EvoSpace performs a more efficient search that the IMEA, requiring about half the total number of fitness evaluations 
-in all cases. Moreover, with EvoSpace the number of fitness evaluations seems to be independent of the number of workers that participate in the search, in all cases the median number of evaluations is below 20K.
+in all cases. Moreover, with EvoSpace the number of fitness evaluations seems to be independent of the number of EvoWorkers that participate in the search, in all cases the median number of evaluations is below 20K.
 On the other hand, the IMEA shows greater variability, with median values varying from around 35k to as much as 50k depending on the number of
 demes, without a clear trend.
 
-On the other hand, regarding time to solution, it seems clear that with more workers EvoSpace performs better, with median results of 2.3s with 2 workers down to 1.5 with six workers.
+On the other hand, regarding time to solution, it seems clear that with more workers EvoSpace performs better, with median results of 2.3s with 2 EvoWorkers down to 1.5 with six EvoWorkers.
 The IMEA, however, varies between 0.7s and 1.1s, without any clear improvement as the number of demes increases.
 These results are expected, given that the IMEA is executed within the same DEAP process, while EvoSpace is incurring a communication overhead between Redis, JSON and DEAP.
 However, in a distributed network such overheads would be unavoidable for any model, and in real-world scenarios fitness evaluations tend to be the most severe bottleneck.
@@ -708,7 +716,8 @@ In total, $50$ runs were performed for each experimental configuration.
     These plots summarize the results for Experiment K:
     (a) evolution of fitness for a single run, the plot shows how fitness evolves for each sample taken by the EvoWorkers;
     (b) scatter plot, considering all runs, of the percentage of non-evaluated individuals;
-    (c-d) evolution of diversity, these are y-axis plots that show the mean diversity over all runs (dark line) and the number of runs $N$ used to compute the mean.}
+    (c-d) evolution of diversity, these are double y-axes plots that show the mean diversity over all runs (dark line, left yaxis) and the number of runs $N$
+    used to compute the mean (right axis).}
     \label{fig:others}
 \end{figure*}
 
@@ -799,9 +808,8 @@ while otherwise using a basic representation and genetic operators.
     {
         \includegraphics[width=5.9cm]{TimeBox.eps}
     }
-    \caption{
-    (a) Number of evaluated individuals over all runs.
-    (b) Total run-time.}
+    \caption{The plots show a performance summary for all of the experiments, based on:
+    (a) Number of evaluated individuals over all runs; and (b) Total run-time.}
     \label{fig:effort}
 \end{figure*}
 
@@ -890,7 +898,7 @@ As a baseline execution, the experiment was also conducted on a local computer. 
 using the Python interpreter version 2.7.2 for 64-bit architectures. 
 In this setting, the problem required considerable computational time: each run took an average of 1567.36 seconds to find the optimal solution.
 The execution used a single core and CPU activity remained low for the whole length of the experiment. On the other hand,
-the parallel execution time was significantly lower even when only two workers were used, clocking in at less than 180s even in the worst cases.
+the parallel execution time was significantly lower even when only two EvoWorkers were used, clocking in at less than 180s even in the worst cases.
 
 %\begin{table}[t]
 %\renewcommand{\arraystretch}{1.3}
@@ -908,8 +916,8 @@ the parallel execution time was significantly lower even when only two workers w
 
 Average times for the configuration using Realtime cores in PiCloud
 are presented in Figure~\ref{fig:plot_time_real}. It can be seen that
-incrementing the number of workers reduced the time to solution, but only up to 16 workers,
-however with 28 workers the median time to solution did not improve.
+incrementing the number of workers reduced the time to solution, but only up to 16 EvoWorkers,
+however with 28 EvoWorkers the median time to solution did not improve.
 There seems to be a point at which the overall speedup of the distributed search levels off in this experimental setup.
 % This is
 %related to the increase in the number of evaluations needed to find
@@ -953,8 +961,8 @@ while the cost of taking a and returning a sample is relatively low.
         \label{plot_ges}
     }
     \caption{Evaluation on the P-Peaks problem:
-    (a) Time required to solution;
-    (b) Number of evaluations to solution; (c) Time of worker's methods, getSample(), Evolve(), setSample().}
+    (a) Time required to solution; and
+    (b) Number of evaluations to solution.}
     \label{fig:effort_real_time}
 \end{figure*}
 
@@ -1017,8 +1025,8 @@ a random insertion technique, but this might negatively impact the search proces
         \includegraphics[width=5.9cm]{plot_percent_30.eps}
         \label{fig:plot_percent_30}
     }
-    \caption{Unreliable workers: (a) Time to solution, 4 Workers; (b) Time to solution, 8 Worker;
-    (c) Time to solution, 16 Workers; (d) Number of evaluations, 16 Workers; (e) Time to solution, 90\% returned samples;
+    \caption{Unreliable workers: (a) Time to solution, 4 Workers; (b) Time to solution, 8 EvoWorkers;
+    (c) Time to solution, 16 EvoWorkers; (d) Number of evaluations, 16 EvoWorkers; (e) Time to solution, 90\% returned samples;
     (f) Time to solution, 30\% returned samples. }
 % Please note that max values are higher in the random case, although
 % there are more substantial drops. Maximun is also reached
@@ -1039,7 +1047,7 @@ a random insertion technique, but this might negatively impact the search proces
         \includegraphics[width=5.9cm]{Fitness-w16-30-reinsert.eps}
         \label{fig:Fitness-w16-30-reinsert}
     }
-    \caption{Evolution of fitness with respect to sample number, using 30\% returned samples and 16 Workers,
+    \caption{Evolution of fitness with respect to sample number, using 30\% returned samples and 16 EvoWorkers,
     for each sample the average fitness was measured at the start (green) and end (blue) of each local evolution, with (a) random algorithm and
     (b) reinsertion algorithm. }
 % Please note that max values are higher in the random case, although
@@ -1055,15 +1063,15 @@ however, in this case c1 Realtime cores are used, which are less efficient than 
 In particular, two distinct approaches are evaluated: (a) reinserting previously taken individuals, at the cost of keeping copies of
 samples; and (b) inserting randomly generated individuals, which has the added effect of increasing diversity within the population.
 
-The algorithm stops when reaching the optimum value, or when all workers
-pulled 100 samples. To simulate unreliable workers each worker was assigned a
+The algorithm stops when reaching the optimum value, or when all EvoWorkers
+pulled 100 samples. To simulate unreliable workers, each was assigned a
 return sample probability. In the experiments the lower probability was a 30\%
 chance of an EvoWorker returning a sample or an EvoWorker failing 70\% of the
 time; other return sample probabilities where 50\%, 70\% and 90\%.
 Here, it might be said that workers with a low return probability (say 30\%) should in fact be avoided,
 and a proper strategy would be to eliminate those workers from the evolutionary process.
-However, we consider a scenario were the reliability of a worker is not known a priori, their reliability can only be assessed after an experiment is conducted (or during).
-Over time, however, it might be possible to build historic profiles of participating workers at take appropriate steps to improve performance when a highly unreliable
+However, we consider a scenario were the reliability of an Evoworker is not known a priori, their reliability can only be assessed after an experiment is conducted (or during).
+Over time, however, it might be possible to build historic profiles of participating EvoWorkers at take appropriate steps to improve performance when a highly unreliable
 worker is detected, but incorporating such strategies is left as future work.
 
 Experiments where carried out using a total of 4, 8 and 16 EvoWorkers.
@@ -1082,9 +1090,9 @@ to solution when using four EvoWorkers. For a population of
 difference in the time required to solution for 
 percentages of 50\% and above. Both reinsertion algorithms
 had comparable times. For 30 percent, both approaches 
-had a slight increase in time. For 8 workers, shown in Figure~\ref{fig:plot_time_ri_w8},  there was a marginal
-decrease in overall time; and results where similar to those found in the experiments with 4 workers.  
-Figure~\ref{fig:plot_time_ri_w16} shows results for 16 workers,
+had a slight increase in time. For 8 EvoWorkers, shown in Figure~\ref{fig:plot_time_ri_w8},  there was a marginal
+decrease in overall time; and results where similar to those found in the experiments with 4 EvoWorkers.  
+Figure~\ref{fig:plot_time_ri_w16} shows results for 16 EvoWorkers,
 when there was only a 30\% chance of returning a sample the rate of reinsertion was high, this produced one reinsertion event approximately once every 35 samples,
 considering that 8 samples were reinserted at every such event.
 In this case, the insertion of random individuals resulted in a higher time to solution.
@@ -1096,10 +1104,10 @@ are other evolved individuals within the pool, but when the remaining
 pool mainly consists of random individuals, new samples pulled by EvoWorkers need to start the search from scratch. 
 Therefore, if only a small number of samples are returned to the pool, the work needed to reach the
 optimum is increased. Figure~\ref{fig:plot_evals_w16} also shows the number 
-of evaluations needed to reach an optimum for 16 workers.
+of evaluations needed to reach an optimum for 16 EvoWorkers.
 Figures~\ref{fig:plot_percent_90} and \ref{fig:plot_percent_30} show
 the time required to solution for 30\% and 90\% of returned samples, two extreme cases.
-For 90\% both algorithms had similar speedups as the number of workers increases.
+For 90\% both algorithms had similar speedups as the number of EvoWorkers increases.
 Conversely, for a return probability of 30\% there is practically no speedup at all with more EvoWorkers.
 The reinsert algorithm, however, does show a lower median total time compared with the random strategy, particularly with 4 and 16 EvoWorkers.         
 
@@ -1191,7 +1199,7 @@ To do this, 200 random parametrizations are created, based on the ranges establi
 The average performance of these runs characterizes the random-homogeneous parametrization, denoted Average-Homogeneous.
 From these runs, the best configuration is chosen, the one that achieved the best results,
 and then 20 independent runs are carried out on each problem, this method is called Best-Homogeneous.
-Finally, the random-heterogeneous-parametrization is considered, where the parameters of each worker are set independently at random at
+Finally, the random-heterogeneous-parametrization is considered, where the parameters of each EvoWorker are set independently at random at
 the beginning of each run; 20 independent runs are performed, the method is denoted as Average-Heterogeneous.
 The algorithms are evaluated using the P-Peaks problems.
 
@@ -1256,7 +1264,7 @@ First, it seems that the ESM can perform a more efficient search that an IMEA, r
 a solution on a standard benchmark.
 Second, performance of the ESM is equivalent or better than standard search, with the added benefit of improved efficiency
 and population diversity.
-Third, results illustrate the benefits of adding client workers to the evolutionary process.
+Third, results illustrate the benefits of adding client EvoWorkers to the evolutionary process.
 Fourth, several apparent issues with the Pool-EA approach are studied, regarding the lost connection of unreliable workers and the increased size of the algorithm's parameter space.
 In both cases, experimental results suggest that the ESM can handle both issues robustly, using built-in mechanisms and a simple
 parametrization strategy.
@@ -1287,7 +1295,9 @@ project 83 (CANUBE) awarded by the CEI-BioTIC UGR. Regional Government Junta de 
 
 
 %\bibliographystyle{spmpsci}      % mathematics and physical sciences
-%\bibliographystyle{spphys}       % APS-like style for physics
+%%\bibliographystyle{spphys}       % APS-like style for physics
+%
+%%\bibliographystyle{spbasic} 
 %\bibliography{biblio}   % name your BibTeX data base
 %
 %
@@ -1295,218 +1305,274 @@ project 83 (CANUBE) awarded by the CEI-BioTIC UGR. Regional Government Junta de 
 \providecommand{\url}[1]{{#1}}
 \providecommand{\urlprefix}{URL }
 \expandafter\ifx\csname urlstyle\endcsname\relax
-  \providecommand{\doi}[1]{DOI \discretionary{}{}{}#1}\else
-  \providecommand{\doi}{DOI \discretionary{}{}{}\begingroup
+  \providecommand{\doi}[1]{DOI~\discretionary{}{}{}#1}\else
+  \providecommand{\doi}{DOI~\discretionary{}{}{}\begingroup
   \urlstyle{rm}\Url}\fi
 
-\bibitem{Foster:1998}
-I.~Foster, C.~Kesselman (eds.), \emph{The Grid: Blueprint for a New Computing
-  Infrastructure} (Morgan Kaufmann Publishers Inc., San Francisco, CA, USA,
-  1999)
-
-\bibitem{Baxevanidis:2002}
-K.~Baxevanidis, H.~Davies, I.~Foster, F.~Gagliardi, Comput. Netw.
-  \textbf{40}(1), 5 (2002)
+\bibitem{parallelEA}
+Alba, E.: Parallel Metaheuristics: {A} New Class of Algorithms.
+\newblock John Wiley \& Sons (2005)
 
 \bibitem{cloud}
-M.~Armbrust, A.~Fox, R.~Griffith, A.D. Joseph, R.~Katz, A.~Konwinski, G.~Lee,
-  D.~Patterson, A.~Rabkin, I.~Stoica, M.~Zaharia, Commun. ACM \textbf{53}(4),
-  50 (2010)
+Armbrust, M., Fox, A., Griffith, R., Joseph, A.D., Katz, R., Konwinski, A.,
+  Lee, G., Patterson, D., Rabkin, A., Stoica, I., Zaharia, M.: A view of cloud
+  computing.
+\newblock Commun. ACM \textbf{53}(4), 50--58 (2010)
 
-\bibitem{varia2008cloud}
-J.~Varia, White Paper of Amazon  (2008)
-
-\bibitem{Oram:2001}
-A.~Oram (ed.), \emph{Peer-to-Peer: Harnessing the Power of Disruptive
-  Technologies} (O'Reilly \& Associates, Inc., Sebastopol, CA, USA, 2001)
-
-\bibitem{Curbera:2002}
-F.~Curbera, M.~Duftler, R.~Khalaf, W.~Nagy, N.~Mukhi, S.~Weerawarana, IEEE
-  Internet Computing \textbf{6}(2), 86 (2002)
-
-\bibitem{sofea1}
-J.J. Merelo-Guerv\'{o}s, A.~Mora, J.A. Cruz, A.I. Esparcia, in
-  \emph{Proceedings of the 2012t European conference on Applications of
-  Evolutionary Computation} (Springer-Verlag, Berlin, Heidelberg, 2012),
-  EvoApplications'12, pp. 446--455
-
-\bibitem{sofea2}
-J.J. Merelo-Guervos, A.~Mora, J.A. Cruz, A.I. Esparcia-Alcazar, C.~Cotta, in
-  \emph{2012 IEEE Congress on Evolutionary Computation (CEC)} (IEEE Comuter
-  Society, 2012), pp. 1 --8
-
-\bibitem{sofea3}
-J.J. Merelo, C.M. Fernandes, A.M. Mora, A.I. Esparcia, in \emph{Proceedings of
-  the 14th Annual Conference Companion on Genetic and Evolutionary Computation}
-  (ACM, New York, NY, USA, 2012), GECCO '12, pp. 109--116
-
-\bibitem{PoolvsIsland}
-J.J. Merelo, A.~Mora, C.~Fernandes, A.~Esparcia-Alcazar, J.~Laredo, in
-  \emph{P2P, Parallel, Grid, Cloud and Internet Computing (3PGCIC), 2012
-  Seventh International Conference on} (2012), pp. 19--24
-
-\bibitem{Evospace}
-M.~Garc{\'\i}a-Valdez, L.~Trujillo, F.~Fern{\'a}ndez~de Vega, J.J.
-  Merelo~Guerv\'os, G.~Olague, in \emph{Applications of Evolutionary
-  Computation}, \emph{LNCS}, vol. 7835, ed. by A.~Esparcia-Alc{\'a}zar, et~al.
-  (Springer Berlin Heidelberg, 2013), pp. 499--508
-
-\bibitem{Musart}
-M.~Garcia-Valdez, L.~Trujillo, F.~Fern{\'a}ndez~de Vega, J.~Merelo~Guerv{\'o}s,
-  G.~Olague, in \emph{Evolutionary and Biologically Inspired Music, Sound, Art
-  and Design}, \emph{LNCS}, vol. 7834, ed. by P.~Machado, et~al. (Springer
-  Berlin Heidelberg, 2013), pp. 121--130
-
-\bibitem{FreeLunch}
-M.~Garcia-Valdez, A.~Mancilla, L.~Trujillo, J.J. Merelo, F.~Fernandez-de Vega,
-  in \emph{2013 IEEE Congress on Evolutionary Computation (CEC)} (2013), pp.
-  1255--1262
-
-\bibitem{Fire}
-L.~Trujillo, M.G. Valdez, F.F. de~Vega, J.J. Merelo-Guerv\'os, in \emph{IEEE
-  Congress on Evolutionary Computation} (IEEE, 2013), pp. 2871--2878
-
-\bibitem{linda}
-D.~Gelernter, ACM Trans. Program. Lang. Syst. \textbf{7}(1), 80 (1985)
-
-\bibitem{eiben}
-A.E. Eiben, J.E. Smith, \emph{Introduction to Evolutionary Computing}
-  (SpringerVerlag, 2003)
-
-\bibitem{parallelEA}
-E.~Alba, \emph{Parallel Metaheuristics: {A} New Class of Algorithms} (John
-  Wiley \& Sons, 2005)
-
-\bibitem{spector:2007}
-J.~Klein, L.~Spector, in \emph{Proceedings of the 9th annual conference on
-  Genetic and evolutionary computation} (ACM, New York, NY, USA, 2007), GECCO
-  '07, pp. 1628--1635
-
-\bibitem{merelo:2008}
-J.J. Merelo~Guervos, P.A.C. Valdivieso, J.L.J. Laredo, A.M. Garc{\'\i}a,
-  A.~Prieto, in \emph{IEEE Congress on Evolutionary Computation} (IEEE, 2008),
-  pp. 1372--1379
-
-\bibitem{cotillon:2012}
-A.~Cotillon, P.~Valencia, R.~Jurdak, in \emph{Proceedings of the 15th European
-  conference on Genetic Programming} (Springer-Verlag, Berlin, Heidelberg,
-  2012), EuroGP'12, pp. 13--24
-
-\bibitem{langdon:2004}
-W.B. Langdon, in \emph{Genetic Programming, Proceedings of EuroGP'2004},
-  \emph{LNCS}, vol. 3003, ed. by M.~Keijzer, U.M. O'Reilly, S.M. Lucas,
-  E.~Costa, T.~Soule (Springer-Verlag, 2004), \emph{LNCS}, vol. 3003, pp.
-  349--358
-
-\bibitem{picbreeder}
-J.~Secretan, N.~Beato, D.B. D'Ambrosio, A.~Rodriguez, A.~Campbell, J.T.
-  Folsom-Kovarik, K.O. Stanley, Evol. Comput. \textbf{19}(3), 373 (2011)
-
-\bibitem{MilkyWay}
-N.~Cole, T.J. Desell, D.L. Gonzalez, F.F. de~Vega, M.~Magdon-Ismail, H.J.
-  Newberg, B.K. Szymanski, C.A. Varela, in \emph{Parallel and Distributed
-  Computational Intelligence}, \emph{Studies in Computational Intelligence},
-  vol. 269 (Springer, 2010), pp. 63--90
-
-\bibitem{nc}
-F.~Fern\'{a}ndez De~Vega, G.~Olague, L.~Trujillo, D.~Lombra\~{n}a Gonz\'{a}lez,
-  Natural Computing \textbf{12}(2), 163 (2013)
-
-\bibitem{garcia2011}
-M.~Garcia-Arenas, J.J. Merelo, A.M. Mora, P.~Castillo, G.~Romero, J.~Laredo, in
-  \emph{2011 IEEE Congress on Evolutionary Computation (CEC)} (IEEE, 2011), pp.
-  304--311
-
-\bibitem{DREAM}
-B.~Paechter, T.~Back, M.~Schoenauer, M.~Sebag, A.~Eiben, J.J. Merelo,
-  T.~Fogarty, in \emph{Evolutionary Computation, 2000. Proceedings of the 2000
-  Congress on}, vol.~2 (2000), vol.~2, pp. 951--958 vol.2
-
-\bibitem{ParadisEO}
-S.~Cahon, N.~Melab, E.G. Talbi, Journal of Heuristics \textbf{10}(3), 357
-  (2004)
-
-\bibitem{free-form}
-M.~Schmidt, H.~Lipson, Science \textbf{324}, 81 (2009)
-
-\bibitem{VecchiolaCORR}
-C.~Vecchiola, M.~Kirley, R.~Buyya, CoRR \textbf{abs/0903.1386} (2009)
-
-\bibitem{FlexGP}
-D.~Sherry, K.~Veeramachaneni, J.~McDermott, U.M. O'Reilly, in
-  \emph{Applications of Evolutionary Computation}, \emph{LNCS}, vol. 7248, ed.
-  by C.~di~Chio, et~al. (Springer Berlin Heidelberg, 2012), pp. 477--486
-
-\bibitem{cantu}
-E.~Cant\'u-Paz, in \emph{Parameter Setting in Evolutionary Algorithms},
-  \emph{Studies in Computational Intelligence}, vol.~54, ed. by F.G. Lobo, C.F.
-  Lima, Z.~Michalewicz (Springer, 2007), pp. 259--276
-
-\bibitem{ateam}
-S.~Talukdar, L.~Baerentzen, A.~Gove, P.~De~Souza, Journal of Heuristics
-  \textbf{4}(4), 295 (1998)
-
-\bibitem{roy:2009}
-G.~Roy, H.~Lee, J.L. Welch, Y.~Zhao, V.~Pandey, D.~Thurston, in
-  \emph{Proceedings of the Eleventh conference on Congress on Evolutionary
-  Computation} (IEEE Press, Piscataway, NJ, USA, 2009), CEC'09, pp. 1177--1184
+\bibitem{Baxevanidis:2002}
+Baxevanidis, K., Davies, H., Foster, I., Gagliardi, F.: Grids and research
+  networks as drivers and enablers of future internet architectures.
+\newblock Comput. Netw. \textbf{40}(1), 5--17 (2002)
 
 \bibitem{bollini:1999}
-A.~Bollini, M.~Piastra, in \emph{Proceedings of the Second European Workshop on
-  Genetic Programming} (Springer-Verlag, London, UK, UK, 1999), pp. 173--183
+Bollini, A., Piastra, M.: Distributed and persistent evolutionary algorithms: A
+  design pattern.
+\newblock In: Proceedings of the Second European Workshop on Genetic
+  Programming, pp. 173--183. Springer-Verlag, London, UK, UK (1999)
 
-\bibitem{DEAP_JMLR2012}
-F.A. Fortin, F.M.D. Rainville, M.A. Gardner, M.~Parizeau, C.~Gagn\'e, Journal
-  of Machine Learning Research \textbf{13}, 2171 (2012)
+\bibitem{ParadisEO}
+Cahon, S., Melab, N., Talbi, E.G.: {ParadisEO}: A framework for the reusable
+  design of parallel and distributed metaheuristics.
+\newblock Journal of Heuristics \textbf{10}(3), 357--380 (2004)
 
-\bibitem{trap}
-D.~Thierens, Evolutionary Computation \textbf{7}, 331 (1999)
+\bibitem{cantu}
+Cant\'u-Paz, E.: Parameter setting in parallel genetic algorithms.
+\newblock In: F.G. Lobo, C.F. Lima, Z.~Michalewicz (eds.) Parameter Setting in
+  Evolutionary Algorithms, \emph{Studies in Computational Intelligence},
+  vol.~54, pp. 259--276. Springer (2007)
+
+\bibitem{MilkyWay}
+Cole, N., Desell, T.J., Gonzalez, D.L., de~Vega, F.F., Magdon-Ismail, M.,
+  Newberg, H.J., Szymanski, B.K., Varela, C.A.: Evolutionary algorithms on
+  volunteer computing platforms: The milkyway@ home project.
+\newblock In: Parallel and Distributed Computational Intelligence,
+  \emph{Studies in Computational Intelligence}, vol. 269, pp. 63--90. Springer
+  (2010)
+
+\bibitem{cotillon:2012}
+Cotillon, A., Valencia, P., Jurdak, R.: Android genetic programming framework.
+\newblock In: Proceedings of the 15th European conference on Genetic
+  Programming, EuroGP'12, pp. 13--24. Springer-Verlag, Berlin, Heidelberg
+  (2012)
+
+\bibitem{Curbera:2002}
+Curbera, F., Duftler, M., Khalaf, R., Nagy, W., Mukhi, N., Weerawarana, S.:
+  Unraveling the web services web: An introduction to soap, wsdl, and uddi.
+\newblock IEEE Internet Computing \textbf{6}(2), 86--93 (2002)
 
 \bibitem{Jong:PS97}
-K.A. De~Jong, M.A. Potter, W.M. Spears, in \emph{ICGA}, ed. by T.~B\"ack
-  (Morgan Kaufmann, 1997), pp. 338--345
-
-\bibitem{nodeo}
-J.J. Merelo, P.~Castillo, A.~Mora, A.~Esparcia-Alc{\'a}zar, V.~Rivas-Santos, in
-  \emph{Proceedings of the 2014 conference companion on Genetic and
-  evolutionary computation companion} (ACM, 2014), pp. 1155--1162
-
-\bibitem{diversity}
-R.W. Morrison, K.A.D. Jong, in \emph{Selected Papers from the 5th European
-  Conference on Artificial Evolution} (Springer-Verlag, London, UK, UK, 2002),
-  pp. 31--41
+De~Jong, K.A., Potter, M.A., Spears, W.M.: Using problem generators to explore
+  the effects of epistasis.
+\newblock In: T.~B\"ack (ed.) ICGA, pp. 338--345. Morgan Kaufmann (1997)
 
 \bibitem{Jong:1990}
-K.A. De~Jong, W.M. Spears, in \emph{Proceedings of the 1st Workshop on Parallel
-  Problem Solving from Nature} (Springer-Verlag, London, UK, UK, 1991), PPSN I,
-  pp. 38--47.
+De~Jong, K.A., Spears, W.M.: An analysis of the interacting roles of population
+  size and crossover in genetic algorithms.
+\newblock In: Proceedings of the 1st Workshop on Parallel Problem Solving from
+  Nature, PPSN I, pp. 38--47. Springer-Verlag, London, UK, UK (1991).
+\newblock \urlprefix\url{http://dl.acm.org/citation.cfm?id=645821.670188}
 
-\bibitem{sofea:naco}
-J.J. Merelo, A.~Mora, C.~Fernandes, A.I. Esparcia-Alc{\'a}zar, Natural
-  Computing pp. 1--14 (2012)
+\bibitem{eiben}
+Eiben, A.E., Smith, J.E.: Introduction to Evolutionary Computing.
+\newblock SpringerVerlag (2003)
 
 \bibitem{fazenda2012}
-P.~Fazenda, J.~McDermott, U.M. O'Reilly, in \emph{Applications of Evolutionary
-  Computation}, \emph{LNCS}, vol. 7248, ed. by C.~di~Chio, et~al. (Springer
-  Berlin Heidelberg, 2012), \emph{LNCS}, vol. 7248, pp. 416--425
+Fazenda, P., McDermott, J., O'Reilly, U.M.: A library to run evolutionary
+  algorithms in the cloud using mapreduce.
+\newblock In: C.~di~Chio, et~al. (eds.) Applications of Evolutionary
+  Computation, \emph{LNCS}, vol. 7248, pp. 416--425. Springer Berlin Heidelberg
+  (2012)
 
-\bibitem{parameters}
-F.G. Lobo, C.F. Lima, Z.~Michalewicz, \emph{Parameter Setting in Evolutionary
-  Algorithms} (Springer Publishing Company, Incorporated, 2007)
+\bibitem{nc}
+Fern\'{a}ndez De~Vega, F., Olague, G., Trujillo, L., Lombra\~{n}a Gonz\'{a}lez,
+  D.: {Customizable Execution Environments for Evolutionary Computation Using
+  BOINC + Virtualization}.
+\newblock Natural Computing \textbf{12}(2), 163--177 (2013)
 
-\bibitem{ss}
-O.~Kramer, \emph{Self-Adaptive Heuristics for Evolutionary Computation},
-  \emph{Studies in Computational Intelligence}, vol. 147 (Springer, 2008)
+\bibitem{DEAP_JMLR2012}
+Fortin, F.A., Rainville, F.M.D., Gardner, M.A., Parizeau, M., Gagn\'e, C.:
+  {DEAP}: Evolutionary algorithms made easy.
+\newblock Journal of Machine Learning Research \textbf{13}, 2171--2175 (2012)
+
+\bibitem{Foster:1998}
+Foster, I., Kesselman, C. (eds.): The Grid: Blueprint for a New Computing
+  Infrastructure.
+\newblock Morgan Kaufmann Publishers Inc., San Francisco, CA, USA (1999)
+
+\bibitem{garcia2011}
+Garcia-Arenas, M., Merelo, J.J., Mora, A.M., Castillo, P., Romero, G., Laredo,
+  J.: Assessing speed-ups in commodity cloud storage services for distributed
+  evolutionary algorithms.
+\newblock In: 2011 IEEE Congress on Evolutionary Computation (CEC), pp.
+  304--311. IEEE (2011)
+
+\bibitem{FreeLunch}
+Garcia-Valdez, M., Mancilla, A., Trujillo, L., Merelo, J.J., Fernandez-de Vega,
+  F.: Is there a free lunch for cloud-based evolutionary algorithms?
+\newblock In: 2013 IEEE Congress on Evolutionary Computation (CEC), pp.
+  1255--1262 (2013)
+
+\bibitem{Musart}
+Garcia-Valdez, M., Trujillo, L., Fern{\'a}ndez~de Vega, F., Merelo~Guerv{\'o}s,
+  J., Olague, G.: Evospace-interactive: A framework to develop distributed
+  collaborative-interactive evolutionary algorithms for artistic design.
+\newblock In: P.~Machado, et~al. (eds.) Evolutionary and Biologically Inspired
+  Music, Sound, Art and Design, \emph{LNCS}, vol. 7834, pp. 121--130. Springer
+  Berlin Heidelberg (2013)
+
+\bibitem{Evospace}
+Garc{\'\i}a-Valdez, M., Trujillo, L., Fern{\'a}ndez~de Vega, F.,
+  Merelo~Guerv\'os, J.J., Olague, G.: {EvoSpace: A Distributed Evolutionary
+  Platform Based on the Tuple Space Model}.
+\newblock In: A.~Esparcia-Alc{\'a}zar, et~al. (eds.) Applications of
+  Evolutionary Computation, \emph{LNCS}, vol. 7835, pp. 499--508. Springer
+  Berlin Heidelberg (2013)
+
+\bibitem{linda}
+Gelernter, D.: Generative communication in linda.
+\newblock ACM Trans. Program. Lang. Syst. \textbf{7}(1), 80--112 (1985)
 
 \bibitem{fuku1}
-Y.~Gong, A.~Fukunaga, in \emph{IEEE Congress on Evolutionary Computation}
-  (IEEE, 2011), pp. 820--827
+Gong, Y., Fukunaga, A.: Distributed island-model genetic algorithms using
+  heterogeneous parameter settings.
+\newblock In: IEEE Congress on Evolutionary Computation, pp. 820--827. IEEE
+  (2011)
+
+\bibitem{spector:2007}
+Klein, J., Spector, L.: Unwitting distributed genetic programming via
+  asynchronous javascript and xml.
+\newblock In: Proceedings of the 9th annual conference on Genetic and
+  evolutionary computation, GECCO '07, pp. 1628--1635. ACM, New York, NY, USA
+  (2007)
+
+\bibitem{ss}
+Kramer, O.: Self-Adaptive Heuristics for Evolutionary Computation,
+  \emph{Studies in Computational Intelligence}, vol. 147.
+\newblock Springer (2008)
+
+\bibitem{langdon:2004}
+Langdon, W.B.: Global distributed evolution of l-systems fractals.
+\newblock In: M.~Keijzer, U.M. O'Reilly, S.M. Lucas, E.~Costa, T.~Soule (eds.)
+  Genetic Programming, Proceedings of EuroGP'2004, \emph{LNCS}, vol. 3003, pp.
+  349--358. Springer-Verlag (2004)
+
+\bibitem{parameters}
+Lobo, F.G., Lima, C.F., Michalewicz, Z.: Parameter Setting in Evolutionary
+  Algorithms.
+\newblock Springer Publishing Company, Incorporated (2007)
+
+\bibitem{nodeo}
+Merelo, J.J., Castillo, P., Mora, A., Esparcia-Alc{\'a}zar, A., Rivas-Santos,
+  V.: Nodeo, a multi-paradigm distributed evolutionary algorithm platform in
+  javascript.
+\newblock In: Proceedings of the 2014 conference companion on Genetic and
+  evolutionary computation companion, pp. 1155--1162. ACM (2014)
+
+\bibitem{sofea3}
+Merelo, J.J., Fernandes, C.M., Mora, A.M., Esparcia, A.I.: Sofea: A pool-based
+  framework for evolutionary algorithms using couchdb.
+\newblock In: Proceedings of the 14th Annual Conference Companion on Genetic
+  and Evolutionary Computation, GECCO '12, pp. 109--116. ACM, New York, NY, USA
+  (2012)
+
+\bibitem{PoolvsIsland}
+Merelo, J.J., Mora, A., Fernandes, C., Esparcia-Alcazar, A., Laredo, J.: Pool
+  vs. island based evolutionary algorithms: An initial exploration.
+\newblock In: P2P, Parallel, Grid, Cloud and Internet Computing (3PGCIC), 2012
+  Seventh International Conference on, pp. 19--24 (2012)
+
+\bibitem{sofea1}
+Merelo-Guerv\'{o}s, J.J., Mora, A., Cruz, J.A., Esparcia, A.I.: Pool-based
+  distributed evolutionary algorithms using an object database.
+\newblock In: Proceedings of the 2012t European conference on Applications of
+  Evolutionary Computation, EvoApplications'12, pp. 446--455. Springer-Verlag,
+  Berlin, Heidelberg (2012)
+
+\bibitem{sofea2}
+Merelo-Guervos, J.J., Mora, A., Cruz, J.A., Esparcia-Alcazar, A.I., Cotta, C.:
+  Scaling in distributed evolutionary algorithms with persistent population.
+\newblock In: 2012 IEEE Congress on Evolutionary Computation (CEC), pp. 1 --8.
+  IEEE Comuter Society (2012)
+
+\bibitem{merelo:2008}
+Merelo~Guervos, J.J., Valdivieso, P.A.C., Laredo, J.L.J., Garc{\'\i}a, A.M.,
+  Prieto, A.: Asynchronous distributed genetic algorithms with {Javascript} and
+  {JSON}.
+\newblock In: IEEE Congress on Evolutionary Computation, pp. 1372--1379. IEEE
+  (2008)
+
+\bibitem{diversity}
+Morrison, R.W., Jong, K.A.D.: Measurement of population diversity.
+\newblock In: Selected Papers from the 5th European Conference on Artificial
+  Evolution, pp. 31--41. Springer-Verlag, London, UK, UK (2002)
+
+\bibitem{Oram:2001}
+Oram, A. (ed.): Peer-to-Peer: Harnessing the Power of Disruptive Technologies.
+\newblock O'Reilly \& Associates, Inc., Sebastopol, CA, USA (2001)
+
+\bibitem{DREAM}
+Paechter, B., Back, T., Schoenauer, M., Sebag, M., Eiben, A., Merelo, J.J.,
+  Fogarty, T.: A distributed resource evolutionary algorithm machine ({DREAM}).
+\newblock In: Evolutionary Computation, 2000. Proceedings of the 2000 Congress
+  on, vol.~2, pp. 951--958 vol.2 (2000)
+
+\bibitem{roy:2009}
+Roy, G., Lee, H., Welch, J.L., Zhao, Y., Pandey, V., Thurston, D.: A
+  distributed pool architecture for genetic algorithms.
+\newblock In: Proceedings of the Eleventh conference on Congress on
+  Evolutionary Computation, CEC'09, pp. 1177--1184. IEEE Press, Piscataway, NJ,
+  USA (2009)
+
+\bibitem{free-form}
+Schmidt, M., Lipson, H.: Distilling free-form natural laws from experimental
+  data.
+\newblock Science \textbf{324}, 81--85 (2009)
+
+\bibitem{picbreeder}
+Secretan, J., Beato, N., D'Ambrosio, D.B., Rodriguez, A., Campbell, A.,
+  Folsom-Kovarik, J.T., Stanley, K.O.: Picbreeder: A case study in
+  collaborative evolutionary exploration of design space.
+\newblock Evol. Comput. \textbf{19}(3), 373--403 (2011)
+
+\bibitem{FlexGP}
+Sherry, D., Veeramachaneni, K., McDermott, J., O'Reilly, U.M.: Flex-gp: Genetic
+  programming on the cloud.
+\newblock In: C.~di~Chio, et~al. (eds.) Applications of Evolutionary
+  Computation, \emph{LNCS}, vol. 7248, pp. 477--486. Springer Berlin Heidelberg
+  (2012)
+
+\bibitem{ateam}
+Talukdar, S., Baerentzen, L., Gove, A., De~Souza, P.: Asynchronous teams:
+  Cooperation schemes for autonomous agents.
+\newblock Journal of Heuristics \textbf{4}(4), 295--321 (1998)
 
 \bibitem{fuku2}
-R.~Tanabe, A.~Fukunaga, in \emph{IEEE Congress on Evolutionary Computation}
-  (IEEE, 2013), pp. 1263--1270
+Tanabe, R., Fukunaga, A.: Evaluation of a randomized parameter setting strategy
+  for island-model evolutionary algorithms.
+\newblock In: IEEE Congress on Evolutionary Computation, pp. 1263--1270. IEEE
+  (2013)
+
+\bibitem{trap}
+Thierens, D.: Scalability problems of simple genetic algorithms.
+\newblock Evolutionary Computation \textbf{7}, 331--352 (1999)
+
+\bibitem{Fire}
+Trujillo, L., Valdez, M.G., de~Vega, F.F., Merelo-Guerv\'os, J.J.: {Fireworks:
+  Evolutionary art project based on EvoSpace-interactive}.
+\newblock In: IEEE Congress on Evolutionary Computation, pp. 2871--2878. IEEE
+  (2013)
+
+\bibitem{varia2008cloud}
+Varia, J.: Cloud architectures.
+\newblock White Paper of Amazon  (2008)
+
+\bibitem{VecchiolaCORR}
+Vecchiola, C., Kirley, M., Buyya, R.: Multi-objective problem solving with
+  offspring on enterprise clouds.
+\newblock CoRR \textbf{abs/0903.1386} (2009)
 
 \end{thebibliography}
+
 
 
 
