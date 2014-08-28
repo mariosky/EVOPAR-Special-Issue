@@ -651,6 +651,8 @@ Therefore, these results suggest that EvoSpace can perform a more efficient sear
 \begin{table}[t]
 \renewcommand{\arraystretch}{1.3}
 \caption{Parameters for EvoSpace and the IMEA on the OneMax problem.}
+% These parameters are different from the other, crossover much
+% lower. Why?- Jj
 \label{tab:exp3}
 \centering
 \begin{tabular}{|l||c|}
@@ -810,6 +812,10 @@ while otherwise using a basic representation and genetic operators.
     }
     \caption{The plots show a performance summary for all of the experiments, based on:
     (a) Number of evaluated individuals over all runs; and (b) Total run-time.}
+
+% Instead of "experiment label" you should use the number of workers
+% or other interesting characteristics, so that the comparison is
+% clearer - JJ  
     \label{fig:effort}
 \end{figure*}
 
@@ -831,7 +837,7 @@ Figure \ref{fig:effort}, which shows boxplots of all runs in each experiment.
 Figure \ref{fig:effort}a plots the total number of individuals evaluated in each run, which is similar in all experiments
 and consistent with the results from Experiment A;
 while Figure \ref{fig:effort}b compares the total run time in seconds.
-Figures show that run time is significantly reduced as the number of EvoWorkers increases.
+These figures show that run time is significantly reduced as the number of EvoWorkers increases.
 
 
 
