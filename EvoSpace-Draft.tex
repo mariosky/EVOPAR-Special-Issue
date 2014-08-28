@@ -223,14 +223,14 @@ Finally, a summary of this work, conclusions and future work are presented in Se
 \label{sec:related}
 In terms of parallelizing EAs, a large body of work has developed a variety of parallel models, with
 important practical and theoretical results \cite{parallelEA}.
-However, this work focuses on the goal of distributing an EA over a grid, a much less explored topic in EA research.
+However, our work focuses on the goal of distributing an EA over a grid, a much less explored topic in EA research.
 In particular, this section will contextualize Pool-EAs within the more general research area of distributed EAs,
 to correctly frame the contributions made in the proposed model.
 
 Probably the most unobtrusive way to distribute an EA over an heterogeneous collection of computing resources is to run an EA over the Internet using web browsers.
 For instance, Klein and Spector \cite{spector:2007} and Merelo et al. \cite{merelo:2008} developed EAs that distribute fitness function evaluations over the web using Javascript on the client machine, such an approach comes with the benefit that connected clients do not need to install any special software on their systems,
 since the code is directly executed on the browser.
-Another recent example is given by Cotillon et al. \cite{cotillon:2012}, they take the idea of browser-based EAs to the Android OS, which can be
+Another recent example is given by Cotillon et al. \cite{cotillon:2012}; they take the idea of browser-based EAs to the Android OS, which can be
 executed on a large number of mobile devices.
 Other common examples of web-based EAs come from the area of interactive evolution, where users visit a web page, browse candidate individuals
 and participate in the evolutionary process by evaluating individuals in artistic design problems \cite{Musart,Fire,langdon:2004,picbreeder}.
@@ -247,9 +247,11 @@ Jim\'enez-Laredo et al. \cite{garcia2011} uses a P2P architecture to distribute 
 Similarly, the DREAM framework presented in \cite{DREAM} also distributes an EA using a P2P network based on mobile multi-agent systems.
 Another example is the ParadisEO object-oriented framework for the reusable design of parallel and distributed metaheuristics, including EAs, developed
 by Cahon et al. \cite{ParadisEO} using a distributed model based on the Farmer/Worker paradigm.
-Recently, researchers have also begun to integrate EAs fully into the Cloud computing model.
-For instance, the Eureqa \footnote{http://www.nutonian.com/} GP-based modeling tool originally developed by Schmidt and Lipson \cite{free-form}, and now marketed by Nutonian, integrates easily with Amazons EC2 Cloud service for faster computation.
-Integrating EAs more fully into the Cloud model, two noteworthy examples are the Offspring framework by Vecchiola et al. \cite{VecchiolaCORR}
+Recently, researchers have also begun to fully integrate EAs into the Cloud computing model.
+For instance, the Eureqa \footnote{http://www.nutonian.com/} GP-based modeling tool, originally developed by Schmidt and Lipson \cite{free-form},
+and now marketed by Nutonian, easily integrates with Amazon's EC2 Cloud service for faster computation.
+A better integration of EAs with Cloud models has already been pursued by some researchers.
+Two noteworthy examples are the Offspring framework by Vecchiola et al. \cite{VecchiolaCORR}
 and the FlexGP system developed by Sherry et al. \cite{FlexGP}.
 Offspring runs a multiobjective EA that is executed on Aneka Enterprise Clouds using a simple distribution logic that makes the use of the cloud
 transparent for the user, developed on top of the task model with a plug-in architecture.
@@ -338,7 +340,7 @@ A tuple $t$ is the basic tuple space element, composed by one or more fields and
                                 % that's it's different from SofEA,
                                 % since SofEA is an _array_ of tuples
                                 % that can't be accessed randomly - JJ 
-An EvoStore provides a set of interface methods that operate over a set of objects $ES$, which can be seen as an independent EA population. If multiple populations are needed, each one must have an index as in $ES_i$. For simplicity in this description, we assume an EvoStore has a single population $ES$. Objects in $ES$ represent individuals in the population ()these are defined in the next subsection), they can be removed and replaced from $ES$ using a specified set of methods. However, the ESM is different from other tuple space implementations in the sense that retrieving and reading objects from $ES$ are defined as random operations. Retrieving a single objects is not of high interest when accessing the EvoStore, instead samples of the population are desired, a key difference with the SofEA approach \cite{sofea1,sofea2,sofea3}.
+An EvoStore provides a set of interface methods that operate over a set of objects $ES$, which can be seen as an independent EA population. If multiple populations are needed, each one must have an index as in $ES_i$. For simplicity in this description, we assume an EvoStore has a single population $ES$. Objects in $ES$ represent individuals in the population (these are defined in the next subsection), they can be removed and replaced from $ES$ using a specified set of methods. However, the ESM is different from other tuple space implementations in the sense that retrieving and reading objects from $ES$ are defined as random operations. Retrieving a single objects is not of high interest when accessing the EvoStore, instead samples of the population are desired, a key difference with the SofEA approach \cite{sofea1,sofea2,sofea3}.
 The methods provided by the EvoStore container are the following:
 
 \begin{itemize}
@@ -376,7 +378,7 @@ within a temporary collection $\mathcal{S}$ on the server, implemented as a prio
 As stated above, the objects stored in $ES$ represent individuals for an EA. 
 Explicitly, the objects in $ES$ are stored as dictionaries, an abstract data type that represents a collection of unique keys and values with a one to one association.
 Objects are described by the following basic fields:
-a \textbf{id} string that represents a unique identifier for each object;
+an \textbf{id} string that represents a unique identifier for each object;
 a \textbf{chromosome} string, which depends on the EA and the representation used;
 a \textbf{fitness} dictionary for each individual, which allows the system to store multiple fitness values for multiobjective
 or dynamic scenarios; a \textbf{parents} dictionary with identifiers of the individual(s) from which it was produced.
@@ -393,7 +395,7 @@ Afterwards, locally the $Evolve()$ function is called where the actual evolution
 an approach taken by SofEA \cite{sofea1}.
 
 In summary, the core ESM elements are the EvoSotore and EvoWorkers; however, additional components must be defined to implement a complete Pool-EA, but these will be constrained by the structure and functionality of the core elements.
-Moreover, all other components have to be designed in accordance with the particular type of Pool-EA to be implemented. Nonetheless, these are still abstract components, not tied to a particular implementation,as described next.
+Moreover, all other components have to be designed in accordance with the particular type of Pool-EA to be implemented. Nonetheless, these are still abstract components, not tied to a particular implementation, as described next.
 
 \subsection{The EvoSpace Server components}
 %This is the key part of the system. Thoughts that went into it should
@@ -824,6 +826,7 @@ Figures show that run time is significantly reduced as the number of EvoWorkers 
 
 
 \subsection{Experiment C: P-Peaks}
+\label{expb}
 % Why this second experiment? Do you want to prove something you
 % haven't before?  - JJ 
 
@@ -847,7 +850,8 @@ convenient since in order to justify a distributed EA fitness computation has to
 network latency (otherwise, it would always be faster to have a single-processor version).
 For this work, the experiment is setup with $P = 256$ peaks and $N = 512$ bits, a configuration that requires considerable computational time for
 fitness evaluation, and 30 runs are performed.
-Regarding algorithm parameters these are summarized in Table \ref{tab:paramse}.
+Regarding algorithm parameters these are summarized in Table \ref{tab:paramse},
+in particular notice that these experiments use c1 Real Time workers, which are highly efficient cpu's.
 
 \begin{table}[t]
 \renewcommand{\arraystretch}{1.3}
@@ -871,7 +875,7 @@ Generations & 128 \\
 \hline
 \multicolumn{2}{|c|}{Variable Parameters} \\
 \hline
-PiCloud Worker Type & Realtime, Standard \\
+PiCloud Worker Type & c1 Realtime, c2 Unreliable Realtime \\
 Number of Workers & 2,4,8,16,28 \\
 Number of Executions & 30 \\
 \hline
@@ -1044,7 +1048,8 @@ a random insertion technique, but this might negatively impact the search proces
 
 
 Hence, the goal of this section is to evaluate the effect the reinsertion algorithm has on the total
-running time and number of evaluations of a GA, using the P-Peaks problem described above with the same parametrization.
+running time and number of evaluations of a GA, using the P-Peaks problem described above with the same parametrization described in Table \ref{tab:paramse};
+however, in this case c2 Unreliable Realtime workers are used, which are less efficient than the c1 workers used in Section \ref{expb}.
 In particular, two distinct approaches are evaluated: (a) reinserting previously taken individuals, at the cost of keeping copies of
 samples; and (b) inserting randomly generated individuals, which has the added effect of increasing diversity within the population.
 
