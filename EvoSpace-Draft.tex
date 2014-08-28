@@ -92,7 +92,7 @@
 			\and
 			Juan-J Merelo
 	         \at
-	        Departamento de Arquitectura y Tecnolog\'ia de Computadores University of Granada, Spain\\
+	        Departamento de Arquitectura y Tecnolog\'ia de Computadores and CITIC \url{http://citic.ugr.es} University of Granada, Spain\\
 	\email{jmerelo@geneura.ugr.es}
 			\and
 			Francisco Fern\'andez-de-Vega
@@ -390,11 +390,11 @@ Moreover, this representation can be extended according to the requirements of e
 
 
 \subsection{EvoWorkers}
-EvoWorkers are autonomous computational entities that are executed on client machines, they only communicate with the EvoStore but not with each other. Communication is carried out through message passing, as described in Algorithm \ref{alg:worker}. Each EvoWorker has a local algorithm that executes the main code of an EA search. The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_j$ taken from $ES$.
-Afterwards, locally the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_j$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned back into $ES$, then the EvoWorker can request a new set and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation,
+EvoWorkers are autonomous computational entities that are executed on client machines. They only communicate with the EvoStore but not with each other. Communication is carried out by message passing, as described in Algorithm \ref{alg:worker}. Each EvoWorker runs a local algorithm that executes the main code of an EA search. The \textbf{EvoWorker} process is straightforward, it requests a set of objects $A_j$ taken from $ES$.
+Afterwards, locally the $Evolve()$ function is called where the actual evolutionary cycle is performed. In this scenario, $A_j$ can be seen as a local population on which evolution is carried out for $g$ generations. The result of this evolution is then returned back into $ES$; then, the EvoWorker can request a new set and repeat the process. Otherwise, each EvoWorker could specialize on a particular part of the evolutionary process, such as selection, evaluation or genetic variation,
 an approach taken by SofEA \cite{sofea1}.
 
-In summary, the core ESM elements are the EvoSotore and EvoWorkers; however, additional components must be defined to implement a complete Pool-EA, but these will be constrained by the structure and functionality of the core elements.
+In summary, the core ESM elements are the EvoStore and EvoWorkers; however, additional components must be defined to implement a complete Pool-EA, but these will be constrained by the structure and functionality of the core elements.
 Moreover, all other components have to be designed in accordance with the particular type of Pool-EA to be implemented. Nonetheless, these are still abstract components, not tied to a particular implementation, as described next.
 
 \subsection{The EvoSpace Server components}
@@ -509,15 +509,15 @@ can interact with any language supporting {\tt json-rpc} or Ajax requests. The E
     \label{fig:evospace}
 \end{figure*}
 
-On the other hand, EvoWorkers must implement the genetic operators for a particular EA.
+On the other hand, EvoWorkers must implement the genetic operators for a particular EA. % first time you talk about EvoWorkers. Definition? - jj
 Given that EvoSpace-py is implemented as a Python module, a simple way to implement EvoWorkers is by using the basic non-distributed GA found in the Distributed Evolutionary Algorithms in Python (DEAP) library \cite{DEAP_JMLR2012}. 
 However, three methods were added to the local DEAP algorithm: $getSample()$ and  $setSample()$; and  another for the  initialization of the population using DEAP´s own methods.
 For instance, to generate the initial population DEAP's $initialize()$ method  is called and the generated population is sent to EvoSpace, then for each generation $getSample()$ function is called, this executes the EvoStore $Take()$ method, and the received sample is used to create a DEAP population which is then evolved for a predefined number of generations.
 Finally, the $setSample()$ function converts the DEAP population to a JSON object and returns it to the EvoStore through the $Replace()$ method.   
 
 \subsection{EvoSpace-py in a Cloud Architecture}
-The first version of EvoSpace-py was implemented as a multi-process application running in a single computer, this implementation was used to run the first set of experiments described in Section \ref{sec:exp1}.
-However, a networked based implementation was needed to further evaluate the ESM.  
+The first version of EvoSpace-py was implemented as a multi-process application running in a single computer; this implementation was used to run the first set of experiments described in Section \ref{sec:exp1}.
+However, a cloud based implementation was needed to further evaluate the ESM.  % why? -JJ
 This section describes how EvoSpace-py can be configured to run on a cloud architecture using two Platform as a Service (PaaS) components, Heroku for the EvoSpace Server and PiCloud for simulating EvoWorkers; a schematic view of the cloud architecture is shown in Figure~\ref{herokuPiCloud}.
 
 \begin{figure}[t]
@@ -567,7 +567,8 @@ on the other hand c2 cores have 2.5 Compute Units and moderate I/O Performance.
 \section{Experiments and Results}
 \label{sec:exp1}
 The goal of this section is to evaluate the ESM and the proposed EvoSpace-py implementation, using well-known benchmarks for GAs,
-the OneMax problem, the K-trap problem \cite{trap} and the P-Peaks problem \cite{Jong:PS97}.
+the OneMax problem, % no reference? -JJ
+the K-trap problem \cite{trap} and the P-Peaks problem \cite{Jong:PS97}.
 In particular, two different versions of EvoSpace-py are evaluated, a local multi-process implementation and a cloud-based implementation,
 using three experimental setups.
 In the first experiment, the ESM is compared with the IMEA using the OneMax problem, to evaluate how it compares to a closely related EA model that is also
@@ -583,7 +584,8 @@ that the distributed approach requires, comparing it with a local execution.
 \subsection{Experiment A: Comparison with IMEA using OneMax}
 These experiments focus on comparing EvoSpace with an IMEA using the classic OneMax problem.
 In particular, the goal is to evaluate search efficiency and the computational effort of each of these strategies.
-To do so, a 128-bit OneMax problem is chosen, using a binary-coded GA with one point mutation and two point crossover.
+To do so, a 128-bit OneMax problem is chosen, % why this size?- JJ
+using a binary-coded GA with one point mutation and two point crossover.
 The population is set to the minimum size that guarantees that
 a solution will be found in over 90\% of the runs following the strategy described in \cite{nodeo},
 additional configuration details are given in Table \ref{tab:exp3}.
@@ -632,6 +634,8 @@ Therefore, these results suggest that EvoSpace can perform a more efficient sear
     }
     \caption{
     Comparison of EvoSpace with an IMEA: (a,b) Number of fitness function evaluations; (c,d) Total time to solution.}
+
+% IMPORTANT: comparisons must have the same scale in y axis. The seconddoesnot - JJ
     \label{fig:island}
 \end{figure*}
 
