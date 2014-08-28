@@ -1133,10 +1133,11 @@ characteristic convergence curves without substantial fitness drops.
 
 
 \subsection{Parametrization}
-In general, EAs are sometimes criticized by the large number of parameters they require,
-that need to be tuned empirically or require additional heuristic processes to be included into the search to
+In general, EAs are sometimes criticized by the large number of
+parameters that need empirical tuning in order to get them to work properly or
+reach the required performance or require additional heuristic processes to be included into the search to
 adjust the parameters automatically \cite{parameters,ss}.
-In the case of a Pool-EAs, this issue is magnified since the underlying system architecture adds several degrees of freedom to the search process,
+In the case of Pool-EAs, this issue is magnified since the underlying system architecture adds several degrees of freedom to the search process,
 with unknown interactions.
 This problem is of particular importance in real-world scenarios, where there might be little prior insights regarding what could be the best
 configuration for an EA tool, especially if the intent is to use it as a black-box optimizer;
@@ -1251,16 +1252,20 @@ parametrization approach for practitioners interested in using the ESM.
 \section{Concluding Remarks}
 \label{sec:conclusions}
 This paper presents the EvoSpace model for the development of pool-based EAs, which is designed to exploit computing resources over a network and can be implemented to run directly on the cloud.
-Pool-EAs present several interesting properties that are not present in standard EAs, storing the population in a central store and
+Pool-EAs present several interesting properties that are not present
+in standard EAs, such as the storage of the population in a central store and
 performing the evolutionary process in an asynchronous and distributed manner through client machines,
 which in the ESM are referred to as EvoWorkers.
-In this sense, what is particularly interesting of a Pool-EA is that it incorporates features from natural evolution that are abstracted away in common EA implementations.
+In this sense, what is particularly interesting about a Pool-EA is
+that it incorporates features from natural evolution that are
+abstracted away in common EA implementations. %such as? - JJ
 Moreover, they are intended as means by which evolutionary computation techniques can incorporate modern computing frameworks.
 However, Pool-EAs also present several noteworthy design challenges, that must be addressed.
 The proposed ESM is intended as a conceptual framework that addresses some of these challenges and allows for the development of a variety of search techniques
 that follow this pool-based approach.
 
-At the implementation level, this work also presents an ESM instantiation called EvoSpace-py, a software tool that simplifies the deployment of Pool-EAs,
+At the implementation level, this work also presents an instance of
+ESM called EvoSpace-py, an open source software tool that simplifies the deployment of Pool-EAs,
 as multi-threaded processes or on the cloud.
 The system has been programmed using the Python programming language, the DEAP library and the Redis key-value database.
 
@@ -1282,11 +1287,16 @@ Moreover, the ESM will be leveraged to implement and deploy a complete web-based
 
 
 \section*{Acknowledgements}
+
 Funding provided by CONACYT (Mexico) Project No. 29537 from the Programa de Estimulo a la Innovaci\'on, CONACYT
 Basic Science Research Project No. 178323, DGEST (Mexico) Research Projects No.5149.13-P and TIJ-ING-2012-110,
 and IRSES project ACoBSEC from the European Commission.
-Additional funding provided by projects P08-TIC-03903 (Andalusian Regional Government), TIN2011-28627-C04-02 (Spanish Ministry of Science and Innovation),
-project 83 (CANUBE) awarded by the CEI-BioTIC UGR. Regional Government Junta de Extremadura, Consejer\'ia de Econom\'ia, Comercio e Innovaci\'on and FEDER, project GRU10029.
+Additional funding provided by projects P08-TIC-03903 (Andalusian
+Regional Government), TIN2011-28627-C04-02 (Spanish Ministry of
+Science and Innovation), 
+project CANUBE (\url{http://canube.wordpress.com}) awarded by the
+CEI-BioTIC UGR. Regional Government Junta de Extremadura, Consejer\'ia
+de Econom\'ia, Comercio e Innovaci\'on and FEDER, project GRU10029. 
 
 
 %\begin{acknowledgements}
