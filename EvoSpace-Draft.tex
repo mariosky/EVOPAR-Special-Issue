@@ -548,12 +548,10 @@ for instance, in the more demanding experiments the web process was scaled to 20
 PiCloud is a PaaS, with deep Python integration, such that functions are transparently uploaded to PiCLoud's 
 servers as units of computational work they call jobs. 
 Each job is added to a queue, and when there is a computing core available, 
-the job is assigned to it. Both Heroku and PiCloud 
-platforms are deployed on top of the Amazon Web Services (AWS) 
-infrastructure in the US-EAST Region. This ensures minimal 
-latency and a high bandwidth communication between the services, 
-and there is no charge for data transfer costs between both services.
-%For the experiments type c1 and c2 Real Time workers where used.  
+the job is assigned to it. PiCloud has several options of computing resources they call cores,
+for the experiments type c1 and c2 Real Time workers where used; c1 cores have 1 Compute Unit and low I/O Performance,
+on the other hand c2 cores have 2.5 Compute Units and moderate I/O Performance.
+
 %The code for the EvoWorkers implementation and experiment data is publicly available from a Github repository \url{https://github.com/mariosky/evoPar2014}. 
 % \url{http://goo.gl/92tMFw}. % Github tiene su
                                 % propio acortador, pero también
@@ -851,7 +849,7 @@ network latency (otherwise, it would always be faster to have a single-processor
 For this work, the experiment is setup with $P = 256$ peaks and $N = 512$ bits, a configuration that requires considerable computational time for
 fitness evaluation, and 30 runs are performed.
 Regarding algorithm parameters these are summarized in Table \ref{tab:paramse},
-in particular notice that these experiments use c1 Real Time workers, which are highly efficient cpu's.
+in particular notice that these experiments use PiCloud's c2 Real Time cores.
 
 \begin{table}[t]
 \renewcommand{\arraystretch}{1.3}
@@ -1049,7 +1047,7 @@ a random insertion technique, but this might negatively impact the search proces
 
 Hence, the goal of this section is to evaluate the effect the reinsertion algorithm has on the total
 running time and number of evaluations of a GA, using the P-Peaks problem described above with the same parametrization described in Table \ref{tab:paramse};
-however, in this case c2 Unreliable Realtime workers are used, which are less efficient than the c1 workers used in Section \ref{expb}.
+however, in this case c1 Realtime cores are used, which are less efficient than the c2 cores used in Section \ref{expb}.
 In particular, two distinct approaches are evaluated: (a) reinserting previously taken individuals, at the cost of keeping copies of
 samples; and (b) inserting randomly generated individuals, which has the added effect of increasing diversity within the population.
 
