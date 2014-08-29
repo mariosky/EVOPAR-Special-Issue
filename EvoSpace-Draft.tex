@@ -296,7 +296,7 @@ alternative to implement a distributed evolutionary algorithm.
 The most complete Pool-EA model proposed thus far is the SofEA algorithm by Merelo et al. \cite{sofea1,sofea2,sofea3}.
 It is an evolutionary algorithm mapped to a central CouchDB object store;
 CouchDB is one of several such systems available on the market; its main advantage over others is its massive concurrency due
-to its Erlang base and its API based in REST and JavaScrip.
+to its Erlang base and its API based in REST and JavaScript.
 SofEA provides an asynchronous and distributed search process,
 where the four main evolutionary operators are completely decoupled from the evolving population; these are: Initialization, Evaluation, Reproduction and Elimination.
 The last three processes can be executed in any order and in any given time step, and more than a single Evaluator and Reproducer can be
