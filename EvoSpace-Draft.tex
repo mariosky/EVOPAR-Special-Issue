@@ -126,7 +126,7 @@ evaluating performance based on efficiency, optima found and speedup, while prov
 The issues of lost connections and system parametrization are studied and validated experimentally with encouraging results,
 that suggest how EvoSpace can be used to develop and implement different Pool-EAs for search and optimization.    
 
-\keywords{Pool-based Evolutionary Algorithms \and Distributed Evolutionary Algorithms\and Heterogeneous Computing Platforms for Bioinspired Algorithms  \and Parameter Setting}
+\keywords{Pool-based Evolutionary Algorithms \and Distributed Evolutionary Algorithms \and Heterogeneous Computing Platforms for Bioinspired Algorithms  \and Parameter Setting}
 
 \end{abstract}
 
@@ -173,10 +173,14 @@ However, there are still several open issues that need to be addressed for the d
 	\item Single Point of Failure: conceptually, there is a single central server managing the pool, a single point of failure.  	
 	%\item Asynchronous Behavior: Asynchronous systems could be hard to implement.
 \end{enumerate}
-        
-Issue (5) is a deployment problem, that can be addressed at the technological level, without regards to the evolutionary model.
-Most of the other issues have been extensively studied in distributed systems research.
-For instance, Gelertner and Carriero \cite{linda} developed a model that addresses issue (1), introducing the concept of a tuple space, a repository of tuples or shared objects, that can be accessed concurrently by several processes. This tuple space works as a communication and coordination mechanism between distributed processes that interact with each other through these shared tuples. A distinctive characteristic of this model is that in order to change the state of a tuple, a process needs to atomically remove the tuple from the space and place it back only after it has released it; this inherently provides mutual exclusion since another process cannot access a tuple while it is being used. A benefit of such a model for Pool-EAs is that it forbids two clients from duplicating work. 
+
+Some of these issues have been widely studied in distributed systems research.
+Gelertner and Carriero \cite{linda} developed a model that could address issue (1), it is based on the concept of a tuple space, a repository of tuples or shared objects, that can be accessed concurrently by several processes. This tuple space works as a communication and coordination mechanism between distributed processes that interact with each other through these shared tuples. A distinctive characteristic of this model is that in order to change the state of a tuple, a process needs to atomically remove the tuple from the space and place it back only after it has released it; this inherently provides mutual exclusion since another process cannot access a tuple while it is being used. A benefit of such a model for Pool-EAs is that it forbids two clients from duplicating work. 
+On the other hand, issues (2) and (4) are very specific to the Pool-EA approach.
+Finally, issues (3) and (5) are common for distributed platforms, and proper solution strategies will have to consider the particular requirements of the problem domain \cite{new1,new2}.
+However, issue (5) can be addressed at the technological level for Pool-EAs, without explicitly considering the specific evolutionary model;
+for instance, using hardware redundancy, distributed file systems or transparent data replication.
+
 
 This paper presents the EvoSpace Model (ESM), a conceptual framework for the development of Pool-based EAs \cite{Evospace}.
 The ESM is built around a central repository or population store, incorporating some of the main principles of the tuple-space model.
@@ -214,8 +218,8 @@ First, a comprehensive discussion pertaining to related work is presented in Sec
 Afterwards, the ESM is detailed in Section \ref{sec:evospace} and a reference implementation is presented in Section \ref{sec:ref}.
 Three experimental validations are performed in Section \ref{sec:exp1} using genetic algorithm benchmarks:
 first, the ESM is compared with another distributed EA to illustrate some of its
-strengths and weaknesses; second, the ESM is tested with regards to diversity and scalability;
-and finally, a cloud based deployment is used to evaluate the system's performance and communication costs.
+strengths and weaknesses; second, the ESM is compared with a standard EA based on its ability to find local optima and search efficiency;
+and finally, a cloud based deployment is used to evaluate the system's communication costs and scalability.
 Section \ref{sec:overcome} deals with two general issues associated with Pool-EAs in general, and ESM in particular,
 and proposes useful solutions which are validated experimentally.
 Finally, a summary of this work, conclusions and future work are presented in Section \ref{sec:conclusions}.
@@ -582,7 +586,7 @@ using three experimental setups.
 In the first experiment, the ESM is compared with the IMEA using the OneMax problem, to evaluate how it compares to a closely related EA model that is also
 amenable to distributed computing frameworks.
 In the second experiment, the ESM is evaluated based on its ability to find local optima on the deceptive K-trap problem,
-comparing its performance and diversity with that of a canonical GA.
+comparing its performance that of a canonical GA.
 Finally, in the third experimental setup the speedup offered by the cloud-based implementation is evaluated given the communication overhead
 that the distributed approach requires, comparing it with a local execution.
  %To prove what? Validate the approach? Check
@@ -701,25 +705,25 @@ In total, $50$ runs were performed for each experimental configuration.
        %\includegraphics[width=5cm]{Plot-Individuals-Eval-k4w32s32.eps}
 
     }
-    \subfigure[Evaluated]
+    \subfigure[Evaluated Individuals]
     {
         \includegraphics[width=5.9cm]{Plot-Individuals-Eval-k5w4s64.eps}
     }
-    \\
-    \subfigure[EvoSpace]
-    {
-        \includegraphics[width=5.9cm]{DivMeanEvoSameScale.eps}
-    }
-    \subfigure[Standard GA]
-    {
-        \includegraphics[width=5.9cm]{DivMeanGASameScale.eps}
-    }
+%    \\
+%    \subfigure[Standard GA]
+%    {
+%        \includegraphics[width=5.9cm]{DivMeanEvoSameScale.eps}
+%    }
+%    \subfigure[EvoSpace]
+%    {
+%        \includegraphics[width=5.9cm]{DivMeanGASameScale.eps}
+%    }
     \caption{
     These plots summarize the results for Experiment K:
     (a) evolution of fitness for a single run, the plot shows how fitness evolves for each sample taken by the EvoWorkers;
-    (b) scatter plot, considering all runs, of the percentage of non-evaluated individuals;
-    (c-d) evolution of diversity, these are double y-axes plots that show the mean diversity over all runs (dark line, left yaxis) and the number of runs $N$
-    used to compute the mean (right axis).}
+    (b) scatter plot, considering all runs, of the percentage of non-evaluated individuals.}
+%    (c-d) evolution of diversity, these are double y-axes plots that show the mean diversity over all runs (dark line, left yaxis) and the number of runs $N$
+%    used to compute the mean (right axis).}
     \label{fig:others}
 \end{figure*}
 
@@ -802,16 +806,16 @@ while otherwise using a basic representation and genetic operators.
 
 \begin{figure*}[t]
     \centering
-    \subfigure[]
+    \subfigure[Evaluated Individuals]
     {
         \includegraphics[width=5.9cm]{Evaluados.eps}
     }
-    \subfigure[]
+    \subfigure[Run-Time]
     {
         \includegraphics[width=5.9cm]{TimeBox.eps}
     }
     \caption{The plots show a performance summary for all of the experiments, based on:
-    (a) Number of evaluated individuals over all runs; and (b) Total run-time.}
+    (a) number of evaluated individuals over all runs; and (b) total run-time.}
 
 % Instead of "experiment label" you should use the number of workers
 % or other interesting characteristics, so that the comparison is
@@ -824,13 +828,13 @@ not be chosen and evaluated wasting valuable genetic material.
 Figure \ref{fig:others}b shows a scatter plot of all of the runs for experiment K, depicting the percentage of individuals
 that have not yet been evaluated; here it is important to remember that some runs required more samples than others.
 The figure clearly shows that the percentage individuals not evaluated within EvoSpace quickly decreases as more samples are taken.
-Another interesting question is how the EvoSpace search impacts diversity, here given by the sum of the pairwise Hamming distances
-of all individuals within the population \cite{diversity}.
-Figure \ref{fig:others}c shows how diversity evolves for experiment K, and
-Figure \ref{fig:others}d shows the same for the basic GA\footnote{The time scale is given by
-the number of individuals evaluated, increments correspond to the number of individuals evaluated in 10 samples.}.
-These plots show how the standard GA has a problem maintaining diversity, which leads to its poor performance.
-On the other hand, EvoSpace maintains a more diverse population which leads to a better exploration of the search space and more successful runs.
+%Another interesting question is how the EvoSpace search impacts diversity, here given by the sum of the pairwise Hamming distances
+%of all individuals within the population \cite{diversity}.
+%Figure \ref{fig:others}c shows how diversity evolves for experiment K, and
+%Figure \ref{fig:others}d shows the same for the basic GA\footnote{The time scale is given by
+%the number of individuals evaluated, increments correspond to the number of individuals evaluated in 10 samples.}.
+%These plots show how the standard GA has a problem maintaining diversity, which leads to its poor performance.
+%On the other hand, EvoSpace maintains a more diverse population which leads to a better exploration of the search space and more successful runs.
 
 Finally, a comparison of the computational effort required in each experiment is given in
 Figure \ref{fig:effort}, which shows boxplots of all runs in each experiment.
@@ -1274,7 +1278,7 @@ Results are encouraging in several respects.
 First, it seems that the ESM can perform a more efficient search that an IMEA, requiring about half as many fitness function evaluations to find
 a solution on a standard benchmark.
 Second, performance of the ESM is equivalent or better than standard search, with the added benefit of improved efficiency
-and population diversity.
+and better performance on deceptive problems.
 Third, results illustrate the benefits of adding client EvoWorkers to the evolutionary process.
 Fourth, several apparent issues with the Pool-EA approach are studied, regarding the lost connection of unreliable workers and the increased size of the algorithm's parameter space.
 In both cases, experimental results suggest that the ESM can handle both issues robustly, using built-in mechanisms and a simple
@@ -1286,23 +1290,22 @@ in order to define the proper domain of competence of Pool-EAs in general and th
 Moreover, the ESM will be leveraged to implement and deploy a complete web-based Pool-EA, that simplifies the use for other researchers in an easy to setup manner.
 
 
-\section*{Acknowledgements}
-
+\begin{acknowledgements}
 Funding provided by CONACYT (Mexico) Project No. 29537 from the Programa de Estimulo a la Innovaci\'on, CONACYT
-Basic Science Research Project No. 178323, DGEST (Mexico) Research Projects No.5149.13-P and TIJ-ING-2012-110,
-and IRSES project ACoBSEC from the European Commission.
+Basic Science Research Project No. 178323, DGEST (Mexico) Research Projects No. 5149.13-P, 5414.14-P and TIJ-ING-2012-110,
+and IRSES project ACoBSEC financed by the European Commission.
 Additional funding provided by projects P08-TIC-03903 (Andalusian
 Regional Government), TIN2011-28627-C04-02 (Spanish Ministry of
 Science and Innovation), 
 project CANUBE (\url{http://canube.wordpress.com}) awarded by the
 CEI-BioTIC UGR. Regional Government Junta de Extremadura, Consejer\'ia
 de Econom\'ia, Comercio e Innovaci\'on and FEDER, project GRU10029. 
+\end{acknowledgements}
 
 
-%\begin{acknowledgements}
 %If you'd like to thank anyone, place your comments here
 %and remove the percent signs.
-%\end{acknowledgements}
+%
 
 % BibTeX users please use one of
 %\bibliographystyle{spbasic}      % basic style, author-year citations
@@ -1315,8 +1318,8 @@ de Econom\'ia, Comercio e Innovaci\'on and FEDER, project GRU10029.
 %
 %%\bibliographystyle{spbasic} 
 %\bibliography{biblio}   % name your BibTeX data base
-%
-%
+
+
 \begin{thebibliography}{10}
 \providecommand{\url}[1]{{#1}}
 \providecommand{\urlprefix}{URL }
@@ -1328,6 +1331,12 @@ de Econom\'ia, Comercio e Innovaci\'on and FEDER, project GRU10029.
 \bibitem{parallelEA}
 Alba, E.: Parallel Metaheuristics: {A} New Class of Algorithms.
 \newblock John Wiley \& Sons (2005)
+
+\bibitem{new1}
+Allcock, B., Bester, J., Bresnahan, J., Chervenak, A.L., Foster, I., Kesselman,
+  C., Meder, S., Nefedova, V., Quesnel, D., Tuecke, S.: Data management and
+  transfer in high-performance computational grid environments.
+\newblock Parallel Computing \textbf{28}(5), 749--771 (2002)
 
 \bibitem{cloud}
 Armbrust, M., Fox, A., Griffith, R., Joseph, A.D., Katz, R., Konwinski, A.,
@@ -1517,11 +1526,6 @@ Merelo~Guervos, J.J., Valdivieso, P.A.C., Laredo, J.L.J., Garc{\'\i}a, A.M.,
 \newblock In: IEEE Congress on Evolutionary Computation, pp. 1372--1379. IEEE
   (2008)
 
-\bibitem{diversity}
-Morrison, R.W., Jong, K.A.D.: Measurement of population diversity.
-\newblock In: Selected Papers from the 5th European Conference on Artificial
-  Evolution, pp. 31--41. Springer-Verlag, London, UK, UK (2002)
-
 \bibitem{Oram:2001}
 Oram, A. (ed.): Peer-to-Peer: Harnessing the Power of Disruptive Technologies.
 \newblock O'Reilly \& Associates, Inc., Sebastopol, CA, USA (2001)
@@ -1586,6 +1590,12 @@ Varia, J.: Cloud architectures.
 Vecchiola, C., Kirley, M., Buyya, R.: Multi-objective problem solving with
   offspring on enterprise clouds.
 \newblock CoRR \textbf{abs/0903.1386} (2009)
+
+\bibitem{new2}
+Zhang, Q., Cheng, L., Boutaba, R.: Cloud computing: state-of-the-art and
+  research challenges.
+\newblock Journal of internet services and applications \textbf{1}(1), 7--18
+  (2010)
 
 \end{thebibliography}
 
